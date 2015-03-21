@@ -49,23 +49,6 @@ Fix: Click anywhere in tray.
 
 If you have any problems, let me know. I'll try to fix it.  
 
-
---------------------  
-##Updates  
-
-Version 1.1 (21.03.15):  
-
-Fix: Either Reload the program using tray menu or use the Always On Top function. 
-
-* Keyboard language tray button disappears after using TSolidBackground function
-Fix: Click anywhere in tray.
-
-* Explorer.exe might freeze and restart if you spam the hotkeys too much.  
-
-
-If you have any problems, let me know. I'll try to fix it.  
-
-
 --------------------  
 ##Updates  
 
@@ -75,4 +58,4 @@ Fixed timing issues with slower PC.
 Added tray menu: Reload, About  
 Added opening popup with hotkeys.  
 Added Suspend hotkeys and Center window functions  
-Fixed the bug where the window sometimes went background when using TSolidBackground  
+Fixed the bug where the window sometimes went background when using TSolidBackground
