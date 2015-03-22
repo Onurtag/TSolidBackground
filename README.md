@@ -10,17 +10,26 @@
     Shift+O: Options  
     Default Color: 250000  
 
+<<<<<<< HEAD
 ##[Webm Preview](http://a.pomf.se/ignexn.webm)  
+=======
+##[Webm Preview](http://a.pomf.se/ignexn.webm)
+>>>>>>> ba358c1e6fcc634f585a1bec616e076aaaf09ca6
 
 ##[Download latest .exe here](https://bitbucket.org/Onurtag/tsolidbackground/downloads)  
-**Current version: 1.1 (22.03.15)**  
+**Current version: 1.1 (21.03.15)**  
 
 Compiled using the latest Ahk2Exe  
 
 --------------------  
 ## Things To Know  
 
+<<<<<<< HEAD
 * You have to select the window before using the hotkey.  
+=======
+--------------------  
+## Things To Know  
+>>>>>>> ba358c1e6fcc634f585a1bec616e076aaaf09ca6
 
 * You can change the background color using the Shift+o option window.  
 
@@ -40,10 +49,11 @@ Compiled using the latest Ahk2Exe
 
 * Background sometimes goes over the selected window.  
 -This is fixed but it might still happen on slow computers or if you don't select the window before using the hotkey.  
+<<<<<<< HEAD
 Fix: Either Reload the program using tray menu or use the Always On Top function.  
 
-* Keyboard language tray button disappears after using TSolidBackground function  
-Fix: Click anywhere in tray and it should come back.  
+* Keyboard language tray button disappears after using TSolidBackground function
+Fix: Click anywhere in tray.  
 
 * Explorer.exe might freeze and restart if you spam the hotkeys too much.  
 
@@ -54,11 +64,29 @@ If you have any problems, let me know. I'll try to fix it.
 --------------------  
 ##Updates  
 
-Version 1.1 (22.03.15):  
+Version 1.1 (21.03.15):  
 
+=======
+Fix: Either Reload the program using tray menu or use the Always On Top function. 
+
+* Keyboard language tray button disappears after using TSolidBackground function
+Fix: Click anywhere in tray.
+
+* Explorer.exe might freeze and restart if you spam the hotkeys too much.  
+
+
+If you have any problems, let me know. I'll try to fix it.  
+
+
+--------------------  
+##Updates  
+
+Version 1.1 (21.03.15):  
+
+>>>>>>> ba358c1e6fcc634f585a1bec616e076aaaf09ca6
 Fixed timing issues with slower PC.  
-Fixed the bug where the window sometimes went background when using TSolidBackground  
 Added tray menu: Reload, About  
-Added opening popup with hotkey information.  
+Added opening popup with hotkeys.  
 Added Suspend hotkeys and Center window functions  
+Fixed the bug where the window sometimes went background when using TSolidBackground  
 
