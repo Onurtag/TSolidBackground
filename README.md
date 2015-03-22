@@ -1,6 +1,10 @@
 
 # **TSolidBackground** #  
-------------------
+------------------  
+
+TSolidBackground allows you to immerse in a window completely by creating a solid background.  
+Reading Visual Novels was why I created this but it can also be used in a lot more ways.  
+
 
     Default Hotkeys (can be changed in .ini):  
     Shift+T: Show/hide taskbar and Background  
@@ -34,6 +38,8 @@ Compiled using the latest Ahk2Exe
     
 * Always On Top mode can be used for multiple windows at the same time  
 
+* [Also this exists for some people.](http://i.imgur.com/DbSYoZC.png) You might not need to use TSolidBackground if this works for you. (Thanks demeteloaf)  
+  [For Nvidia users](http://i.imgur.com/S1oysho.png)  
 
 --------------------  
 **Known Bugs:**  
