@@ -19,7 +19,7 @@ Reading Visual Novels was why I created this but it can also be used in a lot mo
 
 
 ##[Download latest .exe here](https://bitbucket.org/Onurtag/tsolidbackground/downloads)  
-**Current version: v2 (29.03.15)**  
+**Current version: v2.1 (29.03.15)**  
 
 Compiled using the latest Ahk2Exe  
 
@@ -46,18 +46,29 @@ Compiled using the latest Ahk2Exe
 --------------------  
 **Known Bugs:**  
 
-* Background sometimes goes over the selected window.  
--This is fixed but it might still happen on VERY slow computers or if you don't select the window before using the hotkey.  
+* TSolidBackground will disable Always On Top if the selected window is Always On Top.  
+You can use the Always On Top hotkey afterwards if you really want the window on top.  
 
 
-* Explorer.exe might freeze and restart if you spam the hotkeys too much.  
+* Explorer.exe might crash and restart if you spam the hotkeys too much. (Especially Show Hide taskbar key)  
 
+
+* Currently TSolidBackground only works on the Primary Monitor. (for multiple monitor displays)  
 
 If you have any problems, let me know. I'll try to fix it.  
 
 
 --------------------  
 ##Updates  
+
+
+**Version 2.1 (29.03.15):**  
+
+Taskbar hide revamp. Let me know if you encounter a bug.  
+Added notes to start popup  
+Fixed huge bugs.  
+New dark color scheme.  
+
 
 **Version 2 (29.03.15):**  
 

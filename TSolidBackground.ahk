@@ -9,17 +9,17 @@ https://bitbucket.org/Onurtag/tsolidbackground/
 
 winArr := Object()
 OnExit, Exited
-VarSetCapacity( APPBARDATA, 36, 0 )
 bgcolor := 250000 
 firsttime := 1
 ProjectPage := " https://bitbucket.org/Onurtag/tsolidbackground"
-Version := "v2"
-TSolidBackgroundKey := "+t"
-OnTopKey := "+y"
-CenterKey := "+g"
-TaskbarKey := "+f"
-OptionsKey := "+o"
+Version := "v2.1"
+TSolidBackgroundKey := "+T"
+OnTopKey := "+Y"
+CenterKey := "+G"
+TaskbarKey := "+F"
+OptionsKey := "+O"
 SuspendKey := "F8"
+Hudtext := ""
 Menu, Tray, Icon,,, 1
 Menu, Tray, NoStandard
 Menu, Tray, Add, About TSolidBackground, Abouted
@@ -35,31 +35,34 @@ IfExist, TSolidBackground.ini
 	IniRead, TaskbarKey, TSolidBackground.ini, TSolidBackground Settings, Show Hide Taskbar Key 
 	IniRead, OptionsKey, TSolidBackground.ini, TSolidBackground Settings, Options Key 
 	IniRead, SuspendKey, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
-	Hotkey, %OnTopKey%, +y
-	Hotkey, %CenterKey%, +g
-	Hotkey, %TaskbarKey%, +f
-	Hotkey, %TSolidBackgroundKey%, +t
-	Hotkey, %OptionsKey%, +o
+	Hotkey, %OnTopKey%, +Y
+	Hotkey, %CenterKey%, +G
+	Hotkey, %TaskbarKey%, +F
+	Hotkey, %TSolidBackgroundKey%, +T
+	Hotkey, %OptionsKey%, +O
 	Hotkey, %SuspendKey%, F8
 }
 
-	Gui, start: Font, s12 cBlack bold
+	Gui, start: Color, 292929
+	Gui, start: Font, s14 c836DFF bold
 	Gui, start: Add, Text,, TSolidBackground %Version%
-	Gui, start: Font, s10 cBlack norm
-	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `n`nMore info, Updates, `nAnd to learn how to change hotkeys check out the project page:
-	Gui, start: Font, s10 cBlue underline
+	Gui, start: Font, s10 c836DFF bold
+	Gui, start: Add, Text, x18 y36 , By Onurtag
+	Gui, start: Font, s10 cDCDCCC norm
+	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nTips: Hotkey [+] means [Shift]. `n           [+T] means [Shift + T] and so on.`n           If no hotkeys work on selected window, run TSolidBackground as admin.`n`nMore info, Updates, `nAnd to learn how to change hotkeys check out the project page:
+	Gui, start: Font, s10 c3257BF underline
 	Gui, start: Add, Text,gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
 	Gui, start: Font, s10 cBlack norm
-	Gui, start: Add, Button, x168 y300 w64 h36 , Ok
-	Gui, start: Show, h350 w400, Start TSolidBackground
+	Gui, start: Add, Button, x223 y365 w64 h36 , Ok
+	Gui, start: Show, h415 w510, Start TSolidBackground
 Return
 
-+y::
++Y::
 	WinGet, currentWindow, ID, A
 	WinGetTitle, currentTitle, A
 	addToWinArr(currentWindow)
-	WinGet, ExStyle, ExStyle, ahk_id %currentWindow%
-	if (ExStyle & 0x8) { 
+	WinGet, WindowExStyle, ExStyle, ahk_id %currentWindow%
+	if (WindowExStyle & 0x8) { 
 		Winset, AlwaysOnTop, off, ahk_id %currentWindow%
 		TrayTip, Window [%currentTitle%], Always on top status: OFF
 	}
@@ -69,7 +72,7 @@ Return
 	}
 return
 
-+o::
++O::
 	SplashImage, OFF
 	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 250000 `n`nwww.colorpicker.com `nhtml-color-codes.info `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project bitbucket page: `nbitbucket.org/onurtag/tsolidbackground,, 400, 310,,,,, 250000
 	if ErrorLevel {
@@ -92,7 +95,7 @@ return
 	Reload
 return
 
-+t::
++T::
 	if (firsttime = 1) {
 		Getactivewin()
 		firsttime := 0
@@ -102,7 +105,7 @@ return
 
 	if (toggle = "1") {
 	if (WinExist("A") != Activewin) {	
-		Drawhud()
+		Drawhud("Got a new window for TSolidBackground.")
 		Getactivewin()
 		WinActivate, ahk_id %Activewin%
 	}
@@ -113,7 +116,7 @@ return
 	}
 return
 
-+g::
++G::
 	WinGetPos,,, WWWidth, HHHeight, A
     WinMove, A,, (A_ScreenWidth/2)-(WWWidth/2), (A_ScreenHeight/2)-(HHHeight/2)
 	if (toggle = "1") {
@@ -121,14 +124,32 @@ return
 	}
 return
 
-+f::
-	TBtoggle := !TBtoggle
++F::
+	if (TBtoggle = "") {
+		VarSetCapacity( APPBARDATA, 36, 0 )
+		NumPut( 36, APPBARDATA, 0, "UInt" ) 
+		NumPut( WinExist( "ahk_class Shell_TrayWnd" ), APPBARDATA, 4, "UInt" ) 
+		TBtoggle := 0
+	} 
 
-	if (TBtoggle = "1") {
-		HideTaskbar()
+	if (TBtoggle = 0) {
+		NumPut( ( ABS_ALWAYSONTOP := 0x2 )|( ABS_AUTOHIDE := 0x1 ), APPBARDATA, 32, "UInt" )
+		DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
+		Sleep, 100
+		WinHide, ahk_class Shell_TrayWnd
+		WinHide, Start ahk_class Button
+		TBtoggle = 1
 	} 
 	else {
-		ShowTaskbar()
+		WinShow, ahk_class Shell_TrayWnd
+		WinShow, Start ahk_class Button
+		NumPut( ( ABS_ALWAYSONTOP := 0x2 ), APPBARDATA, 32, "UInt" )
+		DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
+		Sleep, 50
+		WinShow, ahk_class Shell_TrayWnd	;Might as well do these again. They bug a lot.
+		WinShow, Start ahk_class Button
+		DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
+		TBtoggle = 0
 	}
 Return
 
@@ -147,12 +168,12 @@ addToWinArr(chwnd) {
 }
 
 Abouted:
-	Gui, about: Add, Text,, 
-	Gui, about: Font, s14 cBlack
+	Gui, about: Color, 292929
+	Gui, about: Font, s14 c836DFF
 	Gui, about: Add, Text,, TSolidBackground %Version% by Onurtag
-	Gui, about: Font, s10 cBlack
-	Gui, about: Add, Text,, For Readme, Updates and more check out the project page:
-	Gui, about: Font, s10 cBlue underline
+	Gui, about: Font, s10 cDCDCCC
+	Gui, about: Add, Text,, `nFor Readme, Updates and more check out the project page:  
+	Gui, about: Font, s10 c3257BF underline
 	Gui, about: Add, Text, gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
 	Gui, about: Font, s10 cBlack norm
 	Gui, about: Add, Button, x168 y170 w64 h36 , Ok
@@ -174,8 +195,24 @@ DrawBGGui(){
 	bg1FY := wY+Border_Size2+Caption_Size
 	bg2FX := wX+Border_Size
 	bg3SY := wY+HHeight-Border_Size2
-	bg3H := A_ScreenHeight-bg3SY
 	bg4SX := wX+WWidth-Border_Size
+	
+	WinGet, WinExStyle, ExStyle, ahk_id %Activewin%
+	WinGet, WinStyle, Style, ahk_id %Activewin%
+	if (WinExStyle & 0x8) { 
+		Winset, AlwaysOnTop, off, ahk_id %Activewin%
+		WinGetTitle, currentTitle, ahk_id %Activewin%
+		TrayTip, Window [%currentTitle%], Always on top status: OFF
+	}
+
+	if ((WinStyle & 0x40000) = 0) {
+		bg1FY := bg1FY-5
+		bg2FX := bg2FX-5
+		bg3SY := bg3SY+5
+		bg4SX := bg4SX+5
+	}
+	
+	bg3H := A_ScreenHeight-bg3SY
 	bg4W := A_ScreenWidth-bg4SX
 	
 	Gui, +Disabled -Caption +Owner 
@@ -200,12 +237,13 @@ DrawBGGui(){
 	return
 }
 
-Drawhud(){
+Drawhud(Hudtext){
 	Gui, hud: +AlwaysOnTop -Caption +Owner +Border
-	Gui, hud: Font, s11 cRed Bold Verdana
-	Gui, hud: Add, Text,, Got new window for TSolidBackground
+	Gui, hud: Color, 292929
+	Gui, hud: Font, s11 cBF3232 Bold Verdana
+	Gui, hud: Add, Text,, %Hudtext%
 	Gui, hud: Show, NoActivate
-	SetTimer, Deletehud, 1200
+	SetTimer, Deletehud, 1350
 }
 
 Deletehud:
@@ -230,26 +268,6 @@ aboutButtonOk:
 startButtonOk:
 	Gui, Destroy
 return
-
-HideTaskbar(){
-	Global
-	NumPut( ( ABS_AUTOHIDE := 0x1 ), APPBARDATA, 32, "UInt" )
-	DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
-	Sleep, 100
-	WinHide, ahk_class Shell_TrayWnd
-	WinHide, Start ahk_class Button
-	return
-}
-
-ShowTaskbar(){
-	Global
-	NumPut( ( ABS_AUTOHIDE := 0x0 ), APPBARDATA, 32, "UInt" )
-	DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
-	Sleep, 50
-	WinShow, ahk_class Shell_TrayWnd
-	WinShow, Start ahk_class Button
-	return
-}
 
 Reloaded:
 	Reload
