@@ -215,15 +215,15 @@ DrawBGGui(){
 	bg3H := A_ScreenHeight-bg3SY
 	bg4W := A_ScreenWidth-bg4SX
 	
-	Gui, +Disabled -Caption +Owner 
+	Gui, +Disabled -Caption +Owner +ToolWindow
 	Gui, Color, %bgcolor%
-	Gui, bg1: +AlwaysOnTop -Caption +Owner 
+	Gui, bg1: +AlwaysOnTop -Caption +Owner +ToolWindow
 	Gui, bg1: Color, %bgcolor%
-	Gui, bg2: +AlwaysOnTop -Caption +Owner
+	Gui, bg2: +AlwaysOnTop -Caption +Owner +ToolWindow
 	Gui, bg2: Color, %bgcolor%
-	Gui, bg3: +AlwaysOnTop -Caption +Owner
+	Gui, bg3: +AlwaysOnTop -Caption +Owner +ToolWindow
 	Gui, bg3: Color, %bgcolor%
-	Gui, bg4: +AlwaysOnTop -Caption +Owner
+	Gui, bg4: +AlwaysOnTop -Caption +Owner +ToolWindow
 	Gui, bg4: Color, %bgcolor%
 
 	Gui, Show, NoActivate x0 y0 h%A_ScreenHeight% w%A_ScreenWidth%
@@ -238,7 +238,7 @@ DrawBGGui(){
 }
 
 Drawhud(Hudtext){
-	Gui, hud: +AlwaysOnTop -Caption +Owner +Border
+	Gui, hud: +AlwaysOnTop -Caption +Owner +Border +ToolWindow
 	Gui, hud: Color, 292929
 	Gui, hud: Font, s11 cBF3232 Bold Verdana
 	Gui, hud: Add, Text,, %Hudtext%
