@@ -15,7 +15,7 @@ Reading Visual Novels was why I created this but it can also be used in a lot mo
     Shift+O: Options  
     Default Color: 250000  
 
-##[Webm Preview (NEW v2)](http://a.pomf.se/ignexn.webm)  
+##[Webm Preview (NEW v2)](http://a.pomf.se/tkpnrw.webm)  
 
 
 ##[Download latest .exe here](https://bitbucket.org/Onurtag/tsolidbackground/downloads)  
@@ -61,9 +61,9 @@ If you have any problems, let me know. I'll try to fix it.
 
 **Version 2 (29.03.15):**  
 
-TSolidBackground revamp, now the window borders are gone too! (Thanks biggest_decision)  
-Added show/hide taskbar key, removed the command that was included in TSolidBackground key.
-Probably final version unless I go bug hunting or get new feature request.
+TSolidBackground revamp, now the window borders are gone too! (Thanks biggest_decision for the heads up.)  
+Added show/hide taskbar key, removed the command that was included in TSolidBackground key.  
+This is probably the final version unless I go bug hunting or get a new feature request.  
 
 
 **Version 1.1 (22.03.15):**  
