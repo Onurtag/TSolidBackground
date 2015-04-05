@@ -19,7 +19,11 @@ Reading Visual Novels was why I created this but it can also be used in a lot mo
 
 
 ##[Download latest .exe here](https://bitbucket.org/Onurtag/tsolidbackground/downloads)  
-**Current version: v2.1 (29.03.15)**  
+
+**Current Version 2.1.1 (05.04.15):**  
+
+Fixed bug when using with VNR.  
+
 
 Compiled using the latest Ahk2Exe  
 
@@ -59,7 +63,12 @@ If you have any problems, let me know. I'll try to fix it.
 
 
 --------------------  
-##Updates  
+##Updates (DD.MM.YY)  
+
+
+**Version 2.1.1 (05.04.15):**  
+
+Fixed bug when using with VNR.
 
 
 **Version 2.1 (29.03.15):**  

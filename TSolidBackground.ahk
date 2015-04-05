@@ -12,7 +12,7 @@ OnExit, Exited
 bgcolor := 250000 
 firsttime := 1
 ProjectPage := " https://bitbucket.org/Onurtag/tsolidbackground"
-Version := "v2.1"
+Version := "v2.1.1"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -200,9 +200,11 @@ DrawBGGui(){
 	WinGet, WinExStyle, ExStyle, ahk_id %Activewin%
 	WinGet, WinStyle, Style, ahk_id %Activewin%
 	if (WinExStyle & 0x8) { 
-		Winset, AlwaysOnTop, off, ahk_id %Activewin%
 		WinGetTitle, currentTitle, ahk_id %Activewin%
-		TrayTip, Window [%currentTitle%], Always on top status: OFF
+		if (currentTitle != "Kagami") {
+			Winset, AlwaysOnTop, off, ahk_id %Activewin%
+			TrayTip, Window [%currentTitle%], Always on top status: OFF
+		}
 	}
 
 	if ((WinStyle & 0x40000) = 0) {
@@ -215,15 +217,15 @@ DrawBGGui(){
 	bg3H := A_ScreenHeight-bg3SY
 	bg4W := A_ScreenWidth-bg4SX
 	
-	Gui, +Disabled -Caption +Owner +ToolWindow
+	Gui, +Disabled -Caption +ToolWindow
 	Gui, Color, %bgcolor%
-	Gui, bg1: +AlwaysOnTop -Caption +Owner +ToolWindow
+	Gui, bg1: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg1: Color, %bgcolor%
-	Gui, bg2: +AlwaysOnTop -Caption +Owner +ToolWindow
+	Gui, bg2: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg2: Color, %bgcolor%
-	Gui, bg3: +AlwaysOnTop -Caption +Owner +ToolWindow
+	Gui, bg3: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg3: Color, %bgcolor%
-	Gui, bg4: +AlwaysOnTop -Caption +Owner +ToolWindow
+	Gui, bg4: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg4: Color, %bgcolor%
 
 	Gui, Show, NoActivate x0 y0 h%A_ScreenHeight% w%A_ScreenWidth%
@@ -238,7 +240,7 @@ DrawBGGui(){
 }
 
 Drawhud(Hudtext){
-	Gui, hud: +AlwaysOnTop -Caption +Owner +Border +ToolWindow
+	Gui, hud: +AlwaysOnTop -Caption +Border +ToolWindow
 	Gui, hud: Color, 292929
 	Gui, hud: Font, s11 cBF3232 Bold Verdana
 	Gui, hud: Add, Text,, %Hudtext%
