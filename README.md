@@ -1,4 +1,3 @@
-
 # **TSolidBackground**  
 ------------------  
 
@@ -53,6 +52,8 @@ Compiled using the latest Ahk2Exe
 * TSolidBackground will disable Always On Top if the selected window is Always On Top.  
 You can use the Always On Top hotkey afterwards if you really want the window on top.  
 
+* Hiding taskbar sometimes might not work right away, try a few times.  
+
 
 * Explorer.exe might crash and restart if you spam the hotkeys too much. (Especially Show Hide taskbar key)  
 
@@ -92,5 +93,4 @@ Fixed timing issues with slower PC.
 Fixed the bug where the window sometimes went background when using TSolidBackground  
 Added tray menu: Reload, About  
 Added opening popup with hotkey information.  
-Added Suspend hotkeys and Center window functions  
-
+Added Suspend hotkeys and Center window functions
