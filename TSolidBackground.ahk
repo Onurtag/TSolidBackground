@@ -5,6 +5,7 @@ TSolidBackground
 By Onurtag
 https://bitbucket.org/Onurtag/tsolidbackground/
 
+If you have any suggestions, feel free to contact me.
 */
 
 winArr := Object()
@@ -49,7 +50,7 @@ IfExist, TSolidBackground.ini
 	Gui, start: Font, s10 c836DFF bold
 	Gui, start: Add, Text, x18 y36 , By Onurtag
 	Gui, start: Font, s10 cDCDCCC norm
-	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nTips: Hotkey [+] means [Shift]. `n           [+T] means [Shift + T] and so on.`n           If no hotkeys work on selected window, run TSolidBackground as admin.`n`nMore info, Updates, `nAnd to learn how to change hotkeys check out the project page:
+	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nTips: Hotkey [+] means [Shift]. `n           [+T] means [Shift + T] and so on.`n           If no hotkeys work on selected window, run TSolidBackground as admin.`n`nMore info, updates, `nAnd to learn how to change hotkeys check out the project page:
 	Gui, start: Font, s10 c3257BF underline
 	Gui, start: Add, Text,gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
 	Gui, start: Font, s10 cBlack norm
@@ -70,13 +71,13 @@ Return
 		WinSet, AlwaysOnTop, on, ahk_id %currentWindow%
 		TrayTip, Window [%currentTitle%], Always on top status: ON
 	}
-return
+Return
 
 +O::
 	SplashImage, OFF
 	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 250000 `n`nwww.colorpicker.com `nhtml-color-codes.info `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project bitbucket page: `nbitbucket.org/onurtag/tsolidbackground,, 400, 310,,,,, 250000
 	if ErrorLevel {
-		return
+		Return
 	}
 	if (bgcolor = "") {
 		bgcolor := 250000 
@@ -93,7 +94,7 @@ return
 	IniWrite, %OptionsKey%, TSolidBackground.ini, TSolidBackground Settings, Options Key 
 	IniWrite, %SuspendKey%, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
 	Reload
-return
+Return
 
 +T::
 	if (firsttime = 1) {
@@ -114,7 +115,7 @@ return
 	else {
 		DestroyBGGui()
 	}
-return
+Return
 
 +G::
 	WinGetPos,,, WWWidth, HHHeight, A
@@ -122,7 +123,7 @@ return
 	if (toggle = "1") {
 		DrawBGGui()
 	}
-return
+Return
 
 +F::
 	if (TBtoggle = "") {
@@ -138,18 +139,21 @@ return
 		Sleep, 100
 		WinHide, ahk_class Shell_TrayWnd
 		WinHide, Start ahk_class Button
-		TBtoggle = 1
+		Sleep, 500
+		WinHide, ahk_class Shell_TrayWnd	;Might as well do these again. They bug a lot.
+		WinHide, Start ahk_class Button
+		TBtoggle := 1
 	} 
 	else {
 		WinShow, ahk_class Shell_TrayWnd
 		WinShow, Start ahk_class Button
 		NumPut( ( ABS_ALWAYSONTOP := 0x2 ), APPBARDATA, 32, "UInt" )
 		DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
-		Sleep, 50
+		Sleep, 100
 		WinShow, ahk_class Shell_TrayWnd	;Might as well do these again. They bug a lot.
 		WinShow, Start ahk_class Button
 		DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
-		TBtoggle = 0
+		TBtoggle := 0
 	}
 Return
 
@@ -159,7 +163,7 @@ F8::
 		Traytip, TSolidBackground, Suspended all other hotkeys. `nTo enable hotkeys press %SuspendKey%
 	else
 		Traytip, TSolidBackground, Enabled all hotkeys.
-return
+Return
 
 addToWinArr(chwnd) {
         global winArr
@@ -172,7 +176,7 @@ Abouted:
 	Gui, about: Font, s14 c836DFF
 	Gui, about: Add, Text,, TSolidBackground %Version% by Onurtag
 	Gui, about: Font, s10 cDCDCCC
-	Gui, about: Add, Text,, `nFor Readme, Updates and more check out the project page:  
+	Gui, about: Add, Text,, `nFor Readme, updates and more check out the project page:  
 	Gui, about: Font, s10 c3257BF underline
 	Gui, about: Add, Text, gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
 	Gui, about: Font, s10 cBlack norm
@@ -183,7 +187,7 @@ Return
 Getactivewin(){
 	Global
 	Activewin := WinExist("A")
-	return
+	Return
 }
 
 DrawBGGui(){
@@ -201,13 +205,13 @@ DrawBGGui(){
 	WinGet, WinStyle, Style, ahk_id %Activewin%
 	if (WinExStyle & 0x8) { 
 		WinGetTitle, currentTitle, ahk_id %Activewin%
-		if (currentTitle != "Kagami") {
+		if (currentTitle != "Kagami") {		;VNR fix.
 			Winset, AlwaysOnTop, off, ahk_id %Activewin%
 			TrayTip, Window [%currentTitle%], Always on top status: OFF
 		}
 	}
 
-	if ((WinStyle & 0x40000) = 0) {
+	if ((WinStyle & 0x40000) = 0) {		;Unresizable window fix
 		bg1FY := bg1FY-5
 		bg2FX := bg2FX-5
 		bg3SY := bg3SY+5
@@ -227,8 +231,7 @@ DrawBGGui(){
 	Gui, bg3: Color, %bgcolor%
 	Gui, bg4: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg4: Color, %bgcolor%
-
-	Gui, Show, NoActivate x0 y0 h%A_ScreenHeight% w%A_ScreenWidth%
+	Gui, Show, NoActivate x0 y0 h%A_ScreenHeight% w%A_ScreenWidth%		;To hide the fact that I am using 4 GUIs
 	Winset, Top,, ahk_id %Activewin%
 	Gui, bg3: Show, NoActivate x0 y%bg3SY% h%bg3H% w%A_ScreenWidth%, TSolidBackground
 	Gui, bg2: Show, NoActivate x0 y0 h%A_ScreenHeight% w%bg2FX%, TSolidBackground
@@ -236,7 +239,7 @@ DrawBGGui(){
 	Gui, bg1: Show, NoActivate x0 y0 h%bg1FY% w%A_ScreenWidth%, TSolidBackground
 	Sleep, 10
 	Gui, Destroy
-	return
+	Return
 }
 
 Drawhud(Hudtext){
@@ -246,12 +249,13 @@ Drawhud(Hudtext){
 	Gui, hud: Add, Text,, %Hudtext%
 	Gui, hud: Show, NoActivate
 	SetTimer, Deletehud, 1350
+	Return
 }
 
 Deletehud:
 	SetTimer, Deletehud, Off
 	Gui, hud: Destroy
-Return
+	Return
 
 DestroyBGGui(){
 	Gui, bg1: Destroy
@@ -259,17 +263,17 @@ DestroyBGGui(){
 	Gui, bg3: Destroy
 	Gui, bg4: Destroy
 	Gui, Destroy
-	return
+	Return
 }
 
 GotoSite:
 	Run, %A_GuiControl%
-Return
+	Return
 
 aboutButtonOk:
 startButtonOk:
 	Gui, Destroy
-return
+	Return
 
 Reloaded:
 	Reload
