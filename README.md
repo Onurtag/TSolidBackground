@@ -14,7 +14,7 @@ Reading Visual Novels was why I created this but it can also be used in a lot mo
     Shift+O: Options  
     Default Color: 250000  
 
-##[Webm Preview (NEW v2)](http://a.pomf.se/tkpnrw.webm)  
+##[Webm Preview (NEW v2)](http://a.1339.cf/jpqrbo.webm)  
 
 
 ##[Download latest .exe here](https://bitbucket.org/Onurtag/tsolidbackground/downloads)  
