@@ -9,6 +9,7 @@ Reading Visual Novels was why I created this but it can also be used in a lot mo
     Shift+T: TSolidBackground key
     Shift+Y: Make window always on top  
     Shift+G: Center Window  
+    Shift+Up Arrow: Resize Window   
     Shift+F: Show/Hide taskbar
     F8: Suspend Hotkeys  
     Shift+O: Options  
@@ -19,7 +20,7 @@ Reading Visual Novels was why I created this but it can also be used in a lot mo
 
 ##[Download latest .exe here](https://bitbucket.org/Onurtag/tsolidbackground/downloads)  
 
-**Current Version 2.1.1 (05.04.15):**  
+**Current Version 2.1.2 (26.07.15):**  
 
 Fixed bug when using with VNR.  
 
@@ -65,6 +66,11 @@ If you have any problems, let me know. I'll try to fix it.
 
 --------------------  
 ##Updates (DD.MM.YY)  
+
+
+**Version 2.1.2 (26.07.15):**  
+
+Added resize window function.
 
 
 **Version 2.1.1 (05.04.15):**  

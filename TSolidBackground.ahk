@@ -13,12 +13,13 @@ OnExit, Exited
 bgcolor := 250000 
 firsttime := 1
 ProjectPage := " https://bitbucket.org/Onurtag/tsolidbackground"
-Version := "v2.1.1"
+Version := "v2.1.2"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
 TaskbarKey := "+F"
 OptionsKey := "+O"
+ResizeKey := "+Up"
 SuspendKey := "F8"
 Hudtext := ""
 Menu, Tray, Icon,,, 1
@@ -35,12 +36,14 @@ IfExist, TSolidBackground.ini
 	IniRead, CenterKey, TSolidBackground.ini, TSolidBackground Settings, Center Window Key 
 	IniRead, TaskbarKey, TSolidBackground.ini, TSolidBackground Settings, Show Hide Taskbar Key 
 	IniRead, OptionsKey, TSolidBackground.ini, TSolidBackground Settings, Options Key 
+	IniRead, ResizeKey, TSolidBackground.ini, TSolidBackground Settings, Resize Key 
 	IniRead, SuspendKey, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
 	Hotkey, %OnTopKey%, +Y
 	Hotkey, %CenterKey%, +G
 	Hotkey, %TaskbarKey%, +F
 	Hotkey, %TSolidBackgroundKey%, +T
 	Hotkey, %OptionsKey%, +O
+	Hotkey, %ResizeKey%, +Up
 	Hotkey, %SuspendKey%, F8
 }
 
@@ -50,11 +53,11 @@ IfExist, TSolidBackground.ini
 	Gui, start: Font, s10 c836DFF bold
 	Gui, start: Add, Text, x18 y36 , By Onurtag
 	Gui, start: Font, s10 cDCDCCC norm
-	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nTips: Hotkey [+] means [Shift]. `n           [+T] means [Shift + T] and so on.`n           If no hotkeys work on selected window, run TSolidBackground as admin.`n`nMore info, updates, `nAnd to learn how to change hotkeys check out the project page:
+	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize Window: %ResizeKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nTips: Hotkey [+] means [Shift]. `n           [+T] means [Shift + T] and so on.`n           If no hotkeys work on selected window, run TSolidBackground as admin.`n`nMore info, updates, `nAnd to learn how to change hotkeys check out the project page:
 	Gui, start: Font, s10 c3257BF underline
-	Gui, start: Add, Text,gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
+	Gui, start: Add, Text, x18 gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
 	Gui, start: Font, s10 cBlack norm
-	Gui, start: Add, Button, x223 y365 w64 h36 , Ok
+	Gui, start: Add, Button, x223 y372 w64 h36 , Ok
 	Gui, start: Show, h415 w510, Start TSolidBackground
 Return
 
@@ -92,13 +95,14 @@ Return
 	IniWrite, %CenterKey%, TSolidBackground.ini, TSolidBackground Settings, Center Window Key 
 	IniWrite, %TaskbarKey%, TSolidBackground.ini, TSolidBackground Settings, Show Hide Taskbar Key 
 	IniWrite, %OptionsKey%, TSolidBackground.ini, TSolidBackground Settings, Options Key 
+	IniWrite, %ResizeKey%, TSolidBackground.ini, TSolidBackground Settings, Resize Key 
 	IniWrite, %SuspendKey%, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
 	Reload
 Return
 
 +T::
 	if (firsttime = 1) {
-		Getactivewin()
+		Activewin := WinExist("A")
 		firsttime := 0
 	}
 
@@ -107,8 +111,7 @@ Return
 	if (toggle = "1") {
 	if (WinExist("A") != Activewin) {	
 		Drawhud("Got a new window for TSolidBackground.")
-		Getactivewin()
-		WinActivate, ahk_id %Activewin%
+		Activewin := WinExist("A")
 	}
 		DrawBGGui()
 	} 
@@ -157,6 +160,40 @@ Return
 	}
 Return
 
++Up::
+	Gui, resize: Destroy
+	if (WinExist("A") != TBResized) {	
+		Drawhud("Got a new window to resize.")
+		TBResized := WinExist("A")
+		WinGetPos,X,Y,W,H,ahk_id %TBResized%
+		Worig := W
+		Horig := H
+	}
+	WinGetPos,X,Y,Wnew,Hnew,ahk_id %TBResized%
+	Wresized := Wnew
+	Hresized := Hnew
+	Gui, resize: Destroy
+	Gui, resize: Color, 292929
+	Gui, resize: Font, s10 cDCDCCC norm
+	Gui, resize: Add,Button,x130 y210 w50 h23 gResizenow,Resize
+	Gui, resize: Add,Button,x220 y210 w50 h23,Cancel
+	Gui, resize: Add,Text,x60 y50 h13,Original:
+	Gui, resize: Add,Text,x60 y30 h13,Current:
+	Gui, resize: Add,Text,x60 y70 h13,For 1280 W:
+	Gui, resize: Add,Text,x60 y144,New Width:
+	Gui, resize: Add,Text,x60 y164,New Height:
+	Gui, resize: Font, s10 c836DFF norm
+	Gui, resize: Add,Text,x150 y50 h13,W: %Worig%,  H: %Horig%
+	Gui, resize: Add,Text,x150 y30 h13,W: %Wnew%,  H: %Hnew%
+	for1280w := Round(1280/(Worig/Horig))
+	Gui, resize: Add,Text,x150 y70 h13,H: %for1280w%
+	Gui, resize: Font, s10 c836DFF bold
+	Gui, resize: Add,Edit,x140 y162 w70 h19 vHresized,%for1280w%
+	Gui, resize: Add,Edit,x140 y142 w70 h19 vWresized,1280
+	Gui, resize: Show,w400 h250 , Resize Window
+Return
+
+
 F8::
 	Suspend
 	if A_IsSuspended 
@@ -184,11 +221,6 @@ Abouted:
 	Gui, about: Show, h225 w400, About TSolidBackground
 Return
 
-Getactivewin(){
-	Global
-	Activewin := WinExist("A")
-	Return
-}
 
 DrawBGGui(){
 	Global
@@ -268,16 +300,22 @@ DestroyBGGui(){
 
 GotoSite:
 	Run, %A_GuiControl%
-	Return
+Return
 
 aboutButtonOk:
 startButtonOk:
+resizeButtonCancel:
 	Gui, Destroy
-	Return
+Return
+
+Resizenow:
+	Gui, Submit
+	WinMove,ahk_id %TBResized%,,,,%Wresized%,%Hresized%
+Return	
 
 Reloaded:
 	Reload
-	Return
+Return
 
 Exited:
 	for currentWindow, b in winArr {
