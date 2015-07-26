@@ -22,10 +22,11 @@ Reading Visual Novels was why I created this but it can also be used in a lot mo
 
 **Current Version 2.1.2 (26.07.15):**  
 
-Fixed bug when using with VNR.  
+Added resize window function.
 
 
-Compiled using the latest Ahk2Exe  
+
+Compiled using latest Ahk2Exe  
 
 --------------------  
 ## Things To Know  
@@ -66,6 +67,9 @@ If you have any problems, let me know. I'll try to fix it.
 
 --------------------  
 ##Updates (DD.MM.YY)  
+
+Don't forget to delete your TSolidBackground.ini and let it create again  
+if you want to change the keybind of a new feature.
 
 
 **Version 2.1.2 (26.07.15):**  
