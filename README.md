@@ -1,8 +1,8 @@
 # **TSolidBackground**  
 ------------------  
 
-TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders.  
-Reading Visual Novels was why I created this but it can also be used in a lot more ways. (Well I put in a lot of extra features after all)  
+TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders. Mimics fullscreen for any window in a different saying.  
+Reading Visual Novels more comfortably was why I created this but it can also be used in a lot more ways. (Well I put in a lot of extra features after all)  
 
 
     Default Hotkeys (can be changed in .ini):  
