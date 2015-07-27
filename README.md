@@ -28,10 +28,9 @@ Reading Visual Novels more comfortably was why I created this but it can also be
 Compiled using latest Ahk2Exe  
 
 
-**Current Version 2.1.3 (27.07.15):**  
+**Current Version 2.1.4 (27.07.15):**  
 
-Removed useless info.  
-Now less casual.  
+Added window client area to resizer
 
 
 --------------------  
@@ -73,6 +72,11 @@ If you have any problems, let me know. I'll try to fix it.
 ##Updates (DD.MM.YY)  
 
 Don't forget to delete your TSolidBackground.ini and let it create again if you want to change the keybind of a newly added feature.
+
+
+**Current Version 2.1.4 (27.07.15):**  
+
+Added window client area to resizer
 
 
 **Current Version 2.1.3 (27.07.15):**  

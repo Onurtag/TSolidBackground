@@ -13,7 +13,7 @@ OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
 ProjectPage := " https://bitbucket.org/Onurtag/tsolidbackground"
-Version := "v2.1.3"
+Version := "v2.1.4"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -58,7 +58,7 @@ IfExist, TSolidBackground.ini
 	Gui, start: Add, Text, x18 gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
 	Gui, start: Font, s10 cBlack norm
 	Gui, start: Add, Button, x223 y335 w64 h36 , Ok
-	Gui, start: Show, h380 w510, Start TSolidBackground
+	Gui, start: Show, h385 w510, Start TSolidBackground
 Return
 
 +Y::
@@ -170,26 +170,33 @@ Return
 		Horig := H
 	}
 	WinGetPos,X,Y,Wnew,Hnew,ahk_id %TBResized%
-	Wresized := Wnew
-	Hresized := Hnew
+	SysGet, Border_Size, 32
+	SysGet, Border_Size2, 33
+	SysGet, Caption_Size, 4
+	Hclient := Hnew - 2*Border_Size2 - Caption_Size
+	Wclient := Wnew - 2*Border_Size
 	Gui, resize: Destroy
 	Gui, resize: Color, 292929
 	Gui, resize: Font, s10 cDCDCCC norm
 	Gui, resize: Add,Button,x130 y210 w50 h23 gResizenow,Resize
 	Gui, resize: Add,Button,x220 y210 w50 h23,Cancel
-	Gui, resize: Add,Text,x60 y50 h13,Original:
-	Gui, resize: Add,Text,x60 y30 h13,Current:
-	Gui, resize: Add,Text,x60 y70 h13,For 1280 W:
+	Gui, resize: Add,Text,x60 y30 h13,Original:
+	Gui, resize: Add,Text,x60 y50 h13,Current:
+	Gui, resize: Add,Text,x60 y70 h13,Client area:
+	Gui, resize: Add,Text,x60 y90 h13,HD Client:
 	Gui, resize: Add,Text,x60 y144,New Width:
 	Gui, resize: Add,Text,x60 y164,New Height:
 	Gui, resize: Font, s10 c836DFF norm
-	Gui, resize: Add,Text,x150 y50 h13,W: %Worig%,  H: %Horig%
-	Gui, resize: Add,Text,x150 y30 h13,W: %Wnew%,  H: %Hnew%
-	for1280w := Round(1280/(Worig/Horig))
-	Gui, resize: Add,Text,x150 y70 h13,H: %for1280w%
+	Gui, resize: Add,Text,x150 y30 h13,W: %Worig%,  H: %Horig%
+	Gui, resize: Add,Text,x150 y50 h13,W: %Wnew%,  H: %Hnew%
+	Gui, resize: Add,Text,x150 y70 h13,W: %Wclient%,  H: %Hclient%
+	for1280w := Round(1280/(Wclient/Hclient))
+	editdefH := for1280w + 2*Border_Size2 + Caption_Size
+	editdefW := 1280 + 2*Border_Size
+	Gui, resize: Add,Text,x150 y90 h13,W: %editdefW%,  H: %editdefH%
 	Gui, resize: Font, s10 c836DFF bold
-	Gui, resize: Add,Edit,x140 y162 w70 h19 vHresized,%for1280w%
-	Gui, resize: Add,Edit,x140 y142 w70 h19 vWresized,1280
+	Gui, resize: Add,Edit,x140 y162 w70 h19 vHnew,%editdefH%
+	Gui, resize: Add,Edit,x140 y142 w70 h19 vWnew,%editdefW%
 	Gui, resize: Show,w400 h250 , Resize Window
 Return
 
@@ -201,6 +208,12 @@ F8::
 	else
 		Traytip, TSolidBackground, Enabled all hotkeys.
 Return
+
+/*
+F11::
+	ListVars
+Return
+*/
 
 addToWinArr(chwnd) {
         global winArr
@@ -244,10 +257,10 @@ DrawBGGui(){
 	}
 
 	if ((WinStyle & 0x40000) = 0) {		;Unresizable window fix
-		bg1FY := bg1FY-5
-		bg2FX := bg2FX-5
-		bg3SY := bg3SY+5
-		bg4SX := bg4SX+5
+		bg1FY -= 5
+		bg2FX -= 5
+		bg3SY += 5
+		bg4SX += 5
 	}
 	
 	bg3H := A_ScreenHeight-bg3SY
@@ -310,7 +323,7 @@ Return
 
 Resizenow:
 	Gui, Submit
-	WinMove,ahk_id %TBResized%,,,,%Wresized%,%Hresized%
+	WinMove,ahk_id %TBResized%,,,,%Wnew%,%Hnew%
 Return	
 
 Reloaded:
