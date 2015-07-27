@@ -5,15 +5,15 @@ TSolidBackground
 By Onurtag
 https://bitbucket.org/Onurtag/tsolidbackground/
 
-If you have any suggestions, feel free to contact me.
+If you have any good suggestions, feel free to contact me.
 */
 
 winArr := Object()
 OnExit, Exited
-bgcolor := 250000 
+bgcolor := 051523 
 firsttime := 1
 ProjectPage := " https://bitbucket.org/Onurtag/tsolidbackground"
-Version := "v2.1.2"
+Version := "v2.1.3"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -53,12 +53,12 @@ IfExist, TSolidBackground.ini
 	Gui, start: Font, s10 c836DFF bold
 	Gui, start: Add, Text, x18 y36 , By Onurtag
 	Gui, start: Font, s10 cDCDCCC norm
-	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize Window: %ResizeKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nTips: Hotkey [+] means [Shift]. `n           [+T] means [Shift + T] and so on.`n           If no hotkeys work on selected window, run TSolidBackground as admin.`n`nMore info, updates, `nAnd to learn how to change hotkeys check out the project page:
+	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize Window: %ResizeKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nFor more info and updates check out the project page: `n(or maybe you want to change hotkeys and know nothing)
 	Gui, start: Font, s10 c3257BF underline
 	Gui, start: Add, Text, x18 gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
 	Gui, start: Font, s10 cBlack norm
-	Gui, start: Add, Button, x223 y372 w64 h36 , Ok
-	Gui, start: Show, h415 w510, Start TSolidBackground
+	Gui, start: Add, Button, x223 y335 w64 h36 , Ok
+	Gui, start: Show, h380 w510, Start TSolidBackground
 Return
 
 +Y::
@@ -78,12 +78,12 @@ Return
 
 +O::
 	SplashImage, OFF
-	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 250000 `n`nwww.colorpicker.com `nhtml-color-codes.info `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project bitbucket page: `nbitbucket.org/onurtag/tsolidbackground,, 400, 310,,,,, 250000
+	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 051523 `nA safer color suggested for casualfags is '250000'. `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project bitbucket page: `nbitbucket.org/Onurtag/tsolidbackground,, 400, 270,,,,, 051523
 	if ErrorLevel {
 		Return
 	}
 	if (bgcolor = "") {
-		bgcolor := 250000 
+		bgcolor := 051523 
 	}
 	IfNotExist, TSolidBackground.ini 
 	{
@@ -213,7 +213,7 @@ Abouted:
 	Gui, about: Font, s14 c836DFF
 	Gui, about: Add, Text,, TSolidBackground %Version% by Onurtag
 	Gui, about: Font, s10 cDCDCCC
-	Gui, about: Add, Text,, `nFor Readme, updates and more check out the project page:  
+	Gui, about: Add, Text,, `nFor readme, updates and more check out the project page:  
 	Gui, about: Font, s10 c3257BF underline
 	Gui, about: Add, Text, gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
 	Gui, about: Font, s10 cBlack norm

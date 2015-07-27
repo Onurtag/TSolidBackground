@@ -17,7 +17,7 @@ Reading Visual Novels more comfortably was why I created this but it can also be
     Shift+O: Options  
     Default Color: 250000  
 	
-*Don't forget to delete your TSolidBackground.ini and let it create again if you want to change the keybind of a newly added feature.*  
+*Don't forget to delete your TSolidBackground.ini and let it make a new one if you want to change the keybind of a newly added feature.*  
 
 
 ##[Webm Preview (NEW v2)](http://a.1339.cf/jpqrbo.webm)  
@@ -25,13 +25,14 @@ Reading Visual Novels more comfortably was why I created this but it can also be
 
 ##[Download latest .exe here](https://bitbucket.org/Onurtag/tsolidbackground/downloads)  
 
-**Current Version 2.1.2 (26.07.15):**  
-
-Added resize window function.  
-
-
-
 Compiled using latest Ahk2Exe  
+
+
+**Current Version 2.1.3 (27.07.15):**  
+
+Removed useless info.  
+Now less casual.  
+
 
 --------------------  
 ## Things To Know  
@@ -50,8 +51,6 @@ Compiled using latest Ahk2Exe
     
 * Always On Top mode can be used for multiple windows at the same time  
 
-* [Also this exists for some.](http://i.imgur.com/DbSYoZC.png) You might not need to use TSolidBackground if this works for you. (Thanks demeteloaf)  
-  [For Nvidia users](http://i.imgur.com/S1oysho.png)  
 
 --------------------  
 **Known Bugs:**  
@@ -59,7 +58,7 @@ Compiled using latest Ahk2Exe
 * TSolidBackground will disable Always On Top if the selected window is Always On Top.  
 You can use the Always On Top hotkey afterwards if you really want the window on top.  
 
-* Hiding taskbar sometimes might not work right away, try a few times.  
+* Hiding taskbar sometimes might not work right away, try it again.  
 
 
 * Explorer.exe might crash and restart if you spam the hotkeys too much. (Especially Show Hide taskbar key)  
@@ -74,6 +73,12 @@ If you have any problems, let me know. I'll try to fix it.
 ##Updates (DD.MM.YY)  
 
 Don't forget to delete your TSolidBackground.ini and let it create again if you want to change the keybind of a newly added feature.
+
+
+**Current Version 2.1.3 (27.07.15):**  
+
+Removed useless info.  
+Now less casual.  
 
 
 **Version 2.1.2 (26.07.15):**  
