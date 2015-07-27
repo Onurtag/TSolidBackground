@@ -1,19 +1,24 @@
 # **TSolidBackground**  
 ------------------  
 
-TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders. Mimics fullscreen for any window in a different saying.  
-Reading Visual Novels more comfortably was why I created this but it can also be used in a lot more ways. (Well I put in a lot of extra features after all)  
+TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders. 
+In a different saying, it mimics fullscreen for any window.  
+
+Reading Visual Novels more comfortably was why I created this but it can also be used in a lot more ways.  
 
 
     Default Hotkeys (can be changed in .ini):  
     Shift+T: TSolidBackground key
     Shift+Y: Make window always on top  
     Shift+G: Center Window  
-    Shift+Up Arrow: Resize Window   
+    Shift+U Arrow: Resize Window   
     Shift+F: Show/Hide taskbar
     F8: Suspend Hotkeys  
     Shift+O: Options  
     Default Color: 250000  
+	
+*Don't forget to delete your TSolidBackground.ini and let it create again if you want to change the keybind of a newly added feature.*  
+
 
 ##[Webm Preview (NEW v2)](http://a.1339.cf/jpqrbo.webm)  
 
@@ -22,7 +27,7 @@ Reading Visual Novels more comfortably was why I created this but it can also be
 
 **Current Version 2.1.2 (26.07.15):**  
 
-Added resize window function.
+Added resize window function.  
 
 
 
@@ -68,8 +73,7 @@ If you have any problems, let me know. I'll try to fix it.
 --------------------  
 ##Updates (DD.MM.YY)  
 
-Don't forget to delete your TSolidBackground.ini and let it create again  
-if you want to change the keybind of a new feature.
+Don't forget to delete your TSolidBackground.ini and let it create again if you want to change the keybind of a newly added feature.
 
 
 **Version 2.1.2 (26.07.15):**  

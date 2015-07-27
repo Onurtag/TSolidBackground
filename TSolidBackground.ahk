@@ -19,7 +19,7 @@ OnTopKey := "+Y"
 CenterKey := "+G"
 TaskbarKey := "+F"
 OptionsKey := "+O"
-ResizeKey := "+Up"
+ResizeKey := "+U"
 SuspendKey := "F8"
 Hudtext := ""
 Menu, Tray, Icon,,, 1
@@ -43,7 +43,7 @@ IfExist, TSolidBackground.ini
 	Hotkey, %TaskbarKey%, +F
 	Hotkey, %TSolidBackgroundKey%, +T
 	Hotkey, %OptionsKey%, +O
-	Hotkey, %ResizeKey%, +Up
+	Hotkey, %ResizeKey%, +U
 	Hotkey, %SuspendKey%, F8
 }
 
@@ -160,7 +160,7 @@ Return
 	}
 Return
 
-+Up::
++U::
 	Gui, resize: Destroy
 	if (WinExist("A") != TBResized) {	
 		Drawhud("Got a new window to resize.")
