@@ -26,7 +26,8 @@ At first I made it to better immerse in Visual Novels and later added more featu
 
 Added features to Move/Resize. (Shift+U)
 	
-*Do not forget to generate a new TSolidBackground.ini and  if you are updating.*  
+*Do not forget to generate a new TSolidBackground.ini if you are updating.*  
+
 --------------------  
 ## Things To Know  
 
@@ -54,7 +55,7 @@ If you have any problems, let me know. I'll try to fix it.
 --------------------  
 ##Updates (DD.MM.YY)  
 
-*Do not forget to generate a new TSolidBackground.ini and  if you are updating.* 
+*Do not forget to generate a new TSolidBackground.ini if you are updating.* 
 
 * **Version 2.2.0 (27.07.15):**  
 
