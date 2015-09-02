@@ -3,7 +3,7 @@
 /*
 TSolidBackground
 By Onurtag
-https://bitbucket.org/Onurtag/tsolidbackground/
+https://github.com/Onurtag/TSolidBackground
 
 If you have any good suggestions, feel free to contact me.
 */
@@ -12,8 +12,8 @@ winArr := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-ProjectPage := " https://bitbucket.org/Onurtag/tsolidbackground"
-Version := "v2.1.4"
+ProjectPage := " https://github.com/Onurtag/TSolidBackground"
+Version := "v2.2.0"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -53,9 +53,9 @@ IfExist, TSolidBackground.ini
 	Gui, start: Font, s10 c836DFF bold
 	Gui, start: Add, Text, x18 y36 , By Onurtag
 	Gui, start: Font, s10 cDCDCCC norm
-	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize Window: %ResizeKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nFor more info and updates check out the project page: `n(or maybe you want to change hotkeys and know nothing)
+	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize and Move Window: %ResizeKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nFor more info and updates check out the project page: `n(or maybe you want to change hotkeys and know nothing)
 	Gui, start: Font, s10 c3257BF underline
-	Gui, start: Add, Text, x18 gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
+	Gui, start: Add, Text, x18 gGotoSite, https://github.com/Onurtag/TSolidBackground
 	Gui, start: Font, s10 cBlack norm
 	Gui, start: Add, Button, x223 y335 w64 h36 , Ok
 	Gui, start: Show, h385 w510, Start TSolidBackground
@@ -78,7 +78,7 @@ Return
 
 +O::
 	SplashImage, OFF
-	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 051523 `nA safer color suggested for casualfags is '250000'. `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project bitbucket page: `nbitbucket.org/Onurtag/tsolidbackground,, 400, 270,,,,, 051523
+	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 051523 `nA safer color suggested for casualfags is '250000'. `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project page: `ngithub.com/Onurtag/TSolidBackground,, 400, 270,,,,, 051523
 	if ErrorLevel {
 		Return
 	}
@@ -95,7 +95,7 @@ Return
 	IniWrite, %CenterKey%, TSolidBackground.ini, TSolidBackground Settings, Center Window Key 
 	IniWrite, %TaskbarKey%, TSolidBackground.ini, TSolidBackground Settings, Show Hide Taskbar Key 
 	IniWrite, %OptionsKey%, TSolidBackground.ini, TSolidBackground Settings, Options Key 
-	IniWrite, %ResizeKey%, TSolidBackground.ini, TSolidBackground Settings, Resize Key 
+	IniWrite, %ResizeKey%, TSolidBackground.ini, TSolidBackground Settings, Move/resize Key 
 	IniWrite, %SuspendKey%, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
 	Reload
 Return
@@ -113,18 +113,18 @@ Return
 		Drawhud("Got a new window for TSolidBackground.")
 		Activewin := WinExist("A")
 	}
-		DrawBGGui()
+		TSolidBackground()
 	} 
 	else {
-		DestroyBGGui()
+		DestroyTSolidBackground()
 	}
 Return
 
 +G::
 	WinGetPos,,, WWWidth, HHHeight, A
-    WinMove, A,, (A_ScreenWidth/2)-(WWWidth/2), (A_ScreenHeight/2)-(HHHeight/2)
+    WinMove, A,, (A_ScreenWidth/2)-(WWWidth/2), (A_ScreenHeight/2)-(HHHeight/2)-12		;For new Win10 borders.
 	if (toggle = "1") {
-		DrawBGGui()
+		TSolidBackground()
 	}
 Return
 
@@ -163,43 +163,70 @@ Return
 +U::
 	Gui, resize: Destroy
 	if (WinExist("A") != TBResized) {	
-		Drawhud("Got a new window to resize.")
+		Drawhud("Got a new window to move/resize.")
 		TBResized := WinExist("A")
 		WinGetPos,X,Y,W,H,ahk_id %TBResized%
 		Worig := W
 		Horig := H
+		Xorig := X
+		Yorig := Y
 	}
-	WinGetPos,X,Y,Wnew,Hnew,ahk_id %TBResized%
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
 	SysGet, Border_Size, 32
 	SysGet, Border_Size2, 33
 	SysGet, Caption_Size, 4
-	Hclient := Hnew - 2*Border_Size2 - Caption_Size
-	Wclient := Wnew - 2*Border_Size
-	Gui, resize: Destroy
+	Wnew := Wofwin
+	Hnew := Hofwin
+	Xnew := Xofwin
+	Ynew := Yofwin
+	Hclient := Hofwin - 2*Border_Size2 - Caption_Size
+	Wclient := Wofwin - 2*Border_Size
+	Gui, resize: +AlwaysOnTop
+	Gui, resize: Font, s14 c836DFF bold
+	Gui, resize: Add,Text,x90 y20 h13,Resize Window
+	Gui, resize: Add,Text,x350 y20 h13,Move Window
 	Gui, resize: Color, 292929
 	Gui, resize: Font, s10 cDCDCCC norm
-	Gui, resize: Add,Button,x130 y210 w50 h23 gResizenow,Resize
-	Gui, resize: Add,Button,x220 y210 w50 h23,Cancel
-	Gui, resize: Add,Text,x60 y30 h13,Original:
-	Gui, resize: Add,Text,x60 y50 h13,Current:
-	Gui, resize: Add,Text,x60 y70 h13,Client area:
-	Gui, resize: Add,Text,x60 y90 h13,HD Client:
-	Gui, resize: Add,Text,x60 y144,New Width:
-	Gui, resize: Add,Text,x60 y164,New Height:
+	Gui, resize: Add,Button,x275 y262 w50 h25,Cancel
+	Gui, resize: Add,Button,x230 y193 w50 h18 gResizenow,Resize
+	Gui, resize: Add,Button,x470 y193 w50 h18 gMovenow,Move
+	Gui, resize: Add,Button,x390 y110 w70 h18 gVcenter,V-Center
+	Gui, resize: Add,Button,x390 y132 w70 h18 gHcenter,H-Center
+	Gui, resize: Add,Button,x263 y69 w18 h18 gGetWH,R
+	Gui, resize: Add,Button,x500 y69 w18 h18 gGetXY,R
+	Gui, resize: Add,Text,x60 y90 h13,Original:
+	Gui, resize: Add,Text,x60 y70 h13,Current:
+	Gui, resize: Add,Text,x60 y110 h13,Client area:
+	Gui, resize: Add,Text,x60 y130 h13,HD Client:
+	Gui, resize: Add,Text,x60 y184,New Width:
+	Gui, resize: Add,Text,x60 y204,New Height:
+	Gui, resize: Add,Text,x320 y70 h13,Current:
+	Gui, resize: Add,Text,x320 y90 h13,Original:
+	Gui, resize: Add,Text,x320 y184,New X:
+	Gui, resize: Add,Text,x320 y204,New Y:
+	Gui, resize: Add,Text,x320 y110,Center:
+	Gui, resize: Font, s10 cb396ff norm
+	Wofwin := 0000	;Autohotkey gui bug. Temprorary fix.
+	Hofwin := 0000 
+	Xofwin := 0000 
+	Yofwin := 0000
+	Gui, resize: Add,Text,x150 y70 h13 vCurrentWH,W: %Wofwin%,  H: %Hofwin%
+	Gui, resize: Add,Text,x390 y70 h13 vCurrentXY,X: %Xofwin%,  Y: %Yofwin%
 	Gui, resize: Font, s10 c836DFF norm
-	Gui, resize: Add,Text,x150 y30 h13,W: %Worig%,  H: %Horig%
-	Gui, resize: Add,Text,x150 y50 h13,W: %Wnew%,  H: %Hnew%
-	Gui, resize: Add,Text,x150 y70 h13,W: %Wclient%,  H: %Hclient%
-	for1280w := Round(1280/(Wclient/Hclient))
-	editdefH := for1280w + 2*Border_Size2 + Caption_Size
+	Gui, resize: Add,Text,x150 y110 h13,W: %Wclient%,  H: %Hclient%
+	Gui, resize: Add,Text,x150 y90 h13,W: %Worig%,  H: %Horig%
+	Gui, resize: Add,Text,x390 y90 h13,X: %Xorig%,  Y: %Yorig%
+	editdefH := Round(1280/(Wclient/Hclient)) + 2*Border_Size2 + Caption_Size
 	editdefW := 1280 + 2*Border_Size
-	Gui, resize: Add,Text,x150 y90 h13,W: %editdefW%,  H: %editdefH%
+	Gui, resize: Add,Text,x150 y130 h13,W: %editdefW%,  H: %editdefH%
 	Gui, resize: Font, s10 c836DFF bold
-	Gui, resize: Add,Edit,x140 y162 w70 h19 vHnew,%editdefH%
-	Gui, resize: Add,Edit,x140 y142 w70 h19 vWnew,%editdefW%
-	Gui, resize: Show,w400 h250 , Resize Window
+	Gui, resize: Add,Edit,x150 y183 w70 h19 vWnew,%editdefW%
+	Gui, resize: Add,Edit,x150 y203 w70 h19 vHnew,%editdefH%
+	Gui, resize: Add,Edit,x390 y183 w70 h19 vXnew,%Xnew%
+	Gui, resize: Add,Edit,x390 y203 w70 h19 vYnew,%Ynew%
+	Gui, resize: Show,w600 h300 , Resize and Move Window
+	Refresher()
 Return
-
 
 F8::
 	Suspend
@@ -228,14 +255,14 @@ Abouted:
 	Gui, about: Font, s10 cDCDCCC
 	Gui, about: Add, Text,, `nFor readme, updates and more check out the project page:  
 	Gui, about: Font, s10 c3257BF underline
-	Gui, about: Add, Text, gGotoSite, https://bitbucket.org/Onurtag/tsolidbackground
+	Gui, about: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground
 	Gui, about: Font, s10 cBlack norm
 	Gui, about: Add, Button, x168 y170 w64 h36 , Ok
 	Gui, about: Show, h225 w400, About TSolidBackground
 Return
 
 
-DrawBGGui(){
+TSolidBackground(){
 	Global
 	WinGetPos, wX, wY, WWidth, HHeight, ahk_id %Activewin%
 	SysGet, Border_Size, 32
@@ -250,7 +277,7 @@ DrawBGGui(){
 	WinGet, WinStyle, Style, ahk_id %Activewin%
 	if (WinExStyle & 0x8) { 
 		WinGetTitle, currentTitle, ahk_id %Activewin%
-		if (currentTitle != "Kagami") {		;VNR fix.
+		if (currentTitle != "Kagami") {		;VNR fix
 			Winset, AlwaysOnTop, off, ahk_id %Activewin%
 			TrayTip, Window [%currentTitle%], Always on top status: OFF
 		}
@@ -276,13 +303,13 @@ DrawBGGui(){
 	Gui, bg3: Color, %bgcolor%
 	Gui, bg4: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg4: Color, %bgcolor%
-	Gui, Show, NoActivate x0 y0 h%A_ScreenHeight% w%A_ScreenWidth%		;To hide the fact that I am using 4 GUIs
+	Gui, Show, NoActivate x0 y0 h%A_ScreenHeight% w%A_ScreenWidth%		;Lets try to hide the fact that I am using 4 GUIs
 	Winset, Top,, ahk_id %Activewin%
 	Gui, bg3: Show, NoActivate x0 y%bg3SY% h%bg3H% w%A_ScreenWidth%, TSolidBackground
 	Gui, bg2: Show, NoActivate x0 y0 h%A_ScreenHeight% w%bg2FX%, TSolidBackground
 	Gui, bg4: Show, NoActivate x%bg4SX% y0 h%A_ScreenHeight% w%bg4W%, TSolidBackground
 	Gui, bg1: Show, NoActivate x0 y0 h%bg1FY% w%A_ScreenWidth%, TSolidBackground
-	Sleep, 10
+	Sleep, 50
 	Gui, Destroy
 	Return
 }
@@ -297,12 +324,7 @@ Drawhud(Hudtext){
 	Return
 }
 
-Deletehud:
-	SetTimer, Deletehud, Off
-	Gui, hud: Destroy
-	Return
-
-DestroyBGGui(){
+DestroyTSolidBackground(){
 	Gui, bg1: Destroy
 	Gui, bg2: Destroy
 	Gui, bg3: Destroy
@@ -311,20 +333,74 @@ DestroyBGGui(){
 	Return
 }
 
+Refresher(){
+	Global
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	GuiControl, resize:,CurrentWH,W: %Wofwin%,  H: %Hofwin%
+	GuiControl, resize:,CurrentXY,X: %Xofwin%,  Y: %Yofwin%
+	SetTimer, Refresher, 50
+	Return
+}
+
+Deletehud:
+	SetTimer, Deletehud, off
+	Gui, hud: Destroy
+Return
+
 GotoSite:
 	Run, %A_GuiControl%
 Return
 
-aboutButtonOk:
 startButtonOk:
-resizeButtonCancel:
-	Gui, Destroy
+startGuiEscape:
+aboutButtonOk:
+aboutGuiEscape:
+	Gui, start: Destroy
+	Gui, about: Destroy
 Return
 
+resizeGuiClose:
+resizeButtonCancel:
+resizeGuiEscape:
+	SetTimer, Refresher, Off
+	Gui, resize: Destroy
+Return
+
+
 Resizenow:
-	Gui, Submit
+	Gui, Submit, NoHide
 	WinMove,ahk_id %TBResized%,,,,%Wnew%,%Hnew%
 Return	
+
+Movenow:
+	Gui, Submit, NoHide
+	WinMove,ahk_id %TBResized%,,%Xnew%,%Ynew%
+Return
+
+
+
+GetWH:
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	GuiControl, resize:,CurrentWH,W: %Wofwin%,  H: %Hofwin%
+	Sleep, 500
+	SetTimer, Refresher, Off
+Return
+
+GetXY:
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	GuiControl, resize:,CurrentXY,X: %Xofwin%,  Y: %Yofwin%
+	Sleep, 500
+	SetTimer, Refresher, Off
+Return
+
+
+Vcenter:
+	WinMove,ahk_id %TBResized%,,,(A_ScreenHeight/2)-(Hofwin/2)-12
+Return
+
+Hcenter:
+	WinMove,ahk_id %TBResized%,,(A_ScreenWidth/2)-(Wofwin/2),
+Return
 
 Reloaded:
 	Reload
