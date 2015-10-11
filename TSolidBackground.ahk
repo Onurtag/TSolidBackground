@@ -78,7 +78,7 @@ Return
 
 +O::
 	SplashImage, OFF
-	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 051523 `nA safer color suggested for casualfags is '250000'. `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project page: `ngithub.com/Onurtag/TSolidBackground,, 400, 270,,,,, 051523
+	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 051523 `nA safer color suggested for non-frogs is '250000'. `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project page: `ngithub.com/Onurtag/TSolidBackground,, 400, 270,,,,, 051523
 	if ErrorLevel {
 		Return
 	}

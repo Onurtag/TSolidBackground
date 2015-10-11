@@ -1,5 +1,4 @@
 # **TSolidBackground**  
-------------------  
 
 TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders. 
 In a different saying, it mimics fullscreen for any window.  
