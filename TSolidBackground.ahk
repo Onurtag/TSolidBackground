@@ -13,7 +13,7 @@ winArr := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.2.1"
+Version := "v2.2.2"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -21,6 +21,7 @@ TaskbarKey := "+F"
 OptionsKey := "+O"
 ResizeKey := "+U"
 SuspendKey := "F8"
+CustomSize := 0
 
 Menu, Tray, Icon,,, 1
 Menu, Tray, NoStandard
@@ -38,6 +39,7 @@ IfExist, TSolidBackground.ini
 	IniRead, OptionsKey, TSolidBackground.ini, TSolidBackground Settings, Options Key 
 	IniRead, ResizeKey, TSolidBackground.ini, TSolidBackground Settings, Resize Key 
 	IniRead, SuspendKey, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
+	IniRead, CustomSize, TSolidBackground.ini, TSolidBackground Settings, Custom Size 
 	Hotkey, %OnTopKey%, +Y
 	Hotkey, %CenterKey%, +G
 	Hotkey, %TaskbarKey%, +F
@@ -53,12 +55,12 @@ IfExist, TSolidBackground.ini
 	Gui, start: Font, s8 c836DFF bold
 	Gui, start: Add, Text, x18 y36 , By Onurtag
 	Gui, start: Font, s10 cDCDCCC norm
-	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize and Move Window: %ResizeKey% `nOptions: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
+	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize and Move Window: %ResizeKey% `nOptions: %OptionsKey% `nCustom rectangle size: %CustomSize% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
 	Gui, start: Font, s10 c3257BF underline
 	Gui, start: Add, Text, x18 gGotoSite, https://github.com/Onurtag/TSolidBackground
 	Gui, start: Font, s10 cBlack norm
-	Gui, start: Add, Button, x223 y340 w64 h36 , Ok
-	Gui, start: Show, h385 w510, Start TSolidBackground
+	Gui, start: Add, Button, x223 y355 w64 h36 , Ok
+	Gui, start: Show, h400 w510, Start TSolidBackground
 Return
 
 +Y::
@@ -78,7 +80,7 @@ Return
 
 +O::
 	SplashImage, OFF
-	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 051523 `nA safer color suggested for non-frogs is '250000'. `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project page: `ngithub.com/Onurtag/TSolidBackground,, 400, 270,,,,, 051523
+	InputBox, bgcolor, Change Background Color, Enter a HEX color code. `nDefault value is: 051523 `nA safer color suggested for humans is '250000'. `n`nIf you press Ok TSolidBackground.ini file will be created. `nBy editing this file you can change hotkeys. `n`nFor more info go to project page: `ngithub.com/Onurtag/TSolidBackground,, 400, 270,,,,, 051523
 	if ErrorLevel {
 		Return
 	}
@@ -96,6 +98,8 @@ Return
 		IniWrite, %OptionsKey%, TSolidBackground.ini, TSolidBackground Settings, Options Key 
 		IniWrite, %ResizeKey%, TSolidBackground.ini, TSolidBackground Settings, Resize Key 
 		IniWrite, %SuspendKey%, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
+		IniWrite, %CustomSize%, TSolidBackground.ini, TSolidBackground Settings, Custom Size 
+		
 	}
 	IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color 
 	Reload
@@ -191,8 +195,8 @@ Return
 	Gui, resize: Add,Button,x275 y262 w50 h25,Close
 	Gui, resize: Add,Button,x230 y193 w50 h18 gResizenow,Resize
 	Gui, resize: Add,Button,x470 y193 w50 h18 gMovenow,Move
-	Gui, resize: Add,Button,x390 y110 w70 h18 gVcenter,V-Center
-	Gui, resize: Add,Button,x390 y132 w70 h18 gHcenter,H-Center
+	Gui, resize: Add,Button,x390 y110 w70 h18 gHcenter,H-Center
+	Gui, resize: Add,Button,x390 y132 w70 h18 gVcenter,V-Center
 	Gui, resize: Add,Text,x60 y90 h13,Original:
 	Gui, resize: Add,Text,x60 y70 h13,Current:
 	Gui, resize: Add,Text,x60 y110 h13,Client area:
@@ -287,6 +291,12 @@ TSolidBackground(){
 		bg2FX -= 5
 		bg3SY += 5
 		bg4SX += 5
+	}
+	if (CustomSize != ""){
+		bg1FY -= %CustomSize%
+		bg2FX -= %CustomSize%
+		bg3SY += %CustomSize%
+		bg4SX += %CustomSize%
 	}
 	
 	bg3H := A_ScreenHeight-bg3SY

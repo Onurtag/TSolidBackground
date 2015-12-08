@@ -5,7 +5,7 @@ In a different saying, it mimics fullscreen for any window.
 
 At first I made it to better immerse in Visual Novels and later added more features that would be useful for me.
 
-    Default Hotkeys (can be changed in .ini):  
+    Default Hotkeys & Options (can be changed in the .ini):  
     Shift+T: TSolidBackground key
     Shift+Y: Make window always on top  
     Shift+G: Center Window  
@@ -14,6 +14,7 @@ At first I made it to better immerse in Visual Novels and later added more featu
     F8: Suspend Hotkeys  
     Shift+O: Options  
     Default Color: 051523 (hex)
+	Custom rectangle size: 0
 
 ###[Webm Preview (v2)](https://github.com/Onurtag/TSolidBackground/raw/master/Preview/TSolidBackground%20Preview.webm)
 ###[Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
@@ -21,9 +22,9 @@ At first I made it to better immerse in Visual Novels and later added more featu
 *Compiled using latest Ahk2Exe  
 
 
-**Current Version 2.2.1 (11.10.15):**  
+**Current Version 2.2.2 (09.12.15):**  
 
-Removed useless stuff and added useful stuff.
+Added custom sizing option to the .ini and did some other stuff too.
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
@@ -55,6 +56,11 @@ If you have any problems, let me know. I'll try to fix it.
 ##Updates (DD.MM.YY)  
 
 *Do not forget to generate a new TSolidBackground.ini if you are updating.* 
+
+
+* **Version 2.2.2 (09.12.15):**  
+
+Added custom sizing option to the .ini and did some other stuff too.
 
 * **Version 2.2.1 (11.10.15):**  
 
