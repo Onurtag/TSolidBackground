@@ -21,7 +21,8 @@ TaskbarKey := "+F"
 OptionsKey := "+O"
 ResizeKey := "+U"
 SuspendKey := "F8"
-CustomSize := 0
+CustomWidth := 0
+CustomHeight := 0
 
 Menu, Tray, Icon,,, 1
 Menu, Tray, NoStandard
@@ -39,7 +40,8 @@ IfExist, TSolidBackground.ini
 	IniRead, OptionsKey, TSolidBackground.ini, TSolidBackground Settings, Options Key 
 	IniRead, ResizeKey, TSolidBackground.ini, TSolidBackground Settings, Resize Key 
 	IniRead, SuspendKey, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
-	IniRead, CustomSize, TSolidBackground.ini, TSolidBackground Settings, Custom Size 
+	IniRead, CustomWidth, TSolidBackground.ini, TSolidBackground Settings, Custom Width 
+	IniRead, CustomHeight, TSolidBackground.ini, TSolidBackground Settings, Custom Height 
 	Hotkey, %OnTopKey%, +Y
 	Hotkey, %CenterKey%, +G
 	Hotkey, %TaskbarKey%, +F
@@ -53,13 +55,12 @@ IfExist, TSolidBackground.ini
 	Gui, start: Font, s14 c836DFF bold
 	Gui, start: Add, Text,, TSolidBackground %Version%
 	Gui, start: Font, s8 c836DFF bold
-	Gui, start: Add, Text, x18 y36 , By Onurtag
 	Gui, start: Font, s10 cDCDCCC norm
-	Gui, start: Add, Text,, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize and Move Window: %ResizeKey% `nOptions: %OptionsKey% `nCustom rectangle size: %CustomSize% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
+	Gui, start: Add, Text, x18 y42, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize and Move Window: %ResizeKey% `nOptions: %OptionsKey% `nCustom rectangle width: %CustomWidth% `nCustom rectangle height: %CustomHeight% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
 	Gui, start: Font, s10 c3257BF underline
-	Gui, start: Add, Text, x18 gGotoSite, https://github.com/Onurtag/TSolidBackground
+	Gui, start: Add, Text, x18 y320 gGotoSite, https://github.com/Onurtag/TSolidBackground
 	Gui, start: Font, s10 cBlack norm
-	Gui, start: Add, Button, x223 y355 w64 h36 , Ok
+	Gui, start: Add, Button, x223 y350 w64 h36 , Ok
 	Gui, start: Show, h400 w510, Start TSolidBackground
 Return
 
@@ -69,7 +70,7 @@ Return
 	addToWinArr(currentWindow)
 	WinGet, WindowExStyle, ExStyle, ahk_id %currentWindow%
 	if (WindowExStyle & 0x8) { 
-		Winset, AlwaysOnTop, off, ahk_id %currentWindow%
+		WinSet, AlwaysOnTop, off, ahk_id %currentWindow%
 		TrayTip, Window [%currentTitle%], Always on top status: OFF
 	}
 	else {
@@ -98,8 +99,8 @@ Return
 		IniWrite, %OptionsKey%, TSolidBackground.ini, TSolidBackground Settings, Options Key 
 		IniWrite, %ResizeKey%, TSolidBackground.ini, TSolidBackground Settings, Resize Key 
 		IniWrite, %SuspendKey%, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
-		IniWrite, %CustomSize%, TSolidBackground.ini, TSolidBackground Settings, Custom Size 
-		
+		IniWrite, %CustomWidth%, TSolidBackground.ini, TSolidBackground Settings, Custom Width 
+		IniWrite, %CustomHeight%, TSolidBackground.ini, TSolidBackground Settings, Custom Height 
 	}
 	IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color 
 	Reload
@@ -254,7 +255,7 @@ addToWinArr(chwnd) {
 Abouted:
 	Gui, about: Color, 292929
 	Gui, about: Font, s14 c836DFF
-	Gui, about: Add, Text,, TSolidBackground %Version% by Onurtag
+	Gui, about: Add, Text,, TSolidBackground %Version%
 	Gui, about: Font, s10 cDCDCCC
 	Gui, about: Add, Text,, `nFor readme, updates and more check out the project page:  
 	Gui, about: Font, s10 c3257BF underline
@@ -281,7 +282,7 @@ TSolidBackground(){
 	if (WinExStyle & 0x8) { 
 		WinGetTitle, currentTitle, ahk_id %Activewin%
 		if (currentTitle != "Kagami") {		;VNR fix
-			Winset, AlwaysOnTop, off, ahk_id %Activewin%
+			WinSet, AlwaysOnTop, off, ahk_id %Activewin%
 			TrayTip, Window [%currentTitle%], Always on top status: OFF
 		}
 	}
@@ -292,11 +293,11 @@ TSolidBackground(){
 		bg3SY += 5
 		bg4SX += 5
 	}
-	if (CustomSize != ""){
-		bg1FY -= %CustomSize%
-		bg2FX -= %CustomSize%
-		bg3SY += %CustomSize%
-		bg4SX += %CustomSize%
+	if ((CustomHeight != 0) || (CustomWidth != 0)){
+		bg1FY -= %CustomHeight%
+		bg2FX -= %CustomWidth%
+		bg3SY += %CustomHeight%
+		bg4SX += %CustomWidth%
 	}
 	
 	bg3H := A_ScreenHeight-bg3SY
@@ -313,7 +314,7 @@ TSolidBackground(){
 	Gui, bg4: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg4: Color, %bgcolor%
 	Gui, Show, NoActivate x0 y0 h%A_ScreenHeight% w%A_ScreenWidth%		;Lets try to hide the fact that I am using 4 GUIs
-	Winset, Top,, ahk_id %Activewin%
+	WinSet, Top,, ahk_id %Activewin%
 	Gui, bg3: Show, NoActivate x0 y%bg3SY% h%bg3H% w%A_ScreenWidth%, TSolidBackground
 	Gui, bg2: Show, NoActivate x0 y0 h%A_ScreenHeight% w%bg2FX%, TSolidBackground
 	Gui, bg4: Show, NoActivate x%bg4SX% y0 h%A_ScreenHeight% w%bg4W%, TSolidBackground
@@ -414,7 +415,7 @@ Return
 
 Exited:
 	for currentWindow, b in winArr {
-		Winset, AlwaysOnTop, off, ahk_id %currentWindow%
+		WinSet, AlwaysOnTop, off, ahk_id %currentWindow%
     }
 	WinShow, ahk_class Shell_TrayWnd
 	WinShow, Start ahk_class Button
