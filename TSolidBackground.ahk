@@ -4,7 +4,7 @@
 /*
 TSolidBackground
 By Onurtag
-https://github.com/Onurtag/TSolidBackground
+https://onurtag.github.io/TSolidBackground/
 
 If you have any good suggestions, feel free to contact me.
 */
@@ -58,7 +58,7 @@ IfExist, TSolidBackground.ini
 	Gui, start: Font, s10 cDCDCCC norm
 	Gui, start: Add, Text, x18 y42, Current Hotkeys: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nResize and Move Window: %ResizeKey% `nOptions: %OptionsKey% `nCustom rectangle width: %CustomWidth% `nCustom rectangle height: %CustomHeight% `nSuspend other hotkeys: %SuspendKey%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
 	Gui, start: Font, s10 c3257BF underline
-	Gui, start: Add, Text, x18 y320 gGotoSite, https://github.com/Onurtag/TSolidBackground
+	Gui, start: Add, Text, x18 y320 gGotoSite, https://onurtag.github.io/TSolidBackground/
 	Gui, start: Font, s10 cBlack norm
 	Gui, start: Add, Button, x223 y350 w64 h36 , Ok
 	Gui, start: Show, h400 w510, Start TSolidBackground
@@ -90,7 +90,7 @@ Return
 	}
 	IfNotExist, TSolidBackground.ini 
 	{
-		IniWrite, https://github.com/Onurtag/TSolidBackground, TSolidBackground.ini, Help, #For help go to 
+		IniWrite, https://onurtag.github.io/TSolidBackground/, TSolidBackground.ini, Help, #For help go to 
 		FileAppend, `n, TSolidBackground.ini
 		IniWrite, %TSolidBackgroundKey%, TSolidBackground.ini, TSolidBackground Settings, TSolidBackground Key 
 		IniWrite, %OnTopKey%, TSolidBackground.ini, TSolidBackground Settings, On Top Key 
@@ -259,7 +259,7 @@ Abouted:
 	Gui, about: Font, s10 cDCDCCC
 	Gui, about: Add, Text,, `nFor readme, updates and more check out the project page:  
 	Gui, about: Font, s10 c3257BF underline
-	Gui, about: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground
+	Gui, about: Add, Text, gGotoSite, https://onurtag.github.io/TSolidBackground/
 	Gui, about: Font, s10 cBlack norm
 	Gui, about: Add, Button, x168 y170 w64 h36 , Ok
 	Gui, about: Show, h225 w400, About TSolidBackground

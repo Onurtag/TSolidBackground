@@ -16,7 +16,7 @@ At first I made it to better immerse in Visual Novels and later added more featu
     Default Color: 051523 (hex)
 	Custom rectangle size: 0
 
-###[Webm Preview (v2)](https://github.com/Onurtag/TSolidBackground/raw/master/Preview/TSolidBackground%20Preview.webm)
+###[Webm Preview (v2)](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)
 ###[Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
 
 *Compiled using latest Ahk2Exe  
