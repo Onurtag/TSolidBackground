@@ -9,10 +9,9 @@ At first I made it to better immerse in Visual Novels and later added more featu
     Shift+T: TSolidBackground key
     Shift+Y: Make window always on top  
     Shift+G: Center Window  
-    Shift+U: Move/Resize Window   
+    Shift+U: Advanced Options  
     Shift+F: Show/Hide taskbar
     F8: Suspend Hotkeys  
-    Shift+O: Options  
     Default Color: 051523 (hex)
 	Custom rectangle width left: 0
 	Custom rectangle width right: 0
@@ -26,10 +25,11 @@ At first I made it to better immerse in Visual Novels and later added more featu
 *Compiled using latest Ahk2Exe  
 
 
-**Current Version 2.2.3 (xx.xx.xx):**  
+**Current Version 2.3.0**  
 
-Added .ini option to disable startup window.
-Seperated custom width and height, made new temprorary options in Shift+U.
+Removed old options, moved to (+U)  
+Added .ini option to disable startup window.  
+Seperated custom width and height, made new temprorary options in (+U).  
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
