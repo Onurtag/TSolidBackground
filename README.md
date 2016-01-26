@@ -1,7 +1,7 @@
 # **TSolidBackground**  
 
-TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders. 
-In a different saying, it mimics fullscreen for any window.  
+TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders.  
+In a different saying, it tries to mimic fullscreen for any window without resizing it.  
 
 At first I made it to better immerse in Visual Novels and later added more features that would be useful for me.
 
@@ -14,7 +14,11 @@ At first I made it to better immerse in Visual Novels and later added more featu
     F8: Suspend Hotkeys  
     Shift+O: Options  
     Default Color: 051523 (hex)
-	Custom rectangle size: 0
+	Custom rectangle width left: 0
+	Custom rectangle width right: 0
+	Custom rectangle height top: 0
+	Custom rectangle height bottom: 0
+	Enable Startup Window: 1
 
 ###[Webm Preview (v2)](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)
 ###[Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
@@ -22,9 +26,10 @@ At first I made it to better immerse in Visual Novels and later added more featu
 *Compiled using latest Ahk2Exe  
 
 
-**Current Version 2.2.2 (09.12.15):**  
+**Current Version 2.2.3 (xx.xx.xx):**  
 
-Added custom sizing option to the .ini and did some other stuff too.
+Added .ini option to disable startup window.
+Seperated custom width and height, made new temprorary options in Shift+U.
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
@@ -53,7 +58,7 @@ If you have any problems, let me know. I'll try to fix it.
 
 
 --------------------  
-##Updates (DD.MM.YY)  
+##Old Updates (DD.MM.YY)  
 
 *Do not forget to generate a new TSolidBackground.ini if you are updating.* 
 
