@@ -1,30 +1,39 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html>
   <head>
-    <meta charset="UTF-8">
-    <title>TSolidBackground by Onurtag</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">TSolidBackground</h1>
-      <h2 class="project-tagline">Make any window pseudo-fullscreen using padding over window borders and background.</h2>
-      <a href="https://github.com/Onurtag/TSolidBackground" class="btn">View on GitHub</a>
-      <a href="https://github.com/Onurtag/TSolidBackground/zipball/master" class="btn">Source (.zip)</a>
-      <a href="https://github.com/Onurtag/TSolidBackground/releases" class="btn">Releases (.exe)</a>
-    </section>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-    <section class="main-content">
-      <h1>
-<a id="tsolidbackground" class="anchor" href="#tsolidbackground" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>TSolidBackground</strong>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>TSolidBackground by Onurtag</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>TSolidBackground</h1>
+        <h2>Make any window pseudo-fullscreen using padding over window borders and background.</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/Onurtag/TSolidBackground/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/Onurtag/TSolidBackground/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/Onurtag/TSolidBackground" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="tsolidbackground" class="anchor" href="#tsolidbackground" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>TSolidBackground</strong>
 </h1>
 
-<p>TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders. 
-In a different saying, it mimics fullscreen for any window.  </p>
+<p>TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders.<br>
+In a different saying, it tries to mimic fullscreen for any window without resizing it.  </p>
 
 <p>At first I made it to better immerse in Visual Novels and later added more features that would be useful for me.</p>
 
@@ -37,31 +46,34 @@ Shift+F: Show/Hide taskbar
 F8: Suspend Hotkeys  
 Shift+O: Options  
 Default Color: 051523 (hex)
-Custom rectangle width: 0
-Custom rectangle height: 0
+Custom rectangle width left: 0
+Custom rectangle width right: 0
+Custom rectangle height top: 0
+Custom rectangle height bottom: 0
+Enable Startup Window: 1
 </code></pre>
 
 <h3>
-<a id="webm-preview-v2" class="anchor" href="#webm-preview-v2" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground Preview.webm">Webm Preview (v2)</a>
+<a id="webm-preview-v2" class="anchor" href="#webm-preview-v2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm">Webm Preview (v2)</a>
 </h3>
-<video id="sampleMovie" src="https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground Preview.webm" width="640" height="360" controls></video>
 
 <h3>
-<a id="get-latest-relese" class="anchor" href="#get-latest-relese" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/Onurtag/TSolidBackground/releases">Get latest relese*</a>
+<a id="get-latest-relese" class="anchor" href="#get-latest-relese" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://github.com/Onurtag/TSolidBackground/releases">Get latest relese*</a>
 </h3>
 
 <p>*Compiled using latest Ahk2Exe  </p>
 
-<p><strong>Current Version 2.2.2 (09.12.15):</strong>  </p>
+<p><strong>Current Version 2.2.3 (xx.xx.xx):</strong>  </p>
 
-<p>Added custom sizing option to the .ini and did some other stuff too.</p>
+<p>Added .ini option to disable startup window.
+Seperated custom width and height, made new temprorary options in Shift+U.</p>
 
 <p><em>Do not forget to generate a new TSolidBackground.ini if you are updating.</em>  </p>
 
 <hr>
 
 <h2>
-<a id="things-to-know" class="anchor" href="#things-to-know" aria-hidden="true"><span class="octicon octicon-link"></span></a>Things To Know</h2>
+<a id="things-to-know" class="anchor" href="#things-to-know" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Things To Know</h2>
 
 <ul>
 <li>You have to select the window before using most hotkeys.</li>
@@ -99,7 +111,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 <hr>
 
 <h2>
-<a id="updates-ddmmyy" class="anchor" href="#updates-ddmmyy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Updates (DD.MM.YY)</h2>
+<a id="old-updates-ddmmyy" class="anchor" href="#old-updates-ddmmyy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Old Updates (DD.MM.YY)</h2>
 
 <p><em>Do not forget to generate a new TSolidBackground.ini if you are updating.</em> </p>
 
@@ -192,15 +204,9 @@ Fixed the bug where the window sometimes went background when using TSolidBackgr
 Added tray menu: Reload, About<br>
 Added opening popup with hotkey information.<br>
 Added Suspend hotkeys and Center window functions</p>
+      </section>
+    </div>
 
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/Onurtag/TSolidBackground">TSolidBackground</a> is maintained by <a href="https://github.com/Onurtag">Onurtag</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
-    </section>
-
-  
+    
   </body>
 </html>
