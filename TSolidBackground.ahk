@@ -313,7 +313,6 @@ TSolidBackground()
 	bg4W := A_ScreenWidth-bg4SX
 	
 	Gui, +Disabled -Caption +ToolWindow
-	Gui, thehider: Color, %bgcolor%
 	Gui, bg1: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg1: Color, %bgcolor%
 	Gui, bg2: +AlwaysOnTop -Caption +ToolWindow
@@ -322,14 +321,11 @@ TSolidBackground()
 	Gui, bg3: Color, %bgcolor%
 	Gui, bg4: +AlwaysOnTop -Caption +ToolWindow
 	Gui, bg4: Color, %bgcolor%
-	Gui, thehider: Show, NoActivate x0 y0 h%A_ScreenHeight% w%A_ScreenWidth%		;Lets try to hide the fact that I am using 4 GUIs
 	WinSet, Top,, ahk_id %Activewin%
 	Gui, bg3: Show, NoActivate x0 y%bg3SY% h%bg3H% w%A_ScreenWidth%, TSolidBackground
 	Gui, bg2: Show, NoActivate x0 y0 h%A_ScreenHeight% w%bg2FX%, TSolidBackground
 	Gui, bg4: Show, NoActivate x%bg4SX% y0 h%A_ScreenHeight% w%bg4W%, TSolidBackground
 	Gui, bg1: Show, NoActivate x0 y0 h%bg1FY% w%A_ScreenWidth%, TSolidBackground
-	Sleep, 50
-	Gui, thehider: Destroy
 	Return
 }
 
@@ -350,7 +346,6 @@ DestroyTSolidBackground()
 	Gui, bg2: Destroy
 	Gui, bg3: Destroy
 	Gui, bg4: Destroy
-	Gui, thehider: Destroy
 	Return
 }
 

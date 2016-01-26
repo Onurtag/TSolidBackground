@@ -6,12 +6,12 @@ In a different saying, it tries to mimic fullscreen for any window without resiz
 At first I made it to better immerse in Visual Novels and later added more features that would be useful for me.
 
     Default Hotkeys & Options (can be changed in the .ini):  
-    Shift+T: TSolidBackground key
-    Shift+Y: Make window always on top  
-    Shift+G: Center Window  
-    Shift+U: Advanced Options  
-    Shift+F: Show/Hide taskbar
-    F8: Suspend Hotkeys  
+    TSolidBackground hotkey: Shift+T
+    Always On Top: Shift+Y
+    Center window: Shift+G
+    Show/Hide taskbar: Shift+F
+    Advanced Ooptions: Shift+U
+    Suspend all other hotkeys: F8  
     Default Color: 051523 (hex)
 	Custom rectangle width left: 0
 	Custom rectangle width right: 0
