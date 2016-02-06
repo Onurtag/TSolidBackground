@@ -28,25 +28,25 @@ and later added more features that were useful for me.
 
 **Current Version 2.4.0**  
 
-Finally got my hands on a second monitor and now everything works in multiple monitors.
-Added an [O] button to +U for moving to original position.
-Added U,D,L,R buttons to easily move windows.
+Finally got my hands on a second monitor and now everything works in multiple monitors.  
+Added an [O] button to +U for moving to original position.  
+Added U,D,L,R buttons to easily move windows.  
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
 --------------------  
 ## Things To Know  
 
-* You have to select the window before using most hotkeys.
-* You can change the background color using the Shift+U option window.
-Change the color to a red hue if you want a softer experience.
-* TSolidBackground.ini file will be created when you create a .ini using the Advanced Options.
+* You have to select the window before using most hotkeys.  
+* You can change the background color using the Shift+U option window.  
+Change the color to a red hue if you want a softer experience.  
+* TSolidBackground.ini file will be created when you create a .ini using the Advanced Options.  
 After creating the .ini file you can open it using a text editor to change the hotkeys.  
 [HOTKEY EDITING GUIDE](http://www.autohotkey.com/docs/Hotkeys.htm)  
 * Always on top mode can be used for multiple windows at the same time  
 Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  
 * TSolidBackground function will disable always on top if the selected window is always on top.  
-You can use the always on top hotkey afterwards if you really want the window on top. 
+You can use the always on top hotkey afterwards if you really want the window on top.  
 
 --------------------  
 **Known Bugs:**  
@@ -54,13 +54,13 @@ You can use the always on top hotkey afterwards if you really want the window on
 * Hiding taskbar might not work right away, try it again.  
 * Explorer.exe might crash and restart if you spam the hotkeys too much. (Especially Show Hide taskbar key)  
 
-If you have any other problems, let me know. I'll try to fix it.  
+If you have any other problems, open an issue. I'll try to fix it.  
 
 
 --------------------  
 ##Old Updates (DD.MM.YY)  
 
-*Do not forget to generate a new TSolidBackground.ini if you are updating.* 
+*Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
 * **Version 2.3.0:**  
 
