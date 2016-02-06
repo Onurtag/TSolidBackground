@@ -1,33 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
     <title>TSolidBackground by Onurtag</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Onurtag/TSolidBackground">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Onurtag/TSolidBackground/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Onurtag/TSolidBackground/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <header>
-      <div class="container">
-        <h1>TSolidBackground</h1>
-        <h2>Make any window pseudo-fullscreen using padding over window borders and background.</h2>
+    <div class="wrapper">
 
-        <section id="downloads">
-          <a href="https://github.com/Onurtag/TSolidBackground/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/Onurtag/TSolidBackground/releases" class="btn">Download .exe</a>
-          <a href="https://github.com/Onurtag/TSolidBackground" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+      <section>
+        <div id="title">
+          <h1>TSolidBackground</h1>
+          <p>Make any window pseudo-fullscreen using padding over window borders and background.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Onurtag">Onurtag</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
 
-    <div class="container">
-      <section id="main_content">
         <h1>
 <a id="tsolidbackground" class="anchor" href="#tsolidbackground" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>TSolidBackground</strong>
 </h1>
@@ -35,7 +45,8 @@
 <p>TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders.<br>
 In a different saying, it tries to mimic fullscreen for any window without resizing it.  </p>
 
-<p>At first I made it to better immerse in Visual Novels and later added more features that would be useful for me.</p>
+<p>At first I made TSolidBackground to stop distracting myself when playing VNs and Eroge 
+and later added more features that were useful for me.</p>
 
 <pre><code>Default Hotkeys &amp; Options (can be changed in the .ini):  
 TSolidBackground hotkey: Shift+T
@@ -43,7 +54,7 @@ Always On Top: Shift+Y
 Center window: Shift+G
 Show/Hide taskbar: Shift+F
 Advanced Ooptions: Shift+U
-Suspend all other hotkeys: F8  
+Suspend all other hotkeys: F8
 Default Color: 051523 (hex)
 Custom rectangle width left: 0
 Custom rectangle width right: 0
@@ -52,12 +63,8 @@ Custom rectangle height bottom: 0
 Enable Startup Window: 1
 </code></pre>
 
-<video width="640" height="360" controls="controls" preload="none">
-  <source src="https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground Preview.webm" type="video/mp4" />
-  Your browser does not support webm videos.
-</video>
 <h3>
-<a id="webm-preview-v2" class="anchor" href="#webm-preview-v2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm">Webm Preview (Above video)</a>
+<a id="webm-preview-v2" class="anchor" href="#webm-preview-v2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm">Webm Preview (v2)</a>
 </h3>
 
 <h3>
@@ -66,11 +73,11 @@ Enable Startup Window: 1
 
 <p>*Compiled using latest Ahk2Exe  </p>
 
-<p><strong>Current Version 2.3.0</strong>  </p>
+<p><strong>Current Version 2.4.0</strong>  </p>
 
-<p>Removed old options, moved to (+U)<br>
-Added .ini option to disable startup window.<br>
-Seperated custom width and height, made new temprorary options in (+U).  </p>
+<p>Finally got my hands on a second monitor and now everything works in multiple monitors.<br>
+Added an [O] button to +U for moving to original position.<br>
+Added U,D,L,R buttons to easily move windows.  </p>
 
 <p><em>Do not forget to generate a new TSolidBackground.ini if you are updating.</em>  </p>
 
@@ -80,17 +87,20 @@ Seperated custom width and height, made new temprorary options in (+U).  </p>
 <a id="things-to-know" class="anchor" href="#things-to-know" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Things To Know</h2>
 
 <ul>
-<li>You have to select the window before using most hotkeys.</li>
-<li>You can change the background color using the Shift+O option window.</li>
-<li>TSolidBackground.ini file will be created when you use the options key (you don't have to enter an input).
+<li>You have to select the window before using most hotkeys.<br>
+</li>
+<li>You can change the background color using the Shift+U option window.<br>
+Change the color to a red hue if you want a softer experience.<br>
+</li>
+<li>TSolidBackground.ini file will be created when you create a .ini using the Advanced Options.<br>
 After creating the .ini file you can open it using a text editor to change the hotkeys.<br>
 <a href="http://www.autohotkey.com/docs/Hotkeys.htm">HOTKEY EDITING GUIDE</a><br>
 </li>
-<li>If you never use the options key it will never create the .ini file so you can just carry around the .exe (or the ahk)<br>
-</li>
 <li>Always on top mode can be used for multiple windows at the same time<br>
+Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.<br>
 </li>
-<li>Exiting using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.<br>
+<li>TSolidBackground function will disable always on top if the selected window is always on top.<br>
+You can use the always on top hotkey afterwards if you really want the window on top.<br>
 </li>
 </ul>
 
@@ -99,29 +109,34 @@ After creating the .ini file you can open it using a text editor to change the h
 <p><strong>Known Bugs:</strong>  </p>
 
 <ul>
-<li>TSolidBackground will disable always on top if the selected window is already always on top.<br>
-You can use the always on top hotkey afterwards if you really want the window on top.<br>
-</li>
-<li>Hiding taskbar sometimes might not work right away, try it again.<br>
+<li>Hiding taskbar might not work right away, try it again.<br>
 </li>
 <li>Explorer.exe might crash and restart if you spam the hotkeys too much. (Especially Show Hide taskbar key)<br>
 </li>
-<li>Currently TSolidBackground only works on the Primary Monitor. (for multiple monitor displays)<br>
-</li>
 </ul>
 
-<p>If you have any problems, let me know. I'll try to fix it.  </p>
+<p>If you have any other problems, open an issue. I'll try to fix it.  </p>
 
 <hr>
 
 <h2>
 <a id="old-updates-ddmmyy" class="anchor" href="#old-updates-ddmmyy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Old Updates (DD.MM.YY)</h2>
 
-<p><em>Do not forget to generate a new TSolidBackground.ini if you are updating.</em> </p>
+<p><em>Do not forget to generate a new TSolidBackground.ini if you are updating.</em>  </p>
 
 <ul>
 <li>
-<strong>Version 2.2.2 (09.12.15):</strong><br>
+<strong>Version 2.3.0:</strong><br>
+</li>
+</ul>
+
+<p>Removed old options, moved to (+U)<br>
+Added .ini option to disable startup window.<br>
+Seperated custom width and height, made new temprorary options in (+U).  </p>
+
+<ul>
+<li>
+<strong>Version 2.2.2:</strong><br>
 </li>
 </ul>
 
@@ -129,7 +144,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 
 <ul>
 <li>
-<strong>Version 2.2.1 (11.10.15):</strong><br>
+<strong>Version 2.2.1:</strong><br>
 </li>
 </ul>
 
@@ -137,7 +152,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 
 <ul>
 <li>
-<strong>Version 2.2.0 (27.07.15):</strong><br>
+<strong>Version 2.2.0:</strong><br>
 </li>
 </ul>
 
@@ -145,7 +160,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 
 <ul>
 <li>
-<strong>Version 2.1.4 (27.07.15):</strong><br>
+<strong>Version 2.1.4:</strong><br>
 </li>
 </ul>
 
@@ -153,7 +168,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 
 <ul>
 <li>
-<strong>Version 2.1.3 (27.07.15):</strong><br>
+<strong>Version 2.1.3:</strong><br>
 </li>
 </ul>
 
@@ -162,7 +177,7 @@ Now less casual.  </p>
 
 <ul>
 <li>
-<strong>Version 2.1.2 (26.07.15):</strong><br>
+<strong>Version 2.1.2:</strong><br>
 </li>
 </ul>
 
@@ -170,7 +185,7 @@ Now less casual.  </p>
 
 <ul>
 <li>
-<strong>Version 2.1.1 (05.04.15):</strong><br>
+<strong>Version 2.1.1:</strong><br>
 </li>
 </ul>
 
@@ -178,18 +193,18 @@ Now less casual.  </p>
 
 <ul>
 <li>
-<strong>Version 2.1 (29.03.15):</strong><br>
+<strong>Version 2.1:</strong><br>
 </li>
 </ul>
 
-<p>Taskbar hide revamp. Let me know if you encounter a bug.<br>
+<p>Taskbar hide revamp.<br>
 Added notes to start popup<br>
 Fixed huge bugs.<br>
 New dark color scheme.  </p>
 
 <ul>
 <li>
-<strong>Version 2 (29.03.15):</strong><br>
+<strong>Version 2:</strong><br>
 </li>
 </ul>
 
@@ -199,7 +214,7 @@ This is probably the final version unless I go bug hunting or get a new feature 
 
 <ul>
 <li>
-<strong>Version 1.1 (22.03.15):</strong><br>
+<strong>Version 1.1:</strong><br>
 </li>
 </ul>
 
@@ -209,8 +224,9 @@ Added tray menu: Reload, About<br>
 Added opening popup with hotkey information.<br>
 Added Suspend hotkeys and Center window functions</p>
       </section>
-    </div>
 
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
 </html>
