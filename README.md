@@ -3,7 +3,8 @@
 TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders.  
 In a different saying, it tries to mimic fullscreen for any window without resizing it.  
 
-At first I made it to better immerse in Visual Novels and later added more features that would be useful for me.
+At first I made TSolidBackground to stop distracting myself when playing VNs and Eroge 
+and later added more features that were useful for me.
 
     Default Hotkeys & Options (can be changed in the .ini):  
     TSolidBackground hotkey: Shift+T
@@ -11,7 +12,7 @@ At first I made it to better immerse in Visual Novels and later added more featu
     Center window: Shift+G
     Show/Hide taskbar: Shift+F
     Advanced Ooptions: Shift+U
-    Suspend all other hotkeys: F8  
+    Suspend all other hotkeys: F8
     Default Color: 051523 (hex)
 	Custom rectangle width left: 0
 	Custom rectangle width right: 0
@@ -25,11 +26,11 @@ At first I made it to better immerse in Visual Novels and later added more featu
 *Compiled using latest Ahk2Exe  
 
 
-**Current Version 2.3.0**  
+**Current Version 2.4.0**  
 
-Removed old options, moved to (+U)  
-Added .ini option to disable startup window.  
-Seperated custom width and height, made new temprorary options in (+U).  
+Finally got my hands on a second monitor and now everything works in multiple monitors.
+Added an [O] button to +U for moving to original position.
+Added U,D,L,R buttons to easily move windows.
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
@@ -37,24 +38,23 @@ Seperated custom width and height, made new temprorary options in (+U).
 ## Things To Know  
 
 * You have to select the window before using most hotkeys.
-* You can change the background color using the Shift+O option window.
-* TSolidBackground.ini file will be created when you use the options key (you don't have to enter an input).
+* You can change the background color using the Shift+U option window.
+Change the color to a red hue if you want a softer experience.
+* TSolidBackground.ini file will be created when you create a .ini using the Advanced Options.
 After creating the .ini file you can open it using a text editor to change the hotkeys.  
 [HOTKEY EDITING GUIDE](http://www.autohotkey.com/docs/Hotkeys.htm)  
-* If you never use the options key it will never create the .ini file so you can just carry around the .exe (or the ahk)  
 * Always on top mode can be used for multiple windows at the same time  
-* Exiting using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  
+Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  
+* TSolidBackground function will disable always on top if the selected window is always on top.  
+You can use the always on top hotkey afterwards if you really want the window on top. 
 
 --------------------  
 **Known Bugs:**  
 
-* TSolidBackground will disable always on top if the selected window is already always on top.  
-You can use the always on top hotkey afterwards if you really want the window on top.  
-* Hiding taskbar sometimes might not work right away, try it again.  
+* Hiding taskbar might not work right away, try it again.  
 * Explorer.exe might crash and restart if you spam the hotkeys too much. (Especially Show Hide taskbar key)  
-* Currently TSolidBackground only works on the Primary Monitor. (for multiple monitor displays)  
 
-If you have any problems, let me know. I'll try to fix it.  
+If you have any other problems, let me know. I'll try to fix it.  
 
 
 --------------------  
@@ -62,58 +62,63 @@ If you have any problems, let me know. I'll try to fix it.
 
 *Do not forget to generate a new TSolidBackground.ini if you are updating.* 
 
+* **Version 2.3.0:**  
 
-* **Version 2.2.2 (09.12.15):**  
+Removed old options, moved to (+U)  
+Added .ini option to disable startup window.  
+Seperated custom width and height, made new temprorary options in (+U).  
+
+* **Version 2.2.2:**  
 
 Added custom sizing option to the .ini and did some other stuff too.
 
-* **Version 2.2.1 (11.10.15):**  
+* **Version 2.2.1:**  
 
 Removed useless stuff and added useful stuff.
 
 
-* **Version 2.2.0 (27.07.15):**  
+* **Version 2.2.0:**  
 
 Added features to Move/Resize (Shift+U)
 
 
-* **Version 2.1.4 (27.07.15):**  
+* **Version 2.1.4:**  
 
 Added window client area to resizer
 
 
-* **Version 2.1.3 (27.07.15):**  
+* **Version 2.1.3:**  
 
 Removed useless info.  
 Now less casual.  
 
 
-* **Version 2.1.2 (26.07.15):**  
+* **Version 2.1.2:**  
 
 Added resize window function.
 
 
-* **Version 2.1.1 (05.04.15):**  
+* **Version 2.1.1:**  
 
 Fixed bug when using with VNR.
 
 
-* **Version 2.1 (29.03.15):**  
+* **Version 2.1:**  
 
-Taskbar hide revamp. Let me know if you encounter a bug.  
+Taskbar hide revamp.  
 Added notes to start popup  
 Fixed huge bugs.  
 New dark color scheme.  
 
 
-* **Version 2 (29.03.15):**  
+* **Version 2:**  
 
 TSolidBackground revamp, now the window borders are gone too! (Thanks biggest_decision for the heads up.)  
 Added show/hide taskbar key, removed the command that was included in TSolidBackground key.  
 This is probably the final version unless I go bug hunting or get a new feature request.  
 
 
-* **Version 1.1 (22.03.15):**  
+* **Version 1.1:**  
 
 Fixed timing issues with slower PC.  
 Fixed the bug where the window sometimes went background when using TSolidBackground  
