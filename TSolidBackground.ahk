@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.4.0"
+Version := "v2.4.1"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -134,7 +134,6 @@ Return
 		NumPut( WinExist( "ahk_class Shell_TrayWnd" ), APPBARDATA, 4, "UInt" ) 
 		TBtoggle := 0
 	} 
-
 	if (TBtoggle = 0) 
 	{
 		NumPut( ( ABS_ALWAYSONTOP := 0x2 )|( ABS_AUTOHIDE := 0x1 ), APPBARDATA, 32, "UInt" )
@@ -165,11 +164,7 @@ Return
 	{	
 		Drawhud("Got a new window to move/resize.","y270")
 		TBResized := WinExist("A")
-		WinGetPos,X,Y,W,H,ahk_id %TBResized%
-		Worig := W
-		Horig := H
-		Xorig := X
-		Yorig := Y
+		WinGetPos,Xorig,Yorig,Worig,Horig,ahk_id %TBResized%
 	}
 	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
 	SysGet, Border_Size, 32
@@ -198,7 +193,21 @@ Return
 	Gui, resize: Add,Button,x504 y107 w16 h16 gWright,R
 	Gui, resize: Add,Button,x713 y137 w68 h18 gSetnow,Set CWH
 	Gui, resize: Add,Button,x713 y207 w68 h18 gSetcolor,Set Color
-	Gui, resize: Add,Button,x378 y274 w90 h28 gCreateini,Make/Edit .ini
+	Gui, resize: Add,Button,x380 y364 w90 h28 gCreateini,Make/Edit .ini
+	Gui, resize: Add,Button,x325 y272 w23 h22 gSavetemp1,T1
+	Gui, resize: Add,Button,x325 y301 w23 h22 gLoadtemp1,T1
+	Gui, resize: Add,Button,x354 y272 w23 h22 gSavetemp2,T2
+	Gui, resize: Add,Button,x354 y301 w23 h22 gLoadtemp2,T2
+	Gui, resize: Add,Button,x383 y272 w23 h22 gSave1,P1
+	Gui, resize: Add,Button,x383 y301 w23 h22 gLoad1,P1
+	Gui, resize: Add,Button,x412 y272 w23 h22 gSave2,P2
+	Gui, resize: Add,Button,x412 y301 w23 h22 gLoad2,P2
+	Gui, resize: Add,Button,x441 y272 w23 h22 gSave3,P3
+	Gui, resize: Add,Button,x441 y301 w23 h22 gLoad3,P3
+	Gui, resize: Add,Button,x470 y272 w23 h22 gSave4,P4
+	Gui, resize: Add,Button,x470 y301 w23 h22 gLoad4,P4
+	Gui, resize: Add,Button,x499 y272 w23 h22 gSave5,P5
+	Gui, resize: Add,Button,x499 y301 w23 h22 gLoad5,P5
 	Gui, resize: Add,Button,x789 y183 w14 h18 gResetcolor,R
 	Gui, resize: Add,Button,x306 y74 w14 h18 gOrigxy,O
 	Gui, resize: Add,Button,x41 y74 w14 h18 gOrigwh,O
@@ -219,6 +228,8 @@ Return
 	Gui, resize: Add,Text,x560 y115 h13,CustomHeightBottom:
 	Gui, resize: Add,Text,x560 y184,New Color:
 	Gui, resize: Add,Text,x473 y148 h13,By: 
+	Gui, resize: Add,Text,x205 y274 h13,Temp/Perm Save: 
+	Gui, resize: Add,Text,x205  y303 h13,Load Saved Pos: 
 	Gui, resize: Font, s10 cb396ff norm
 	Wofwin := 0000	;Ahk gui bug temp fix.
 	Hofwin := 0000 
@@ -246,10 +257,11 @@ Return
 	Gui, resize: Add,Edit,x712 y113 w70 h19 vCustomHeightBottom,%CustomHeightBottom%
 	Gui, resize: Add,Edit,x635 y183 w70 h19 vbgcolor,%bgcolor%
 	Gui, resize: Add,Progress,x712 y183 w70 h19 c%bgcolor% Background%bgcolor% vbarcolored, 100
-	Gui, resize: Add,Button,x122 y320 w600 h22,Close
+	Gui, resize: Add,Button,x124 y409 w600 h22,Close
 	Gui, resize: Font, Underline
-	Gui, resize: Add,Text,x312 y248,Create .ini for permanent options
-	Gui, resize: Show,w850 h357, Resize / Move and Custom Sizes
+	Gui, resize: Add,Text,x315 y338,Create .ini for permanent options
+	Gui, resize: Add,Text,x312 y248,Quick save/load size and position
+	Gui, resize: Show,w850 h447, Resize / Move and Custom Sizes
 	Refresher()
 Return
 
@@ -515,6 +527,12 @@ Return
 
 Createini:	
 	Gui, Submit, NoHide
+	Makeini()
+Return
+
+Makeini()
+{
+	Global
 	if (bgcolor = "") 
 	{
 		bgcolor := 051523 
@@ -532,7 +550,8 @@ Createini:
 	IniWrite, %CustomHeightBottom%, TSolidBackground.ini, TSolidBackground Settings, Custom Height Bottom
 	IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color 
 	Drawhud("TSolidBackground.ini file was created/edited.","")
-Return
+	Return
+}
 
 Vcenter:	
 	GetMonitorIndexFromWindow(Activewin)
@@ -596,6 +615,131 @@ Return
 
 Reloaded:
 	Reload
+Return
+
+Savetemp1:
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	Temp1X := Xofwin
+	Temp1Y := Yofwin
+	Temp1W := Wofwin
+	Temp1H := Hofwin
+Return
+
+Loadtemp1:
+	WinMove,ahk_id %TBResized%,,%Temp1X%,%Temp1Y%,%Temp1W%,%Temp1H%
+Return
+
+Savetemp2:
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	Temp2X := Xofwin
+	Temp2Y := Yofwin
+	Temp2W := Wofwin
+	Temp2H := Hofwin
+Return
+
+Loadtemp2:
+	WinMove,ahk_id %TBResized%,,%Temp2X%,%Temp2Y%,%Temp2W%,%Temp2H%
+Return
+
+Save1:
+	IfNotExist, TSolidBackground.ini
+	{
+		Makeini()
+	}
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 1, X
+	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 1, Y
+	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 1, W
+	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 1, H
+Return
+
+Load1:
+	IniRead, PermX, TSolidBackground.ini, Saved Position 1, X
+	IniRead, PermY, TSolidBackground.ini, Saved Position 1, Y
+	IniRead, PermW, TSolidBackground.ini, Saved Position 1, W
+	IniRead, PermH, TSolidBackground.ini, Saved Position 1, H
+	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+Return
+
+Save2:
+	IfNotExist, TSolidBackground.ini
+	{
+		Makeini()
+	}
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 2, X
+	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 2, Y
+	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 2, W
+	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 2, H
+Return
+
+Load2:
+	IniRead, PermX, TSolidBackground.ini, Saved Position 2, X
+	IniRead, PermY, TSolidBackground.ini, Saved Position 2, Y
+	IniRead, PermW, TSolidBackground.ini, Saved Position 2, W
+	IniRead, PermH, TSolidBackground.ini, Saved Position 2, H
+	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+Return
+
+Save3:
+	IfNotExist, TSolidBackground.ini
+	{
+		Makeini()
+	}
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 3, X
+	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 3, Y
+	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 3, W
+	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 3, H
+Return
+
+Load3:
+	IniRead, PermX, TSolidBackground.ini, Saved Position 3, X
+	IniRead, PermY, TSolidBackground.ini, Saved Position 3, Y
+	IniRead, PermW, TSolidBackground.ini, Saved Position 3, W
+	IniRead, PermH, TSolidBackground.ini, Saved Position 3, H
+	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+Return
+
+
+Save4:
+	IfNotExist, TSolidBackground.ini
+	{
+		Makeini()
+	}
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 4, X
+	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 4, Y
+	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 4, W
+	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 4, H
+Return
+
+Load4:
+	IniRead, PermX, TSolidBackground.ini, Saved Position 4, X
+	IniRead, PermY, TSolidBackground.ini, Saved Position 4, Y
+	IniRead, PermW, TSolidBackground.ini, Saved Position 4, W
+	IniRead, PermH, TSolidBackground.ini, Saved Position 4, H
+	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+Return
+
+Save5:
+	IfNotExist, TSolidBackground.ini
+	{
+		Makeini()
+	}
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
+	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 5, X
+	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 5, Y
+	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 5, W
+	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 5, H
+Return
+
+Load5:
+	IniRead, PermX, TSolidBackground.ini, Saved Position 5, X
+	IniRead, PermY, TSolidBackground.ini, Saved Position 5, Y
+	IniRead, PermW, TSolidBackground.ini, Saved Position 5, W
+	IniRead, PermH, TSolidBackground.ini, Saved Position 5, H
+	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
 Return
 
 Exited:

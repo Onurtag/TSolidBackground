@@ -20,17 +20,15 @@ and later added more features that were useful for me.
 	Custom rectangle height bottom: 0
 	Enable Startup Window: 1
 
-###[Webm Preview (v2)](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)
+###[Webm Preview (Above Video)](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)
 ###[Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
 
 *Compiled using latest Ahk2Exe  
 
 
-**Current Version 2.4.0**  
+**Current Version 2.4.1**  
 
-Finally got my hands on a second monitor and now everything works in multiple monitors.  
-Added an [O] button to +U for moving to original position.  
-Added U,D,L,R buttons to easily move windows.  
+Can now save size + position in +U options menu.
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
@@ -61,6 +59,12 @@ If you have any other problems, open an issue. I'll try to fix it.
 ##Old Updates (DD.MM.YY)  
 
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
+
+* **Version 2.4.0:**  
+
+Finally got my hands on a second monitor and now everything works in multiple monitors.  
+Added an [O] button to +U for moving to original position.  
+Added U,D,L,R buttons to easily move windows.  
 
 * **Version 2.3.0:**  
 
