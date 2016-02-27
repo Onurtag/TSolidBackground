@@ -162,7 +162,7 @@ Return
 	Gui, resize: Destroy
 	if (WinExist("A") != TBResized) 
 	{	
-		Drawhud("Got a new window to move/resize.","y270")
+		Drawhud("Got a new window to move/resize.","y220")
 		TBResized := WinExist("A")
 		WinGetPos,Xorig,Yorig,Worig,Horig,ahk_id %TBResized%
 	}
@@ -186,7 +186,6 @@ Return
 	Gui, resize: Add,Text,x60 y55 h13,Current:
 	Gui, resize: Add,Text,x60 y75 h13,Original:
 	Gui, resize: Add,Text,x60 y95 h13,Client area:
-	;Gui, resize: Add,Text,x60 y130 h13,HD Client:
 	Gui, resize: Add,Text,x60 y184,New Width:
 	Gui, resize: Add,Text,x60 y204,New Height:
 	Gui, resize: Add,Text,x325 y55 h13,Current:
@@ -203,7 +202,7 @@ Return
 	Gui, resize: Add,Text,x194 y274 h13,Temp/Perm Save: 
 	Gui, resize: Add,Text,x194 y303 h13,Load Saved Pos: 
 	Gui, resize: Font, s10 cb396ff norm
-	Wofwin := 0000	;Ahk gui bug temp fix.
+	Wofwin := 0000		;Ahk gui bug temp fix.
 	Hofwin := 0000 
 	Xofwin := 0000 
 	Yofwin := 0000
@@ -213,11 +212,8 @@ Return
 	Gui, resize: Add,Text,x150 y95 h13,W: %Wclient%,  H: %Hclient%
 	Gui, resize: Add,Text,x150 y75 h13,W: %Worig%,  H: %Horig%
 	Gui, resize: Add,Text,x396 y75 h13,X: %Xorig%,  Y: %Yorig%
-	;editdefH := Round(1280/(Wclient/Hclient)) + 2*Border_Size2 + Caption_Size
-	;editdefW := 1280 + 2*Border_Size
-	;Gui, resize: Add,Text,x150 y130 h13,W: %editdefW%,  H: %editdefH%
 	Gui, resize: Font, s9 c836DFF bold
-	Gui, resize: Add,Edit,x496 y147 w24 h19 vVmove,5
+	Gui, resize: Add,Edit,x496 y147 w24 h19 vVmove,1
 	Gui, resize: Font, s10 c836DFF bold
 	Gui, resize: Add,Edit,x150 y183 w70 h19 vWnew,%Worig%
 	Gui, resize: Add,Edit,x150 y203 w70 h19 vHnew,%Horig%
@@ -413,7 +409,7 @@ DestroyTSolidBackground()
 	Return
 }
 
-GetMonitorIndexFromWindow(windowHandle)		;Ready-made by shinywong, thank you.
+GetMonitorIndexFromWindow(windowHandle)		;Pre-made function by shinywong, thank you.
 {
 	Global
 	monitorIndex := 1
@@ -629,11 +625,7 @@ Reloaded:
 Return
 
 Savetemp1:
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	Temp1X := Xofwin
-	Temp1Y := Yofwin
-	Temp1W := Wofwin
-	Temp1H := Hofwin
+	WinGetPos,Temp1X,Temp1Y,Temp1W,Temp1H,ahk_id %TBResized%
 Return
 
 Loadtemp1:
@@ -641,11 +633,7 @@ Loadtemp1:
 Return
 
 Savetemp2:
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	Temp2X := Xofwin
-	Temp2Y := Yofwin
-	Temp2W := Wofwin
-	Temp2H := Hofwin
+	WinGetPos,Temp2X,Temp2Y,Temp2W,Temp2H,ahk_id %TBResized%
 Return
 
 Loadtemp2:
@@ -653,105 +641,67 @@ Loadtemp2:
 Return
 
 Save1:
-	IfNotExist, TSolidBackground.ini
-	{
-		Makeini()
-	}
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 1, X
-	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 1, Y
-	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 1, W
-	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 1, H
+	Savepos(1)
 Return
 
 Load1:
-	IniRead, PermX, TSolidBackground.ini, Saved Position 1, X
-	IniRead, PermY, TSolidBackground.ini, Saved Position 1, Y
-	IniRead, PermW, TSolidBackground.ini, Saved Position 1, W
-	IniRead, PermH, TSolidBackground.ini, Saved Position 1, H
-	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+	Loadpos(1)
 Return
 
 Save2:
-	IfNotExist, TSolidBackground.ini
-	{
-		Makeini()
-	}
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 2, X
-	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 2, Y
-	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 2, W
-	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 2, H
+	Savepos(2)
 Return
 
 Load2:
-	IniRead, PermX, TSolidBackground.ini, Saved Position 2, X
-	IniRead, PermY, TSolidBackground.ini, Saved Position 2, Y
-	IniRead, PermW, TSolidBackground.ini, Saved Position 2, W
-	IniRead, PermH, TSolidBackground.ini, Saved Position 2, H
-	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+	Loadpos(2)
 Return
 
 Save3:
-	IfNotExist, TSolidBackground.ini
-	{
-		Makeini()
-	}
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 3, X
-	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 3, Y
-	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 3, W
-	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 3, H
+	Savepos(3)
 Return
 
 Load3:
-	IniRead, PermX, TSolidBackground.ini, Saved Position 3, X
-	IniRead, PermY, TSolidBackground.ini, Saved Position 3, Y
-	IniRead, PermW, TSolidBackground.ini, Saved Position 3, W
-	IniRead, PermH, TSolidBackground.ini, Saved Position 3, H
-	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+	Loadpos(3)
 Return
 
-
 Save4:
-	IfNotExist, TSolidBackground.ini
-	{
-		Makeini()
-	}
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 4, X
-	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 4, Y
-	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 4, W
-	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 4, H
+	Savepos(4)
 Return
 
 Load4:
-	IniRead, PermX, TSolidBackground.ini, Saved Position 4, X
-	IniRead, PermY, TSolidBackground.ini, Saved Position 4, Y
-	IniRead, PermW, TSolidBackground.ini, Saved Position 4, W
-	IniRead, PermH, TSolidBackground.ini, Saved Position 4, H
-	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+	Loadpos(4)
 Return
 
 Save5:
+	Savepos(5)
+Return
+
+Load5:
+	Loadpos(5)
+Return
+
+Loadpos(posnr){
+	Global
+	IniRead, PermX, TSolidBackground.ini, Saved %posnr%, X
+	IniRead, PermY, TSolidBackground.ini, Saved %posnr%, Y
+	IniRead, PermW, TSolidBackground.ini, Saved %posnr%, W
+	IniRead, PermH, TSolidBackground.ini, Saved %posnr%, H
+	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+	Return
+}
+
+Savepos(posnr){
+	Global
 	IfNotExist, TSolidBackground.ini
 	{
 		Makeini()
 	}
 	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position 5, X
-	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position 5, Y
-	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position 5, W
-	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position 5, H
-Return
-
-Load5:
-	IniRead, PermX, TSolidBackground.ini, Saved Position 5, X
-	IniRead, PermY, TSolidBackground.ini, Saved Position 5, Y
-	IniRead, PermW, TSolidBackground.ini, Saved Position 5, W
-	IniRead, PermH, TSolidBackground.ini, Saved Position 5, H
-	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
-Return
+	IniWrite, %Xofwin%, TSolidBackground.ini, Saved %posnr%, X
+	IniWrite, %Yofwin%, TSolidBackground.ini, Saved %posnr%, Y
+	IniWrite, %Wofwin%, TSolidBackground.ini, Saved %posnr%, W
+	IniWrite, %Hofwin%, TSolidBackground.ini, Saved %posnr%, H
+}
 
 Exited:
 	for currentWindow, b in Arrs 

@@ -28,7 +28,8 @@ and later added more features that were useful for me.
 
 **Current Version 2.4.1**  
 
-Can now save size + position in +U options menu.
+Can now save size + position in +U options menu.  
+Added reset button for custom TSb.  
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
