@@ -26,10 +26,10 @@ and later added more features that were useful for me.
 *Compiled using latest Ahk2Exe  
 
 
-**Current Version 2.4.1**  
+**Current Version 2.4.3**  
 
-Can now save size + position in +U options menu.  
-Added reset button for custom TSb.  
+Fix custom hotkey not changing.
+Cleanup useless code
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
@@ -60,6 +60,13 @@ If you have any other problems, open an issue. I'll try to fix it.
 ##Old Updates (DD.MM.YY)  
 
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
+
+
+* **Version 2.4.1:**  
+
+Can now save size + position in +U options menu.  
+Added reset button for custom TSb.  
+
 
 * **Version 2.4.0:**  
 

@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.4.2"
+Version := "v2.4.3"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -56,6 +56,24 @@ IfExist, TSolidBackground.ini
 	Hotkey, %TSolidBackgroundKey%, +T
 	Hotkey, %OptionsKey%, +U
 	Hotkey, %SuspendKey%, F8
+	if (OnTopKey != "+Y") { 
+		Hotkey, +Y, Off
+	}
+	if (CenterKey != "+G") { 
+		Hotkey, +G, Off
+	}
+	if (TaskbarKey != "+F") { 
+		Hotkey, +F, Off
+	}
+	if (TSolidBackgroundKey != "+T") { 
+		Hotkey, +T, Off
+	}
+	if (OptionsKey != "+U") { 
+		Hotkey, +U, Off
+	}
+	if (SuspendKey != "F8") { 
+		Hotkey, F8, Off
+	}
 }
     if(StartupWindow)
 	{
@@ -193,10 +211,10 @@ Return
 	Gui, resize: Add,Text,x325 y184,New X:
 	Gui, resize: Add,Text,x325 y204,New Y:
 	Gui, resize: Add,Text,x325 y95,Center:
-	Gui, resize: Add,Text,x560 y55 h13,CustomWidthLeft:
-	Gui, resize: Add,Text,x560 y75 h13,CustomWidthRight:
-	Gui, resize: Add,Text,x560 y95 h13,CustomHeightTop:
-	Gui, resize: Add,Text,x560 y115 h13,CustomHeightBottom:
+	Gui, resize: Add,Text,x560 y55 h13,Custom Width Left:
+	Gui, resize: Add,Text,x560 y75 h13,Custom Width Right:
+	Gui, resize: Add,Text,x560 y95 h13,Custom Height Top:
+	Gui, resize: Add,Text,x560 y115 h13,Custom Height Bottom:
 	Gui, resize: Add,Text,x560 y184,New Color:
 	Gui, resize: Add,Text,x473 y148 h13,By: 
 	Gui, resize: Add,Text,x194 y274 h13,Temp/Perm Save: 
@@ -680,7 +698,8 @@ Load5:
 	Loadpos(5)
 Return
 
-Loadpos(posnr){
+Loadpos(posnr)
+{
 	Global
 	IniRead, PermX, TSolidBackground.ini, Saved %posnr%, X
 	IniRead, PermY, TSolidBackground.ini, Saved %posnr%, Y
@@ -690,7 +709,8 @@ Loadpos(posnr){
 	Return
 }
 
-Savepos(posnr){
+Savepos(posnr)
+{
 	Global
 	IfNotExist, TSolidBackground.ini
 	{
