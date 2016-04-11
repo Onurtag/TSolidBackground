@@ -26,10 +26,9 @@ and later added more features that were useful for me.
 *Compiled using latest Ahk2Exe  
 
 
-**Current Version 2.4.3**  
+**Current Version 2.4.4**  
 
-Fix custom hotkey not changing.
-Cleanup useless code
+Protect VNR checkbox
 	
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
@@ -61,6 +60,11 @@ If you have any other problems, open an issue. I'll try to fix it.
 
 *Do not forget to generate a new TSolidBackground.ini if you are updating.*  
 
+
+* **Version 2.4.3**  
+
+Fix custom hotkey not changing.
+Cleanup useless code
 
 * **Version 2.4.1:**  
 

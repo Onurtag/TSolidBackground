@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.4.3"
+Version := "v2.4.4"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -27,6 +27,7 @@ CustomHeightTop := 0
 CustomHeightBottom := 0
 StartupWindow := 1
 monitorIndex := 1
+protectVNR := 1
 
 Menu, Tray, Icon,,, 1
 Menu, Tray, NoStandard
@@ -94,6 +95,14 @@ Return
 +Y::
 	WinGet, currentWindow, ID, A
 	WinGetTitle, currentTitle, A
+	if (currentTitle == "Kagami") 
+	{
+		if (protectVNR) 
+		{
+			TrayTip, Window [%currentTitle%] is protected., Check advanced options to disable it.
+			Return
+		}
+	}
 	Winstack(currentWindow)
 	WinGet, WindowExStyle, ExStyle, ahk_id %currentWindow%
 	if (WindowExStyle & 0x8) 
@@ -198,7 +207,7 @@ Return
 	Gui, resize: Font, s14 c836DFF bold
 	Gui, resize: Add,Text,x90 y15 h13,Resize Window
 	Gui, resize: Add,Text,x360 y15 h13,Move Window
-	Gui, resize: Add,Text,x590 y15 h13,TSolidBackground
+	Gui, resize: Add,Text,x640 y15 h13,Settings
 	Gui, resize: Color, 292929
 	Gui, resize: Font, s10 cDCDCCC norm
 	Gui, resize: Add,Text,x60 y55 h13,Current:
@@ -215,7 +224,7 @@ Return
 	Gui, resize: Add,Text,x560 y75 h13,Custom Width Right:
 	Gui, resize: Add,Text,x560 y95 h13,Custom Height Top:
 	Gui, resize: Add,Text,x560 y115 h13,Custom Height Bottom:
-	Gui, resize: Add,Text,x560 y184,New Color:
+	Gui, resize: Add,Text,x560 y171,TSB Color:
 	Gui, resize: Add,Text,x473 y148 h13,By: 
 	Gui, resize: Add,Text,x194 y274 h13,Temp/Perm Save: 
 	Gui, resize: Add,Text,x194 y303 h13,Load Saved Pos: 
@@ -241,8 +250,8 @@ Return
 	Gui, resize: Add,Edit,x712 y73 w70 h19 vCustomWidthRight,%CustomWidthRight%
 	Gui, resize: Add,Edit,x712 y93 w70 h19 vCustomHeightTop,%CustomHeightTop%
 	Gui, resize: Add,Edit,x712 y113 w70 h19 vCustomHeightBottom,%CustomHeightBottom%
-	Gui, resize: Add,Edit,x635 y183 w70 h19 vbgcolor,%bgcolor%
-	Gui, resize: Add,Progress,x712 y183 w70 h19 c%bgcolor% Background%bgcolor% vbarcolored, 100
+	Gui, resize: Add,Edit,x635 y170 w70 h19 vbgcolor,%bgcolor%
+	Gui, resize: Add,Progress,x712 y170 w70 h19 c%bgcolor% Background%bgcolor% vbarcolored, 100
 	Gui, resize: Add,Button,x124 y409 w600 h22,Close
 	Gui, resize: Font, Underline
 	Gui, resize: Add,Text,x315 y338,Create .ini for permanent options
@@ -258,25 +267,26 @@ Return
 	Gui, resize: Add,Button,x504 y107 w16 h16 gWright,R
 	Gui, resize: Add,Button,x713 y138 w68 h18 gSetnow,Set CWH
 	Gui, resize: Add,Button,x789 y54 w14 h17 gResetcwh,R
-	Gui, resize: Add,Button,x713 y208 w68 h18 gSetcolor,Set Color
-	Gui, resize: Add,Button,x380 y364 w90 h28 gCreateini,Make/Edit .ini
-	Gui, resize: Add,Button,x313 y272 w27 h22 gSavetemp1,T1
-	Gui, resize: Add,Button,x313 y301 w27 h22 gLoadtemp1,T1
-	Gui, resize: Add,Button,x345 y272 w27 h22 gSavetemp2,T2
-	Gui, resize: Add,Button,x345 y301 w27 h22 gLoadtemp2,T2
-	Gui, resize: Add,Button,x377 y272 w27 h22 gSave1,P1
-	Gui, resize: Add,Button,x377 y301 w27 h22 gLoad1,P1
-	Gui, resize: Add,Button,x409 y272 w27 h22 gSave2,P2
-	Gui, resize: Add,Button,x409 y301 w27 h22 gLoad2,P2
-	Gui, resize: Add,Button,x441 y272 w27 h22 gSave3,P3
-	Gui, resize: Add,Button,x441 y301 w27 h22 gLoad3,P3
-	Gui, resize: Add,Button,x473 y272 w27 h22 gSave4,P4
-	Gui, resize: Add,Button,x473 y301 w27 h22 gLoad4,P4
-	Gui, resize: Add,Button,x505 y272 w27 h22 gSave5,P5
-	Gui, resize: Add,Button,x505 y301 w27 h22 gLoad5,P5
-	Gui, resize: Add,Button,x789 y184 w14 h17 gResetcolor,R
+	Gui, resize: Add,Button,x713 y195 w68 h18 gSetcolor,Set Color
+	Gui, resize: Add,Button,x789 y171 w14 h17 gResetcolor,R
+	Gui, resize: Add,Button,x378 y364 w90 h28 gCreateini,Make/Edit .ini
+	Gui, resize: Add,Button,x316  y272 w27 h22 gSavetemp1,T1
+	Gui, resize: Add,Button,x316 y301 w27 h22 gLoadtemp1,T1
+	Gui, resize: Add,Button,x348 y272 w27 h22 gSavetemp2,T2
+	Gui, resize: Add,Button,x348 y301 w27 h22 gLoadtemp2,T2
+	Gui, resize: Add,Button,x384 y272 w27 h22 gSave1,P1
+	Gui, resize: Add,Button,x384 y301 w27 h22 gLoad1,P1
+	Gui, resize: Add,Button,x416 y272 w27 h22 gSave2,P2
+	Gui, resize: Add,Button,x416 y301 w27 h22 gLoad2,P2
+	Gui, resize: Add,Button,x448 y272 w27 h22 gSave3,P3
+	Gui, resize: Add,Button,x448 y301 w27 h22 gLoad3,P3
+	Gui, resize: Add,Button,x480 y272 w27 h22 gSave4,P4
+	Gui, resize: Add,Button,x480 y301 w27 h22 gLoad4,P4
+	Gui, resize: Add,Button,x512 y272 w27 h22 gSave5,P5
+	Gui, resize: Add,Button,x512 y301 w27 h22 gLoad5,P5
 	Gui, resize: Add,Button,x306 y74 w14 h18 gOrigxy,O
 	Gui, resize: Add,Button,x41 y74 w14 h18 gOrigwh,O
+	Gui, resize: Add,Checkbox,x562 y222 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR (Kagami)
 	Gui, resize: Show,w850 h447, Resize / Move and Custom Sizes
 	Refresher()
 Return
