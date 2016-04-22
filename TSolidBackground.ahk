@@ -287,7 +287,7 @@ Return
 	Gui, resize: Add,Button,x306 y74 w14 h18 gOrigxy,O
 	Gui, resize: Add,Button,x41 y74 w14 h18 gOrigwh,O
 	Gui, resize: Add,Checkbox,x562 y222 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR (Kagami)
-	Gui, resize: Show,w850 h447, Resize / Move and Custom Sizes
+	Gui, resize: Show,w850 h447, TSolidBackground Advanced Options
 	Refresher()
 Return
 
