@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.4.4"
+Version := "v2.4.5"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -143,9 +143,9 @@ Return
 	mHeight := monitorBottom-monitorTop
 	mWidth := monitorRight-monitorLeft
 	if(monitorIndex!=1){
-		WinMove, A,, (mWidth/2)-(WWWidth/2)+monitorLeft, (mHeight/2)-(HHHeight/2)+monitorTop-18
+		WinMove, A,, (mWidth/2)-(WWWidth/2)+monitorLeft, (mHeight/2)-(HHHeight/2)+monitorTop-12
 	} else {
-		WinMove, A,, (A_ScreenWidth/2)-(WWWidth/2), (A_ScreenHeight/2)-(HHHeight/2)-18		;For new Win10 borders and stuff.
+		WinMove, A,, (A_ScreenWidth/2)-(WWWidth/2), (A_ScreenHeight/2)-(HHHeight/2)-12		;For new Win10 borders and stuff.
 	}
 	if (toggle = "1") 
 	{
@@ -233,12 +233,12 @@ Return
 	Hofwin := 0000 
 	Xofwin := 0000 
 	Yofwin := 0000
-	Gui, resize: Add,Text,x150 y55 h13 vCurrentWH,W: %Wofwin%,  H: %Hofwin%
-	Gui, resize: Add,Text,x396 y55 h13 vCurrentXY,X: %Xofwin%,  Y: %Yofwin%
+	Gui, resize: Add,Text,x150 y55 h13 vCurrentWH,W: %Wofwin%, H: %Hofwin%
+	Gui, resize: Add,Text,x396 y55 h13 vCurrentXY,X: %Xofwin%, Y: %Yofwin%
 	Gui, resize: Font, s10 c836DFF norm
-	Gui, resize: Add,Text,x150 y95 h13,W: %Wclient%,  H: %Hclient%
-	Gui, resize: Add,Text,x150 y75 h13,W: %Worig%,  H: %Horig%
-	Gui, resize: Add,Text,x396 y75 h13,X: %Xorig%,  Y: %Yorig%
+	Gui, resize: Add,Text,x150 y95 h13,W: %Wclient%, H: %Hclient%
+	Gui, resize: Add,Text,x150 y75 h13,W: %Worig%, H: %Horig%
+	Gui, resize: Add,Text,x396 y75 h13,X: %Xorig%, Y: %Yorig%
 	Gui, resize: Font, s9 c836DFF bold
 	Gui, resize: Add,Edit,x496 y147 w24 h19 vVmove,1
 	Gui, resize: Font, s10 c836DFF bold
@@ -269,8 +269,8 @@ Return
 	Gui, resize: Add,Button,x789 y54 w14 h17 gResetcwh,R
 	Gui, resize: Add,Button,x713 y195 w68 h18 gSetcolor,Set Color
 	Gui, resize: Add,Button,x789 y171 w14 h17 gResetcolor,R
-	Gui, resize: Add,Button,x378 y364 w90 h28 gCreateini,Make/Edit .ini
-	Gui, resize: Add,Button,x316  y272 w27 h22 gSavetemp1,T1
+	Gui, resize: Add,Button,x384 y364 w90 h28 gCreateini,Make/Edit .ini
+	Gui, resize: Add,Button,x316 y272 w27 h22 gSavetemp1,T1
 	Gui, resize: Add,Button,x316 y301 w27 h22 gLoadtemp1,T1
 	Gui, resize: Add,Button,x348 y272 w27 h22 gSavetemp2,T2
 	Gui, resize: Add,Button,x348 y301 w27 h22 gLoadtemp2,T2
@@ -478,8 +478,8 @@ Refresher()
 {
 	Global
 	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	GuiControl, resize:,CurrentWH,W: %Wofwin%,  H: %Hofwin%
-	GuiControl, resize:,CurrentXY,X: %Xofwin%,  Y: %Yofwin%
+	GuiControl, resize:,CurrentWH,W: %Wofwin%, H: %Hofwin%
+	GuiControl, resize:,CurrentXY,X: %Xofwin%, Y: %Yofwin%
 	SetTimer, Refresher, 50
 	Return
 }
@@ -593,9 +593,9 @@ Vcenter:
 	mHeight := monitorBottom-monitorTop
 	mWidth := monitorRight-monitorLeft
 	if(monitorIndex!=1){
-		WinMove,ahk_id %TBResized%,,,(mHeight/2)-(Hofwin/2)+monitorTop-18
+		WinMove,ahk_id %TBResized%,,,(mHeight/2)-(Hofwin/2)+monitorTop-12
 	} else {
-		WinMove,ahk_id %TBResized%,,,(A_ScreenHeight/2)-(Hofwin/2)-18
+		WinMove,ahk_id %TBResized%,,,(A_ScreenHeight/2)-(Hofwin/2)-12
 	}
 	RefresherEdit()
 Return
