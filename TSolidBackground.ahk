@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.4.5"
+Version := "v2.5.0b1"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -28,10 +28,14 @@ CustomHeightBottom := 0
 StartupWindow := 1
 monitorIndex := 1
 protectVNR := 1
+TitleOne := "Main Window Title"
+TitleTwo := "Hooked Window Title"
+Hooking := 0
 
 Menu, Tray, Icon,,, 1
 Menu, Tray, NoStandard
 Menu, Tray, Add, About TSolidBackground, Abouted
+Menu, Tray, Add, Window Hooker, StartHookGui
 Menu, Tray, Add, Reload, Reloaded
 Menu, Tray, Add, Exit, Exited
 Menu, Tray, Tip, TSolidBackground
@@ -51,6 +55,8 @@ IfExist, TSolidBackground.ini
 	IniRead, CustomHeightTop, TSolidBackground.ini, TSolidBackground Settings, Custom Height Top
 	IniRead, CustomHeightBottom, TSolidBackground.ini, TSolidBackground Settings, Custom Height Bottom
 	IniRead, StartupWindow, TSolidBackground.ini, TSolidBackground Settings, Enable Startup Window 
+	IniRead, TitleOne, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
+	IniRead, TitleTwo, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
 	Hotkey, %OnTopKey%, +Y
 	Hotkey, %CenterKey%, +G
 	Hotkey, %TaskbarKey%, +F
@@ -207,7 +213,7 @@ Return
 	Gui, resize: Font, s14 c836DFF bold
 	Gui, resize: Add,Text,x90 y15 h13,Resize Window
 	Gui, resize: Add,Text,x360 y15 h13,Move Window
-	Gui, resize: Add,Text,x640 y15 h13,Settings
+	Gui, resize: Add,Text,x625 y15 h13,Advanced
 	Gui, resize: Color, 292929
 	Gui, resize: Font, s10 cDCDCCC norm
 	Gui, resize: Add,Text,x60 y55 h13,Current:
@@ -226,8 +232,8 @@ Return
 	Gui, resize: Add,Text,x560 y115 h13,Custom Height Bottom:
 	Gui, resize: Add,Text,x560 y171,TSB Color:
 	Gui, resize: Add,Text,x473 y148 h13,By: 
-	Gui, resize: Add,Text,x194 y274 h13,Temp/Perm Save: 
-	Gui, resize: Add,Text,x194 y303 h13,Load Saved Pos: 
+	Gui, resize: Add,Text,x60 y274 h13,Temp/Perm Save: 
+	Gui, resize: Add,Text,x60 y303 h13,Load Saved Pos: 
 	Gui, resize: Font, s10 cb396ff norm
 	Wofwin := 0000		;Ahk gui bug temp fix.
 	Hofwin := 0000 
@@ -252,10 +258,10 @@ Return
 	Gui, resize: Add,Edit,x712 y113 w70 h19 vCustomHeightBottom,%CustomHeightBottom%
 	Gui, resize: Add,Edit,x635 y170 w70 h19 vbgcolor,%bgcolor%
 	Gui, resize: Add,Progress,x712 y170 w70 h19 c%bgcolor% Background%bgcolor% vbarcolored, 100
-	Gui, resize: Add,Button,x124 y409 w600 h22,Close
+	Gui, resize: Add,Button,x124 y429 w600 h22,Close
 	Gui, resize: Font, Underline
-	Gui, resize: Add,Text,x315 y338,Create .ini for permanent options
-	Gui, resize: Add,Text,x312 y248,Quick save/load size and position
+	Gui, resize: Add,Text,x178 y248,Quick save/load size and position
+	Gui, resize: Add,Text,x315 y358,Create .ini for permanent options
 	Gui, resize: Font, cDCDCCC norm
 	Gui, resize: Add,Button,x230 y193 w52 h18 gResizenow,Resize
 	Gui, resize: Add,Button,x470 y193 w52 h18 gMovenow,Move
@@ -267,27 +273,28 @@ Return
 	Gui, resize: Add,Button,x504 y107 w16 h16 gWright,R
 	Gui, resize: Add,Button,x713 y138 w68 h18 gSetnow,Set CWH
 	Gui, resize: Add,Button,x789 y54 w14 h17 gResetcwh,R
-	Gui, resize: Add,Button,x713 y195 w68 h18 gSetcolor,Set Color
+	Gui, resize: Add,Button,x713 y195 w68 h18 gSetcolor, Set Color
+	Gui, resize: Add,Button,x560 y260 w242 h28 gStartHookGui, Open Window Hooker
 	Gui, resize: Add,Button,x789 y171 w14 h17 gResetcolor,R
-	Gui, resize: Add,Button,x384 y364 w90 h28 gCreateini,Make/Edit .ini
-	Gui, resize: Add,Button,x316 y272 w27 h22 gSavetemp1,T1
-	Gui, resize: Add,Button,x316 y301 w27 h22 gLoadtemp1,T1
-	Gui, resize: Add,Button,x348 y272 w27 h22 gSavetemp2,T2
-	Gui, resize: Add,Button,x348 y301 w27 h22 gLoadtemp2,T2
-	Gui, resize: Add,Button,x384 y272 w27 h22 gSave1,P1
-	Gui, resize: Add,Button,x384 y301 w27 h22 gLoad1,P1
-	Gui, resize: Add,Button,x416 y272 w27 h22 gSave2,P2
-	Gui, resize: Add,Button,x416 y301 w27 h22 gLoad2,P2
-	Gui, resize: Add,Button,x448 y272 w27 h22 gSave3,P3
-	Gui, resize: Add,Button,x448 y301 w27 h22 gLoad3,P3
-	Gui, resize: Add,Button,x480 y272 w27 h22 gSave4,P4
-	Gui, resize: Add,Button,x480 y301 w27 h22 gLoad4,P4
-	Gui, resize: Add,Button,x512 y272 w27 h22 gSave5,P5
-	Gui, resize: Add,Button,x512 y301 w27 h22 gLoad5,P5
+	Gui, resize: Add,Button,x374 y384 w100 h28 gCreateini,Make/Save .ini
+	Gui, resize: Add,Button,x182 y272 w27 h22 gSavetemp1,T1
+	Gui, resize: Add,Button,x182 y301 w27 h22 gLoadtemp1,T1
+	Gui, resize: Add,Button,x214 y272 w27 h22 gSavetemp2,T2
+	Gui, resize: Add,Button,x214 y301 w27 h22 gLoadtemp2,T2
+	Gui, resize: Add,Button,x250 y272 w27 h22 gSave1,P1
+	Gui, resize: Add,Button,x250 y301 w27 h22 gLoad1,P1
+	Gui, resize: Add,Button,x282 y272 w27 h22 gSave2,P2
+	Gui, resize: Add,Button,x282 y301 w27 h22 gLoad2,P2
+	Gui, resize: Add,Button,x314 y272 w27 h22 gSave3,P3
+	Gui, resize: Add,Button,x314 y301 w27 h22 gLoad3,P3
+	Gui, resize: Add,Button,x346 y272 w27 h22 gSave4,P4
+	Gui, resize: Add,Button,x346 y301 w27 h22 gLoad4,P4
+	Gui, resize: Add,Button,x378 y272 w27 h22 gSave5,P5
+	Gui, resize: Add,Button,x378 y301 w27 h22 gLoad5,P5
 	Gui, resize: Add,Button,x306 y74 w14 h18 gOrigxy,O
 	Gui, resize: Add,Button,x41 y74 w14 h18 gOrigwh,O
-	Gui, resize: Add,Checkbox,x562 y222 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR (Kagami)
-	Gui, resize: Show,w850 h447, TSolidBackground Advanced Options
+	Gui, resize: Add,Checkbox, x562 y220 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR (Kagami)
+	Gui, resize: Show,w850 h467, TSolidBackground Advanced Options
 	Refresher()
 Return
 
@@ -302,11 +309,11 @@ F8::
 	}
 Return
 
-/*
+
 F11::
 	ListVars
 Return
-*/
+
 
 Winstack(winid) 
 {
@@ -583,6 +590,9 @@ Makeini()
 	IniWrite, %CustomWidthRight%, TSolidBackground.ini, TSolidBackground Settings, Custom Width Right
 	IniWrite, %CustomHeightTop%, TSolidBackground.ini, TSolidBackground Settings, Custom Height Top
 	IniWrite, %CustomHeightBottom%, TSolidBackground.ini, TSolidBackground Settings, Custom Height Bottom
+	IniWrite, %StartupWindow%, TSolidBackground.ini, TSolidBackground Settings, Enable Startup Window 
+	IniWrite, %TitleOne%, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
+	IniWrite, %TitleTwo%, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
 	IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color 
 	Drawhud("TSolidBackground.ini file was created/edited.","")
 	Return
@@ -731,6 +741,108 @@ Savepos(posnr)
 	IniWrite, %Yofwin%, TSolidBackground.ini, Saved %posnr%, Y
 	IniWrite, %Wofwin%, TSolidBackground.ini, Saved %posnr%, W
 	IniWrite, %Hofwin%, TSolidBackground.ini, Saved %posnr%, H
+}
+
+ShowHooker(){
+	Global
+	Gui, hook: Destroy
+	Gui, hook: +AlwaysOnTop
+	Gui, hook: Color, 292929
+	Gui, hook: Font, s14 c836DFF bold
+	Gui, hook: Add, Text, x188 y12, Window Hooker (Experimental)
+	Gui, hook: Font, s10 cDCDCCC norm
+	Gui, hook: Add, Text, x24 y102, Main Window:  
+	Gui, hook: Add, Text, x24 y142, Hooked Window:  
+	Gui, hook: Add, Text, x24 y47 , Window Hooker currently only works for minimizing/switching tabs on browsers.`nFor now it can't make them move together. The .ini file will save the window titles too.
+	Gui, hook: Font, s10 cBlack norm
+	Gui, hook: Add, Edit, x190 y101 w170 h19 vTitleOne, %TitleOne%
+	Gui, hook: Add, Edit, x190 y141 w170 h19 vTitleTwo, %TitleTwo%
+	Gui, hook: Add, Button, x386 y99 h23 gGetactiveOne, Get last active window
+	Gui, hook: Add, Button, x386 y139 h23 gGetactiveTwo, Get last active window
+	if(Hooking == 0) {
+		Gui, hook: Add, Button, x193 y182 w164 h66 gStartHook, Start Hook
+	} else {
+		Gui, hook: Add, Button, x193 y182 w164 h66 gStopHook, Stop Hook
+	}
+	Gui, hook: Add, Button, x243 y266 w64 h26 , Close
+	Gui, hook: Show, w550 h310, Window Hooker (Experimental)
+	Return
+}
+
+StartHookGui:
+	Gui, resize: Destroy
+	ShowHooker()
+Return
+
+hookButtonClose:
+hookGuiEscape:
+	Gui, hook: Destroy
+Return
+
+GetactiveOne:
+	Gui, hook: Destroy
+	Sleep, 75
+	WinGetTitle, TitleOne, A
+	ShowHooker()
+Return
+
+GetactiveTwo:
+	Gui, hook: Destroy
+	Sleep, 75
+	WinGetTitle, TitleTwo, A
+	ShowHooker()
+Return
+
+StartHook:
+	Hooking := 1
+	Gui, hook: Destroy
+	Hooker()
+	ShowHooker()
+Return
+
+StopHook:
+	Hooking := 0
+	Gui, hook: Destroy
+	KillHooker()
+	ShowHooker()
+Return
+
+Hooker(){
+	Global
+	WinGet, isNotMin, MinMax, %TitleOne%
+	WinGet, WindowExStyle, ExStyle, %TitleTwo%
+	CurrActiveID := WinExist("A")
+	WinGetTitle, CurrActiveTitle, ahk_id %CurrActiveID%
+	if ((CurrActiveTitle == TitleOne) || (CurrActiveTitle == TitleTwo))
+	{
+		if (WindowExStyle & 0x8) 
+		{ 
+			/*
+			if ((isNotMin != 1) && (isNotMin != 0)) 
+			{
+				
+			}
+			*/
+		} else {
+			WinRestore, %TitleTwo%
+			Sleep, 32
+			WinSet, AlwaysOnTop, on, %TitleTwo%
+		}
+	} else {
+		if (WindowExStyle & 0x8) 
+		{ 
+			WinSet, AlwaysOnTop, off, %TitleTwo%
+			Sleep, 32
+			WinMinimize, %TitleTwo%
+		}
+	}
+	SetTimer, Hooker, 75
+	Return
+}
+
+KillHooker(){
+	SetTimer, Hooker, Off
+	Return
 }
 
 Exited:
