@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.5.0b1"
+Version := "v2.5.0"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -28,14 +28,16 @@ CustomHeightBottom := 0
 StartupWindow := 1
 monitorIndex := 1
 protectVNR := 1
+Resizerunning := 0
+Hooking := 0
 TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
-Hooking := 0
 
 Menu, Tray, Icon,,, 1
 Menu, Tray, NoStandard
 Menu, Tray, Add, About TSolidBackground, Abouted
-Menu, Tray, Add, Window Hooker, StartHookGui
+Menu, Tray, Add, Stop Window Hooker, StopHook
+Menu, Tray, Disable, Stop Window Hooker
 Menu, Tray, Add, Reload, Reloaded
 Menu, Tray, Add, Exit, Exited
 Menu, Tray, Tip, TSolidBackground
@@ -48,7 +50,7 @@ IfExist, TSolidBackground.ini
 	IniRead, OnTopKey, TSolidBackground.ini, TSolidBackground Settings, On Top Key 
 	IniRead, CenterKey, TSolidBackground.ini, TSolidBackground Settings, Center Window Key 
 	IniRead, TaskbarKey, TSolidBackground.ini, TSolidBackground Settings, Show Hide Taskbar Key 
-	IniRead, OptionsKey, TSolidBackground.ini, TSolidBackground Settings, Options Key 
+	IniRead, OptionsKey, TSolidBackground.ini, TSolidBackground Settings, Advanced Features Key 
 	IniRead, SuspendKey, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
 	IniRead, CustomWidthLeft, TSolidBackground.ini, TSolidBackground Settings, Custom Width Left
 	IniRead, CustomWidthRight, TSolidBackground.ini, TSolidBackground Settings, Custom Width Right
@@ -85,16 +87,16 @@ IfExist, TSolidBackground.ini
     if(StartupWindow)
 	{
 		Gui, start: Color, 292929
-		Gui, start: Font, s14 c836DFF bold
+		Gui, start: Font, s14 c836DFF bold, Segoe UI
 		Gui, start: Add, Text,, TSolidBackground %Version%
 		Gui, start: Font, s8 c836DFF bold
 		Gui, start: Font, s10 cDCDCCC norm
-		Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Options: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
+		Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
 		Gui, start: Font, s10 c3257BF underline
-		Gui, start: Add, Text, x18 y283 gGotoSite, https://onurtag.github.io/TSolidBackground/
-		Gui, start: Font, s10 cBlack norm
-		Gui, start: Add, Button, x243 y313 w64 h36 , Ok
-		Gui, start: Show, w550 h364, Start TSolidBackground
+		Gui, start: Add, Text, x18 y303 gGotoSite, https://onurtag.github.io/TSolidBackground/
+		Gui, start: Font, s10 cBlack norm Bold
+		Gui, start: Add, Button, x243 y338 w64 h36, Ok
+		Gui, start: Show, w550 h393, Start TSolidBackground
 	}
 Return
 
@@ -192,111 +194,46 @@ Return
 Return
 
 +U::
-	Gui, resize: Destroy
+	if (Resizerunning) 
+	{ 
+		if (WinExist("A") != TBResized) 
+		{	
+			Drawhud("Got a new window to move/resize.","y200")
+			TBResized := WinExist("A")
+			WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
+		}
+		WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+	} else {
+		ShowNewMenu()
+	}
+Return
+
+ShowNewMenu(){
+	Global
+	Gui, newmenu: Destroy
 	if (WinExist("A") != TBResized) 
 	{	
-		Drawhud("Got a new window to move/resize.","y220")
+		Drawhud("Got a new window to move/resize.","y200")
 		TBResized := WinExist("A")
-		WinGetPos,Xorig,Yorig,Worig,Horig,ahk_id %TBResized%
+		WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
 	}
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	SysGet, Border_Size, 32
-	SysGet, Border_Size2, 33
-	SysGet, Caption_Size, 4
-	Wnew := Wofwin
-	Hnew := Hofwin
-	Xnew := Xofwin
-	Ynew := Yofwin
-	Hclient := Hofwin - 2*Border_Size2 - Caption_Size
-	Wclient := Wofwin - 2*Border_Size
-	Gui, resize: +AlwaysOnTop
-	Gui, resize: Font, s14 c836DFF bold
-	Gui, resize: Add,Text,x90 y15 h13,Resize Window
-	Gui, resize: Add,Text,x360 y15 h13,Move Window
-	Gui, resize: Add,Text,x625 y15 h13,Advanced
-	Gui, resize: Color, 292929
-	Gui, resize: Font, s10 cDCDCCC norm
-	Gui, resize: Add,Text,x60 y55 h13,Current:
-	Gui, resize: Add,Text,x60 y75 h13,Original:
-	Gui, resize: Add,Text,x60 y95 h13,Client area:
-	Gui, resize: Add,Text,x60 y184,New Width:
-	Gui, resize: Add,Text,x60 y204,New Height:
-	Gui, resize: Add,Text,x325 y55 h13,Current:
-	Gui, resize: Add,Text,x325 y75 h13,Original:
-	Gui, resize: Add,Text,x325 y184,New X:
-	Gui, resize: Add,Text,x325 y204,New Y:
-	Gui, resize: Add,Text,x325 y95,Center:
-	Gui, resize: Add,Text,x560 y55 h13,Custom Width Left:
-	Gui, resize: Add,Text,x560 y75 h13,Custom Width Right:
-	Gui, resize: Add,Text,x560 y95 h13,Custom Height Top:
-	Gui, resize: Add,Text,x560 y115 h13,Custom Height Bottom:
-	Gui, resize: Add,Text,x560 y171,TSB Color:
-	Gui, resize: Add,Text,x473 y148 h13,By: 
-	Gui, resize: Add,Text,x60 y274 h13,Temp/Perm Save: 
-	Gui, resize: Add,Text,x60 y303 h13,Load Saved Pos: 
-	Gui, resize: Font, s10 cb396ff norm
-	Wofwin := 0000		;Ahk gui bug temp fix.
-	Hofwin := 0000 
-	Xofwin := 0000 
-	Yofwin := 0000
-	Gui, resize: Add,Text,x150 y55 h13 vCurrentWH,W: %Wofwin%, H: %Hofwin%
-	Gui, resize: Add,Text,x396 y55 h13 vCurrentXY,X: %Xofwin%, Y: %Yofwin%
-	Gui, resize: Font, s10 c836DFF norm
-	Gui, resize: Add,Text,x150 y95 h13,W: %Wclient%, H: %Hclient%
-	Gui, resize: Add,Text,x150 y75 h13,W: %Worig%, H: %Horig%
-	Gui, resize: Add,Text,x396 y75 h13,X: %Xorig%, Y: %Yorig%
-	Gui, resize: Font, s9 c836DFF bold
-	Gui, resize: Add,Edit,x496 y147 w24 h19 vVmove,1
-	Gui, resize: Font, s10 c836DFF bold
-	Gui, resize: Add,Edit,x150 y183 w70 h19 vWnew,%Worig%
-	Gui, resize: Add,Edit,x150 y203 w70 h19 vHnew,%Horig%
-	Gui, resize: Add,Edit,x390 y183 w70 h19 vXnew,%Xorig%
-	Gui, resize: Add,Edit,x390 y203 w70 h19 vYnew,%Yorig%
-	Gui, resize: Add,Edit,x712 y53 w70 h19 vCustomWidthLeft,%CustomWidthLeft%
-	Gui, resize: Add,Edit,x712 y73 w70 h19 vCustomWidthRight,%CustomWidthRight%
-	Gui, resize: Add,Edit,x712 y93 w70 h19 vCustomHeightTop,%CustomHeightTop%
-	Gui, resize: Add,Edit,x712 y113 w70 h19 vCustomHeightBottom,%CustomHeightBottom%
-	Gui, resize: Add,Edit,x635 y170 w70 h19 vbgcolor,%bgcolor%
-	Gui, resize: Add,Progress,x712 y170 w70 h19 c%bgcolor% Background%bgcolor% vbarcolored, 100
-	Gui, resize: Add,Button,x124 y429 w600 h22,Close
-	Gui, resize: Font, Underline
-	Gui, resize: Add,Text,x178 y248,Quick save/load size and position
-	Gui, resize: Add,Text,x315 y358,Create .ini for permanent options
-	Gui, resize: Font, cDCDCCC norm
-	Gui, resize: Add,Button,x230 y193 w52 h18 gResizenow,Resize
-	Gui, resize: Add,Button,x470 y193 w52 h18 gMovenow,Move
-	Gui, resize: Add,Button,x394 y95 w64 h18 gHcenter,H-Center
-	Gui, resize: Add,Button,x394 y117 w64 h18 gVcenter,V-Center
-	Gui, resize: Add,Button,x486 y89 w16 h16 gWup,U
-	Gui, resize: Add,Button,x486 y125 w16 h16 gWdown,D
-	Gui, resize: Add,Button,x468 y107 w16 h16 gWleft,L
-	Gui, resize: Add,Button,x504 y107 w16 h16 gWright,R
-	Gui, resize: Add,Button,x713 y138 w68 h18 gSetnow,Set CWH
-	Gui, resize: Add,Button,x789 y54 w14 h17 gResetcwh,R
-	Gui, resize: Add,Button,x713 y195 w68 h18 gSetcolor, Set Color
-	Gui, resize: Add,Button,x560 y260 w242 h28 gStartHookGui, Open Window Hooker
-	Gui, resize: Add,Button,x789 y171 w14 h17 gResetcolor,R
-	Gui, resize: Add,Button,x374 y384 w100 h28 gCreateini,Make/Save .ini
-	Gui, resize: Add,Button,x182 y272 w27 h22 gSavetemp1,T1
-	Gui, resize: Add,Button,x182 y301 w27 h22 gLoadtemp1,T1
-	Gui, resize: Add,Button,x214 y272 w27 h22 gSavetemp2,T2
-	Gui, resize: Add,Button,x214 y301 w27 h22 gLoadtemp2,T2
-	Gui, resize: Add,Button,x250 y272 w27 h22 gSave1,P1
-	Gui, resize: Add,Button,x250 y301 w27 h22 gLoad1,P1
-	Gui, resize: Add,Button,x282 y272 w27 h22 gSave2,P2
-	Gui, resize: Add,Button,x282 y301 w27 h22 gLoad2,P2
-	Gui, resize: Add,Button,x314 y272 w27 h22 gSave3,P3
-	Gui, resize: Add,Button,x314 y301 w27 h22 gLoad3,P3
-	Gui, resize: Add,Button,x346 y272 w27 h22 gSave4,P4
-	Gui, resize: Add,Button,x346 y301 w27 h22 gLoad4,P4
-	Gui, resize: Add,Button,x378 y272 w27 h22 gSave5,P5
-	Gui, resize: Add,Button,x378 y301 w27 h22 gLoad5,P5
-	Gui, resize: Add,Button,x306 y74 w14 h18 gOrigxy,O
-	Gui, resize: Add,Button,x41 y74 w14 h18 gOrigwh,O
-	Gui, resize: Add,Checkbox, x562 y220 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR (Kagami)
-	Gui, resize: Show,w850 h467, TSolidBackground Advanced Options
-	Refresher()
-Return
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+	Gui, newmenu: +AlwaysOnTop
+	Gui, newmenu: Color, 292929
+	Gui, newmenu: Font, s14 c836DFF bold, Segoe UI
+	Gui, newmenu: Add, Text, x236 y15 h13, Advanced Features
+	Gui, newmenu: Font, s10 c836DFF norm Underline
+	Gui, newmenu: Add, Text, x219 y355, Create .ini for permanent options
+	Gui, newmenu: Font, s10 cDCDCCC norm
+	Gui, newmenu: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
+	Gui, newmenu: Font, s12 c836DFF bold
+	Gui, newmenu: Add, Button, x198 y100 w242 h38 gStartResizeGui, &Move/Resize Window
+	Gui, newmenu: Add, Button, x198 y160 w242 h38 gStartHookGui, &Window Hooker (Alpha)
+	Gui, newmenu: Add, Button, x198 y220 w242 h38 gStartOptionsGui, &Advanced Options
+	Gui, newmenu: Font, s10 c836DFF bold
+	Gui, newmenu: Add, Button, x174 y439 w290 h24, Close
+	Gui, newmenu: Show, w640 h480, TSolidBackground Advanced Features
+}
 
 F8::
 	Suspend
@@ -309,31 +246,24 @@ F8::
 	}
 Return
 
-
+/*
 F11::
-	ListVars
+	ListVars			;Variable debugging
 Return
-
-
-Winstack(winid) 
-{
-    global Arrs
-    if (!Arrs.hasKey(winid))
-		Arrs[winid] := true
-}
+*/
 
 Abouted:
 	Gui, about: Destroy
 	Gui, about: Color, 292929
-	Gui, about: Font, s14 c836DFF
+	Gui, about: Font, s14 c836DFF, Segoe UI
 	Gui, about: Add, Text,, TSolidBackground %Version%
 	Gui, about: Font, s10 cDCDCCC
 	Gui, about: Add, Text,, For readme, updates and more `ncheck out the project page:  
 	Gui, about: Font, s10 c3257BF underline
-	Gui, about: Add, Text, gGotoSite, https://onurtag.github.io/TSolidBackground/
-	Gui, about: Font, s10 cBlack norm
-	Gui, about: Add, Button, x113 y140 w74 h36 , Ok
-	Gui, about: Show, w300 h198, About TSolidBackground
+	Gui, about: Add, Text, x18 y100 gGotoSite, https://onurtag.github.io/TSolidBackground/
+	Gui, about: Font, s10 cBlack norm Bold
+	Gui, about: Add, Button, x113 y136 w64 h36, Ok
+	Gui, about: Show, w300 h192, About TSolidBackground
 Return
 
 TSolidBackground()
@@ -424,6 +354,15 @@ TSolidBackground()
 	Return
 }
 
+DestroyTSolidBackground()
+{
+	Gui, bg1: Destroy
+	Gui, bg2: Destroy
+	Gui, bg3: Destroy
+	Gui, bg4: Destroy
+	Return
+}
+
 Drawhud(Hudtext,xyvalue)
 {
 	Gui, hud: +AlwaysOnTop -Caption +ToolWindow +Border
@@ -432,15 +371,6 @@ Drawhud(Hudtext,xyvalue)
 	Gui, hud: Add, Text,, %Hudtext%
 	Gui, hud: Show, NoActivate %xyvalue%
 	SetTimer, Deletehud, 1350
-	Return
-}
-
-DestroyTSolidBackground()
-{
-	Gui, bg1: Destroy
-	Gui, bg2: Destroy
-	Gui, bg3: Destroy
-	Gui, bg4: Destroy
 	Return
 }
 
@@ -481,28 +411,6 @@ GetMonitorIndexFromWindow(windowHandle)		;Pre-made function by shinywong, thank 
 	Return
 }
 
-Refresher()
-{
-	Global
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	GuiControl, resize:,CurrentWH,W: %Wofwin%, H: %Hofwin%
-	GuiControl, resize:,CurrentXY,X: %Xofwin%, Y: %Yofwin%
-	SetTimer, Refresher, 50
-	Return
-}
-
-RefresherEdit()
-{
-	Global
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	GuiControl, resize:,Wnew,%Wofwin%
-	GuiControl, resize:,Hnew,%Hofwin%
-	GuiControl, resize:,Xnew,%Xofwin%
-	GuiControl, resize:,Ynew,%Yofwin%
-	GuiControl,+c%bgcolor% +Background%bgcolor%, barcolored
-	Return
-}
-
 Deletehud:
 	SetTimer, Deletehud, off
 	Gui, hud: Destroy
@@ -514,57 +422,17 @@ Return
 
 startButtonOk:
 startGuiEscape:
+	Gui, start: Destroy
+Return
+
 aboutButtonOk:
 aboutGuiEscape:
-	Gui, start: Destroy
 	Gui, about: Destroy
 Return
 
-resizeGuiClose:
-resizeButtonClose:
-resizeGuiEscape:
-	SetTimer, Refresher, Off
-	Gui, resize: Destroy
-Return
-
-Resizenow:
-	Gui, Submit, NoHide
-	WinMove,ahk_id %TBResized%,,,,%Wnew%,%Hnew%
-	RefresherEdit()
-Return	
-
-Movenow:
-	Gui, Submit, NoHide
-	WinMove,ahk_id %TBResized%,,%Xnew%,%Ynew%
-	RefresherEdit()
-Return
-
-Setnow:
-	Gui, Submit, NoHide
-Return
-
-Resetcwh:
-	GuiControl, resize:,CustomHeightBottom,0
-	GuiControl, resize:,CustomHeightTop,0
-	GuiControl, resize:,CustomWidthRight,0
-	GuiControl, resize:,CustomWidthLeft,0
-	Gui, Submit, NoHide
-Return
-
-
-Setcolor:
-	Gui, Submit, NoHide
-	RefresherEdit()
-Return
-
-Resetcolor:
-	if(bgcolor==051523){
-		GuiControl, resize:,bgcolor,250000
-	} else {
-		GuiControl, resize:,bgcolor,051523
-	}
-	Gui, Submit, NoHide
-	RefresherEdit()
+newmenuGuiEscape:
+newmenuButtonClose:
+	Gui, newmenu: Destroy
 Return
 
 Createini:	
@@ -584,7 +452,7 @@ Makeini()
 	IniWrite, %OnTopKey%, TSolidBackground.ini, TSolidBackground Settings, On Top Key 
 	IniWrite, %CenterKey%, TSolidBackground.ini, TSolidBackground Settings, Center Window Key 
 	IniWrite, %TaskbarKey%, TSolidBackground.ini, TSolidBackground Settings, Show Hide Taskbar Key 
-	IniWrite, %OptionsKey%, TSolidBackground.ini, TSolidBackground Settings, Options Key 
+	IniWrite, %OptionsKey%, TSolidBackground.ini, TSolidBackground Settings, Advanced Features Key 
 	IniWrite, %SuspendKey%, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
 	IniWrite, %CustomWidthLeft%, TSolidBackground.ini, TSolidBackground Settings, Custom Width Left
 	IniWrite, %CustomWidthRight%, TSolidBackground.ini, TSolidBackground Settings, Custom Width Right
@@ -594,9 +462,226 @@ Makeini()
 	IniWrite, %TitleOne%, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
 	IniWrite, %TitleTwo%, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
 	IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color 
-	Drawhud("TSolidBackground.ini file was created/edited.","")
+	Drawhud("TSolidBackground.ini file was created/edited.","y180")
 	Return
 }
+
+;Advanced Options Start
+StartOptionsGui:
+	ShowOptions()
+Return
+
+ShowOptions(){
+	Global
+	Gui, options: Destroy
+	Gui, options: +AlwaysOnTop
+	Gui, options: Font, s14 c836DFF bold, Segoe UI
+	Gui, options: Add, Text,x240 y15 h13, Advanced Options
+	Gui, options: Color, 292929
+	Gui, options: Font, s10 cDCDCCC norm
+	Gui, options: Add, Text, x202 y75 h13, Custom Width Left:
+	Gui, options: Add, Text, x202 y96 h13, Custom Width Right:
+	Gui, options: Add, Text, x202 y117 h13, Custom Height Top:
+	Gui, options: Add, Text, x202 y138 h13, Custom Height Bottom:
+	Gui, options: Add, Text, x202 y205, TSolidBackground Color:
+	Gui, options: Font, s10 c836DFF bold
+	Gui, options: Add, Button, x174 y439 w290 h24, Close
+	Gui, options: Add, Edit, x360 y73 w70 h20 vCustomWidthLeft,%CustomWidthLeft%
+	Gui, options: Add, Edit, x360 y94 w70 h20 vCustomWidthRight,%CustomWidthRight%
+	Gui, options: Add, Edit, x360 y115 w70 h20 vCustomHeightTop,%CustomHeightTop%
+	Gui, options: Add, Edit, x360 y136 w70 h20 vCustomHeightBottom,%CustomHeightBottom%
+	Gui, options: Add, Edit, x360 y203  w70 h20 vbgcolor,%bgcolor%
+	Gui, options: Add, Progress, x360 y225 w70 h20 c%bgcolor% Background%bgcolor% vbarcolored, 100
+	Gui, options: Font, norm Underline
+	Gui, options: Add, Text, x219 y355, Create .ini for permanent options
+	Gui, options: Font, s9 cDCDCCC norm
+	Gui, options: Add, Button, x434 y75 w16 h16 gResetcwh, R
+	Gui, options: Add, Button, x434 y205 w16 h16 gResetcolor, R
+	Gui, options: Add, Button, x361 y161 w68 h18 gSetnow, Set CWH
+	Gui, options: Add, Button, x361 y249 w68 h18 gSetcolor, Set Color
+	Gui, options: Font, s10 cDCDCCC norm
+	Gui, options: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
+	Gui, options: Add, Checkbox, x202 y290 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR (Kagami Titled Window)
+	Gui, options: Show, w640 h480, Advanced Options
+	Gui, newmenu: Destroy
+	Return
+}
+
+OptionsButtonClose:
+OptionsGuiEscape:
+	Gui, options: Destroy
+Return
+
+Setnow:
+	Gui, Submit, NoHide
+Return
+
+Resetcwh:
+	GuiControl, options:, CustomHeightBottom, 0
+	GuiControl, options:, CustomHeightTop, 0
+	GuiControl, options:, CustomWidthRight, 0
+	GuiControl, options:, CustomWidthLeft, 0
+	Gui, Submit, NoHide
+Return
+
+Setcolor:
+	Gui, Submit, NoHide
+	RefresherOptions()
+Return
+
+Resetcolor:
+	if(bgcolor==051523){
+		GuiControl, options:,bgcolor,250000
+	} else {
+		GuiControl, options:,bgcolor,051523
+	}
+	Gui, Submit, NoHide
+	RefresherOptions()
+Return
+
+RefresherOptions()
+{
+	Global
+	GuiControl,+c%bgcolor% +Background%bgcolor%, barcolored
+	Return
+}
+;Advanced Options End
+
+
+;Move/Resize Start
+StartResizeGui:
+	ShowResizer()
+Return
+
+ShowResizer(){
+	Global
+	Gui, resizer: Destroy
+	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin, ahk_id %TBResized%
+	SysGet, Border_Size, 32
+	SysGet, Border_Size2, 33
+	SysGet, Caption_Size, 4
+	Wnew := Wofwin
+	Hnew := Hofwin
+	Xnew := Xofwin
+	Ynew := Yofwin
+	Hclient := Hofwin - 2*Border_Size2 - Caption_Size
+	Wclient := Wofwin - 2*Border_Size
+	Gui, resizer: +AlwaysOnTop
+	Gui, resizer: Font, s14 c836DFF bold, Segoe UI
+	Gui, resizer: Add, Text, x110 y15 h13, Resize Window
+	Gui, resizer: Add, Text, x400 y15 h13, Move Window
+	Gui, resizer: Color, 292929
+	Gui, resizer: Font, s10 cDCDCCC norm
+	Gui, resizer: Add, Text, x75 y55 h13, Current:
+	Gui, resizer: Add, Text, x75 y75 h13, Original:
+	Gui, resizer: Add, Text, x75 y95 h13, Client area:
+	Gui, resizer: Add, Text, x75 y184, New Width:
+	Gui, resizer: Add, Text, x75 y206, New Height:
+	Gui, resizer: Add, Text, x370 y55 h13, Current:
+	Gui, resizer: Add, Text, x370 y75 h13, Original:
+	Gui, resizer: Add, Text, x370 y184, New X:
+	Gui, resizer: Add, Text, x370 y206, New Y:
+	Gui, resizer: Add, Text, x370 y95, Center:
+	Gui, resizer: Add, Text, x498 y148 h13, By: 
+	Gui, resizer: Add, Text, x90 y273 h13, Temp/Perm Save: 
+	Gui, resizer: Add, Text, x90 y301 h13, Load Saved Pos: 
+	Gui, resizer: Font, s9 cDCDCCC norm
+	Gui, resizer: Add, Text, x500 y275, Tip: You can use `nyour advanced `noptions (%OptionsKey%) `nhotkey to select `na new window.
+	Gui, resizer: Font, s10 cb396ff norm
+	Wofwin := 0000		;Ahk gui bug temp fix.
+	Hofwin := 0000 
+	Xofwin := 0000 
+	Yofwin := 0000
+	Gui, resizer: Add, Text, x150 y55 h13 vCurrentWH, W: %Wofwin%, H: %Hofwin%
+	Gui, resizer: Add, Text, x426 y55 h13 vCurrentXY, X: %Xofwin%, Y: %Yofwin%
+	Gui, resizer: Font, s10 c836DFF norm
+	Gui, resizer: Add, Text, x150 y95 h13, W: %Wclient%, H: %Hclient%
+	Gui, resizer: Add, Text, x150 y75 h13, W: %Worig%, H: %Horig%
+	Gui, resizer: Add, Text, x426 y75 h13, X: %Xorig%, Y: %Yorig%
+	Gui, resizer: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
+	Gui, resizer: Font, s10 c836DFF bold
+	Gui, resizer: Add, Edit, x158 y183 w64 h20 vWnew, %Wnew%
+	Gui, resizer: Add, Edit, x158 y205 w64 h20 vHnew, %Hnew%
+	Gui, resizer: Add, Edit, x424 y183 w64 h20 vXnew, %Xnew%
+	Gui, resizer: Add, Edit, x424 y205 w64 h20 vYnew, %Ynew%
+	Gui, resizer: Add, Button, x174 y439 w290 h24, Close
+	Gui, resizer: Font, norm Underline
+	Gui, resizer: Add, Text, x218 y248, Quick save/load size and position
+	Gui, resizer: Add, Text, x219 y355, Create .ini for permanent options
+	Gui, resizer: Font, s9 c836DFF norm bold
+	Gui, resizer: Add, Edit, x517 y147 w24 h20 vVmove,1
+	Gui, resizer: Font, s9 cDCDCCC norm
+	Gui, resizer: Add, Button, x351 y77 w15 h15 gOrigxy, R
+	Gui, resizer: Add, Button, x56 y77 w15 h15 gOrigwh, R
+	Gui, resizer: Add, Button, x521 y89 w16 h16 gWup, U
+	Gui, resizer: Add, Button, x521 y125 w16 h16 gWdown, D
+	Gui, resizer: Add, Button, x503 y107 w16 h16 gWleft, L
+	Gui, resizer: Add, Button, x539 y107 w16 h16 gWright, R
+	Gui, resizer: Add, Button, x203 y272 w27 h21 gSavetemp1, T1
+	Gui, resizer: Add, Button, x203 y300 w27 h21 gLoadtemp1, T1
+	Gui, resizer: Add, Button, x235 y272 w27 h21 gSavetemp2, T2
+	Gui, resizer: Add, Button, x235 y300 w27 h21 gLoadtemp2, T2
+	Gui, resizer: Add, Button, x270 y272 w27 h21 gSave1, P1
+	Gui, resizer: Add, Button, x270 y300 w27 h21 gLoad1, P1
+	Gui, resizer: Add, Button, x302 y272 w27 h21 gSave2, P2
+	Gui, resizer: Add, Button, x302 y300 w27 h21 gLoad2, P2
+	Gui, resizer: Add, Button, x334 y272 w27 h21 gSave3, P3
+	Gui, resizer: Add, Button, x334 y300 w27 h21 gLoad3, P3
+	Gui, resizer: Add, Button, x366 y272 w27 h21 gSave4, P4
+	Gui, resizer: Add, Button, x366 y300 w27 h21 gLoad4, P4
+	Gui, resizer: Add, Button, x398 y272 w27 h21 gSave5, P5
+	Gui, resizer: Add, Button, x398 y300 w27 h21  gLoad5, P5
+	Gui, resizer: Add, Button, x231 y194 w52 h18 gResizenow, Resize
+	Gui, resizer: Add, Button, x496 y194 w52 h18 gMovenow, Move
+	Gui, resizer: Add, Button, x424 y96 w64 h18 gHcenter, H-Center
+	Gui, resizer: Add, Button, x424 y118 w64 h18 gVcenter, V-Center
+	Gui, resizer: Show, w640 h480, Move/Resize Window
+	Gui, newmenu: Destroy
+	Refresher()
+	Resizerunning := 1
+	Return
+}
+
+resizerGuiClose:
+resizerButtonClose:
+resizerGuiEscape:
+	SetTimer, Refresher, Off
+	Gui, resizer: Destroy
+	Resizerunning := 0
+Return
+
+Refresher()
+{
+	Global
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+	GuiControl, resizer:, CurrentWH, W: %Wofwin%, H: %Hofwin%
+	GuiControl, resizer:, CurrentXY, X: %Xofwin%, Y: %Yofwin%
+	SetTimer, Refresher, 50
+	Return
+}
+
+RefresherEdit()
+{
+	Global
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+	GuiControl, resizer:, Wnew, %Wofwin%
+	GuiControl, resizer:, Hnew, %Hofwin%
+	GuiControl, resizer:, Xnew, %Xofwin%
+	GuiControl, resizer:, Ynew, %Yofwin%
+	Return
+}
+
+Resizenow:
+	Gui, Submit, NoHide
+	WinMove, ahk_id %TBResized%,,,, %Wnew%, %Hnew%
+	RefresherEdit()
+Return	
+
+Movenow:
+	Gui, Submit, NoHide
+	WinMove, ahk_id %TBResized%,, %Xnew%, %Ynew%
+	RefresherEdit()
+Return
 
 Vcenter:	
 	GetMonitorIndexFromWindow(Activewin)
@@ -656,10 +741,6 @@ Return
 
 Origwh:
 	WinMove,ahk_id %TBResized%,,,,%Worig%,%Horig%
-Return
-
-Reloaded:
-	Reload
 Return
 
 Savetemp1:
@@ -725,7 +806,12 @@ Loadpos(posnr)
 	IniRead, PermY, TSolidBackground.ini, Saved %posnr%, Y
 	IniRead, PermW, TSolidBackground.ini, Saved %posnr%, W
 	IniRead, PermH, TSolidBackground.ini, Saved %posnr%, H
-	WinMove,ahk_id %TBResized%,,%PermX%,%PermY%,%PermW%,%PermH%
+	if (PermX == "ERROR") 
+	{
+		DrawHud("Saved position or .ini file doesn't exist.","y180")
+	} else {
+		WinMove,ahk_id %TBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
+	}
 	Return
 }
 
@@ -742,35 +828,43 @@ Savepos(posnr)
 	IniWrite, %Wofwin%, TSolidBackground.ini, Saved %posnr%, W
 	IniWrite, %Hofwin%, TSolidBackground.ini, Saved %posnr%, H
 }
+;Move/Resize End
 
+;Hooker Start
 ShowHooker(){
 	Global
 	Gui, hook: Destroy
 	Gui, hook: +AlwaysOnTop
 	Gui, hook: Color, 292929
-	Gui, hook: Font, s14 c836DFF bold
-	Gui, hook: Add, Text, x188 y12, Window Hooker (Experimental)
+	Gui, hook: Font, s14 c836DFF bold, Segoe UI
+	Gui, hook: Add, Text, x242 y12, Window Hooker (Alpha)
+	Gui, hook: Font, s10 c836DFF norm Underline
+	Gui, hook: Add, Text, x219 y355, Create .ini for permanent options
 	Gui, hook: Font, s10 cDCDCCC norm
-	Gui, hook: Add, Text, x24 y102, Main Window:  
-	Gui, hook: Add, Text, x24 y142, Hooked Window:  
-	Gui, hook: Add, Text, x24 y47 , Window Hooker currently only works for minimizing/switching tabs on browsers.`nFor now it can't make them move together. The .ini file will save the window titles too.
+	Gui, hook: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
+	Gui, hook: Add, Text, x112 y112, Main Window:  
+	Gui, hook: Add, Text, x112 y152, Hooked Window:  
+	Gui, hook: Add, Text, x60 y47 , Window Hooker currently only works for minimizing/switching tabs on browsers.`nFor now it can't make them move together. The .ini file will save the window titles too.
+	Gui, hook: Font, s9
+	Gui, hook: Add, Text, x500 y275, Tip: You can `nalso stop the `nwindow hooker `nusing the tray `nicon menu.
 	Gui, hook: Font, s10 cBlack norm
-	Gui, hook: Add, Edit, x190 y101 w170 h19 vTitleOne, %TitleOne%
-	Gui, hook: Add, Edit, x190 y141 w170 h19 vTitleTwo, %TitleTwo%
-	Gui, hook: Add, Button, x386 y99 h23 gGetactiveOne, Get last active window
-	Gui, hook: Add, Button, x386 y139 h23 gGetactiveTwo, Get last active window
+	Gui, hook: Add, Edit, x234 y111 w170 h20 vTitleOne, %TitleOne%
+	Gui, hook: Add, Edit, x234 y151 w170 h20 vTitleTwo, %TitleTwo%
+	Gui, hook: Add, Button, x421 y109 h23 gGetactiveOne, Get last active window
+	Gui, hook: Add, Button, x421 y149 h23 gGetactiveTwo, Get last active window
 	if(Hooking == 0) {
-		Gui, hook: Add, Button, x193 y182 w164 h66 gStartHook, Start Hook
+		Gui, hook: Add, Button, x237 y192 w164 h66 gStartHook, Start Hook
 	} else {
-		Gui, hook: Add, Button, x193 y182 w164 h66 gStopHook, Stop Hook
+		Gui, hook: Add, Button, x237 y192 w164 h66 gStopHook, Stop Hook
 	}
-	Gui, hook: Add, Button, x243 y266 w64 h26 , Close
-	Gui, hook: Show, w550 h310, Window Hooker (Experimental)
+	Gui, hook: Font, s10 cBlack norm Bold
+	Gui, hook: Add, Button, x174 y439 w290 h24, Close
+	Gui, hook: Show, w640 h480, Window Hooker (Alpha)
+	Gui, newmenu: Destroy
 	Return
 }
 
 StartHookGui:
-	Gui, resize: Destroy
 	ShowHooker()
 Return
 
@@ -797,19 +891,17 @@ StartHook:
 	Hooking := 1
 	Gui, hook: Destroy
 	Hooker()
-	ShowHooker()
+	Menu, Tray, Enable, Stop Window Hooker
 Return
 
 StopHook:
-	Hooking := 0
 	Gui, hook: Destroy
 	KillHooker()
-	ShowHooker()
 Return
 
 Hooker(){
 	Global
-	WinGet, isNotMin, MinMax, %TitleOne%
+	;WinGet, isNotMin, MinMax, %TitleOne%
 	WinGet, WindowExStyle, ExStyle, %TitleTwo%
 	CurrActiveID := WinExist("A")
 	WinGetTitle, CurrActiveTitle, ahk_id %CurrActiveID%
@@ -825,24 +917,45 @@ Hooker(){
 			*/
 		} else {
 			WinRestore, %TitleTwo%
-			Sleep, 32
+			Sleep, 30
 			WinSet, AlwaysOnTop, on, %TitleTwo%
 		}
 	} else {
 		if (WindowExStyle & 0x8) 
 		{ 
 			WinSet, AlwaysOnTop, off, %TitleTwo%
-			Sleep, 32
+			Sleep, 30
 			WinMinimize, %TitleTwo%
 		}
 	}
-	SetTimer, Hooker, 75
+	if (Hooking)
+	{
+		SetTimer, Hooker, 70
+	} else {
+		WinSet, AlwaysOnTop, off, %TitleTwo%
+	}
 	Return
 }
 
 KillHooker(){
+	Global
+	Hooking := 0
 	SetTimer, Hooker, Off
+	ShowHooker()
+	Menu, Tray, Disable, Stop Window Hooker
 	Return
+}
+;Hooker End
+
+Reloaded:
+	Reload
+Return
+
+Winstack(winid) 
+{
+    global Arrs
+    if (!Arrs.hasKey(winid))
+		Arrs[winid] := true
 }
 
 Exited:
