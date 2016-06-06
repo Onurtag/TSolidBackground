@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.5.0"
+Version := "v2.5.1"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -28,18 +28,21 @@ CustomHeightBottom := 0
 StartupWindow := 1
 monitorIndex := 1
 protectVNR := 1
+excludeborders := 1
 Resizerunning := 0
 Hooking := 0
 TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
 
-Menu, Tray, Icon,,, 1
+Menu, Tray, Icon,,, 0
 Menu, Tray, NoStandard
 Menu, Tray, Add, About TSolidBackground, Abouted
+Menu, Tray, Add, Advanced Features, Advanced
 Menu, Tray, Add, Stop Window Hooker, StopHook
 Menu, Tray, Disable, Stop Window Hooker
 Menu, Tray, Add, Reload, Reloaded
 Menu, Tray, Add, Exit, Exited
+Menu, Tray, Default, Advanced Features
 Menu, Tray, Tip, TSolidBackground
 
 IfExist, TSolidBackground.ini
@@ -136,7 +139,7 @@ Return
 	{
 		if (WinExist("A") != Activewin) 
 		{	
-			Drawhud("Got a new window for TSolidBackground.","")
+			Drawhud("Got a new window for TSolidBackground.","","c836DFF","1350")
 			Activewin := WinExist("A")
 		}
 		TSolidBackground()
@@ -194,15 +197,16 @@ Return
 Return
 
 +U::
+	if (WinExist("A") != TBResized) 
+	{	
+		Drawhud("Got a new window to move/resize.","y200","c836DFF","1350")
+		TBResized := WinExist("A")
+		WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
+	}
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	if (Resizerunning) 
 	{ 
-		if (WinExist("A") != TBResized) 
-		{	
-			Drawhud("Got a new window to move/resize.","y200")
-			TBResized := WinExist("A")
-			WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
-		}
-		WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+		ShowResizer()
 	} else {
 		ShowNewMenu()
 	}
@@ -211,12 +215,6 @@ Return
 ShowNewMenu(){
 	Global
 	Gui, newmenu: Destroy
-	if (WinExist("A") != TBResized) 
-	{	
-		Drawhud("Got a new window to move/resize.","y200")
-		TBResized := WinExist("A")
-		WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
-	}
 	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	Gui, newmenu: +AlwaysOnTop
 	Gui, newmenu: Color, 292929
@@ -246,9 +244,13 @@ F8::
 	}
 Return
 
+Advanced:
+	ShowNewMenu()
+Return
+
 /*
 F11::
-	ListVars			;Variable debugging
+	ListVars			;debug
 Return
 */
 
@@ -276,11 +278,17 @@ TSolidBackground()
 	SysGet, Border_Size, 32
 	SysGet, Border_Size2, 33
 	SysGet, Caption_Size, 4
-	bg1FY := wY+Border_Size2+Caption_Size
-	bg2FX := wX+Border_Size
-	bg3SY := wY+HHeight-Border_Size2
-	bg4SX := wX+WWidth-Border_Size
-	
+	bg1FY := wY
+	bg2FX := wX
+	bg3SY := wY+HHeight
+	bg4SX := wX+WWidth
+	if(excludeborders)
+	{
+		bg1FY += Border_Size2+Caption_Size
+		bg2FX += Border_Size
+		bg3SY -= Border_Size2
+		bg4SX -= Border_Size
+	}
 	WinGet, WinExStyle, ExStyle, ahk_id %Activewin%
 	WinGet, WinStyle, Style, ahk_id %Activewin%
 	if (WinExStyle & 0x8) 
@@ -363,17 +371,6 @@ DestroyTSolidBackground()
 	Return
 }
 
-Drawhud(Hudtext,xyvalue)
-{
-	Gui, hud: +AlwaysOnTop -Caption +ToolWindow +Border
-	Gui, hud: Color, 292929
-	Gui, hud: Font, s11 cBF3232 Bold Verdana
-	Gui, hud: Add, Text,, %Hudtext%
-	Gui, hud: Show, NoActivate %xyvalue%
-	SetTimer, Deletehud, 1350
-	Return
-}
-
 GetMonitorIndexFromWindow(windowHandle)		;Pre-made function by shinywong, thank you.
 {
 	Global
@@ -408,6 +405,18 @@ GetMonitorIndexFromWindow(windowHandle)		;Pre-made function by shinywong, thank 
 			}
 		}
 	}
+	Return
+}
+
+Drawhud(hudtext,xyvalue,hudtextcolor,hudtimer)
+{
+	Gui, hud: Destroy
+	Gui, hud: +AlwaysOnTop -Caption +ToolWindow +Border
+	Gui, hud: Color, 292929
+	Gui, hud: Font, s11 %hudtextcolor% Bold Verdana
+	Gui, hud: Add, Text,, %hudtext%
+	Gui, hud: Show, NoActivate %xyvalue%
+	SetTimer, Deletehud, %hudtimer%
 	Return
 }
 
@@ -462,7 +471,7 @@ Makeini()
 	IniWrite, %TitleOne%, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
 	IniWrite, %TitleTwo%, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
 	IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color 
-	Drawhud("TSolidBackground.ini file was created/edited.","y180")
+	Drawhud("TSolidBackground.ini file was created/edited.","y180","c836DFF","1350")
 	Return
 }
 
@@ -501,7 +510,8 @@ ShowOptions(){
 	Gui, options: Add, Button, x361 y249 w68 h18 gSetcolor, Set Color
 	Gui, options: Font, s10 cDCDCCC norm
 	Gui, options: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
-	Gui, options: Add, Checkbox, x202 y290 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR (Kagami Titled Window)
+	Gui, options: Add, Checkbox, x202 y290 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
+	;Gui, options: Add, Checkbox, x202 y310 Checked%excludeborders% vexcludeborders gSetnow, TSolidBackground client area only					;Useless for now.
 	Gui, options: Show, w640 h480, Advanced Options
 	Gui, newmenu: Destroy
 	Return
@@ -568,8 +578,14 @@ ShowResizer(){
 	Wclient := Wofwin - 2*Border_Size
 	Gui, resizer: +AlwaysOnTop
 	Gui, resizer: Font, s14 c836DFF bold, Segoe UI
-	Gui, resizer: Add, Text, x110 y15 h13, Resize Window
-	Gui, resizer: Add, Text, x400 y15 h13, Move Window
+	IfWinNotExist, AHK_id %TBResized%
+	{
+		Gui, resizer: Font, cC12626, Segoe UI
+		Gui, resizer: Add, Text, x85 y15 h13, Use the advanced features hotkey to select a window.
+	} else { 
+		Gui, resizer: Add, Text, x110 y15 h13, Resize Window
+		Gui, resizer: Add, Text, x400 y15 h13, Move Window
+	}
 	Gui, resizer: Color, 292929
 	Gui, resizer: Font, s10 cDCDCCC norm
 	Gui, resizer: Add, Text, x75 y55 h13, Current:
@@ -808,7 +824,7 @@ Loadpos(posnr)
 	IniRead, PermH, TSolidBackground.ini, Saved %posnr%, H
 	if (PermX == "ERROR") 
 	{
-		DrawHud("Saved position or .ini file doesn't exist.","y180")
+		DrawHud("Saved position or .ini file doesn't exist.","y180","c836DFF","1350")
 	} else {
 		WinMove,ahk_id %TBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
 	}
@@ -846,7 +862,7 @@ ShowHooker(){
 	Gui, hook: Add, Text, x112 y152, Hooked Window:  
 	Gui, hook: Add, Text, x60 y47 , Window Hooker currently only works for minimizing/switching tabs on browsers.`nFor now it can't make them move together. The .ini file will save the window titles too.
 	Gui, hook: Font, s9
-	Gui, hook: Add, Text, x500 y275, Tip: You can `nalso stop the `nwindow hooker `nusing the tray `nicon menu.
+	Gui, hook: Add, Text, x500 y275, Tip: You can `nalso stop the `nwindow hooker `nusing the `ntray menu.
 	Gui, hook: Font, s10 cBlack norm
 	Gui, hook: Add, Edit, x234 y111 w170 h20 vTitleOne, %TitleOne%
 	Gui, hook: Add, Edit, x234 y151 w170 h20 vTitleTwo, %TitleTwo%
