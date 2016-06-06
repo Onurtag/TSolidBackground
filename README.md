@@ -25,12 +25,10 @@ and later added more features that are useful for me.
 
 *Compiled using latest Ahk2Exe. Not compressed so you can check the source code easily.  
 
-**Version 2.5.0**  
+**Version 2.5.1**  
 
-Changed UI fonts to Segoe UI.  
-Revamp of Advanced Features (default Shift+U hotkey)  
-Added Experimental Window hooking to advanced features (+U).  
-*Window hooking currently works like this: After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.* 
+Some cleanup.
+Added a different icon for the "Suspended" state (Compiled .exe only). 
 
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
@@ -68,6 +66,13 @@ If you have any other problems, open an issue. I'll try to fix it.
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
 
+
+* **Version 2.5.0**  
+
+Changed UI fonts to Segoe UI.  
+Revamp of Advanced Features (default Shift+U hotkey)  
+Added Experimental Window hooking to advanced features (+U).  
+*Window hooking currently works like this: After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.* 
 
 * **Version 2.4.4**  
 
