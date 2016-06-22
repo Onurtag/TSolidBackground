@@ -25,10 +25,10 @@ and later added more features that are useful for me.
 
 *Compiled using latest Ahk2Exe. Not compressed so you can check the source code easily.  
 
-**Version 2.5.1**  
+**Version 2.6.0**  
 
-Some cleanup.
-Added a different icon for the "Suspended" state (Compiled .exe only). 
+Moving buttons added to advanced move menu.
+"Make a Dummy Window for TSolidBackground" added. Use this to get a custom sized TSolidBackground.
 
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
@@ -65,6 +65,12 @@ If you have any other problems, open an issue. I'll try to fix it.
 ##Old Updates (DD.MM.YY)  
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
+
+
+* **Version 2.5.1**  
+
+Some cleanup.
+Added a different icon for the "Suspended" state (Compiled .exe only). 
 
 
 * **Version 2.5.0**  

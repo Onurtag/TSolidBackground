@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.5.1"
+Version := "v2.6.0"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -33,11 +33,15 @@ Resizerunning := 0
 Hooking := 0
 TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
+Vmove := 5
+Vresize := 5
+SavedDummy := 0
 
 Menu, Tray, Icon,,, 0
 Menu, Tray, NoStandard
 Menu, Tray, Add, About TSolidBackground, Abouted
 Menu, Tray, Add, Advanced Features, Advanced
+Menu, Tray, Add, Make a Dummy Window, StartDummyWindow
 Menu, Tray, Add, Stop Window Hooker, StopHook
 Menu, Tray, Disable, Stop Window Hooker
 Menu, Tray, Add, Reload, Reloaded
@@ -225,10 +229,11 @@ ShowNewMenu(){
 	Gui, newmenu: Font, s10 cDCDCCC norm
 	Gui, newmenu: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
 	Gui, newmenu: Font, s12 c836DFF bold
-	Gui, newmenu: Add, Button, x198 y100 w242 h38 gStartResizeGui, &Move/Resize Window
-	Gui, newmenu: Add, Button, x198 y160 w242 h38 gStartHookGui, &Window Hooker (Alpha)
-	Gui, newmenu: Add, Button, x198 y220 w242 h38 gStartOptionsGui, &Advanced Options
+	Gui, newmenu: Add, Button, x198 y80 w242 h38 gStartResizeGui, &Move/Resize Window
+	Gui, newmenu: Add, Button, x198 y140 w242 h38 gStartHookGui, &Window Hooker (Alpha)
+	Gui, newmenu: Add, Button, x198 y200 w242 h38 gStartOptionsGui, &Advanced Options
 	Gui, newmenu: Font, s10 c836DFF bold
+	Gui, newmenu: Add, Button, x198 y290 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
 	Gui, newmenu: Add, Button, x174 y439 w290 h24, Close
 	Gui, newmenu: Show, w640 h480, TSolidBackground Advanced Features
 }
@@ -236,7 +241,7 @@ ShowNewMenu(){
 F8::
 	Suspend
 	if (A_IsSuspended) {
-		Traytip, TSolidBackground, Suspended all other hotkeys. `nTo enable hotkeys press %SuspendKey%
+		Traytip, TSolidBackground, Suspended all other hotkeys. `nTo enable hotkeys press %SuspendKey%.
 		Menu, Tray, Tip, TSolidBackground Suspended
 	} else {
 		Traytip, TSolidBackground, Enabled all hotkeys.
@@ -248,11 +253,11 @@ Advanced:
 	ShowNewMenu()
 Return
 
-/*
+
 F11::
 	ListVars			;debug
 Return
-*/
+
 
 Abouted:
 	Gui, about: Destroy
@@ -444,6 +449,10 @@ newmenuButtonClose:
 	Gui, newmenu: Destroy
 Return
 
+DummyGuiEscape:
+	Gui, Dummy: Destroy
+Return
+
 Createini:	
 	Gui, Submit, NoHide
 	Makeini()
@@ -566,7 +575,7 @@ Return
 ShowResizer(){
 	Global
 	Gui, resizer: Destroy
-	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin, ahk_id %TBResized%
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	SysGet, Border_Size, 32
 	SysGet, Border_Size2, 33
 	SysGet, Caption_Size, 4
@@ -591,18 +600,19 @@ ShowResizer(){
 	Gui, resizer: Add, Text, x75 y55 h13, Current:
 	Gui, resizer: Add, Text, x75 y75 h13, Original:
 	Gui, resizer: Add, Text, x75 y95 h13, Client area:
-	Gui, resizer: Add, Text, x75 y184, New Width:
-	Gui, resizer: Add, Text, x75 y206, New Height:
+	Gui, resizer: Add, Text, x75 y200, New Width:
+	Gui, resizer: Add, Text, x75 y222, New Height:
 	Gui, resizer: Add, Text, x370 y55 h13, Current:
 	Gui, resizer: Add, Text, x370 y75 h13, Original:
-	Gui, resizer: Add, Text, x370 y184, New X:
-	Gui, resizer: Add, Text, x370 y206, New Y:
-	Gui, resizer: Add, Text, x370 y95, Center:
-	Gui, resizer: Add, Text, x498 y148 h13, By: 
-	Gui, resizer: Add, Text, x90 y273 h13, Temp/Perm Save: 
-	Gui, resizer: Add, Text, x90 y301 h13, Load Saved Pos: 
+	Gui, resizer: Add, Text, x370 y200, New X:
+	Gui, resizer: Add, Text, x370 y222, New Y:
+	Gui, resizer: Add, Text, x370 y126, Center:
+	Gui, resizer: Add, Text, x497 y168 h13, By: 
+	Gui, resizer: Add, Text, x167 y168 h13, By: 
+	Gui, resizer: Add, Text, x90 y283 h13, Temp/Perm Save: 
+	Gui, resizer: Add, Text, x90 y311 h13, Load Saved Pos: 
 	Gui, resizer: Font, s9 cDCDCCC norm
-	Gui, resizer: Add, Text, x500 y275, Tip: You can use `nyour advanced `noptions (%OptionsKey%) `nhotkey to select `na new window.
+	Gui, resizer: Add, Text, x500 y275, Tip: You can use `nyour advanced `nfeatures (%OptionsKey%) `nhotkey to select `na new window.
 	Gui, resizer: Font, s10 cb396ff norm
 	Wofwin := 0000		;Ahk gui bug temp fix.
 	Hofwin := 0000 
@@ -611,46 +621,57 @@ ShowResizer(){
 	Gui, resizer: Add, Text, x150 y55 h13 vCurrentWH, W: %Wofwin%, H: %Hofwin%
 	Gui, resizer: Add, Text, x426 y55 h13 vCurrentXY, X: %Xofwin%, Y: %Yofwin%
 	Gui, resizer: Font, s10 c836DFF norm
-	Gui, resizer: Add, Text, x150 y95 h13, W: %Wclient%, H: %Hclient%
+	Gui, resizer: Add, Text, x150 y95 h13, W: %Wclient%, H: %Hclient%			;Disabled because useless.
 	Gui, resizer: Add, Text, x150 y75 h13, W: %Worig%, H: %Horig%
 	Gui, resizer: Add, Text, x426 y75 h13, X: %Xorig%, Y: %Yorig%
 	Gui, resizer: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
 	Gui, resizer: Font, s10 c836DFF bold
-	Gui, resizer: Add, Edit, x158 y183 w64 h20 vWnew, %Wnew%
-	Gui, resizer: Add, Edit, x158 y205 w64 h20 vHnew, %Hnew%
-	Gui, resizer: Add, Edit, x424 y183 w64 h20 vXnew, %Xnew%
-	Gui, resizer: Add, Edit, x424 y205 w64 h20 vYnew, %Ynew%
+	Gui, resizer: Add, Edit, x158 y198 w64 h20 vWnew, %Wnew%
+	Gui, resizer: Add, UpDown, 0x80 Range0-90000, %Wnew%
+	Gui, resizer: Add, Edit, x158 y221 w64 h20 vHnew, %Hnew%
+	Gui, resizer: Add, UpDown, 0x80 Range0-90000, %Hnew%
+	Gui, resizer: Add, Edit, x424 y198 w64 h20 vXnew, %Xnew%
+	Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Xnew%
+	Gui, resizer: Add, Edit, x424 y221 w64 h20 vYnew, %Ynew%
+	Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Ynew%
 	Gui, resizer: Add, Button, x174 y439 w290 h24, Close
 	Gui, resizer: Font, norm Underline
-	Gui, resizer: Add, Text, x218 y248, Quick save/load size and position
+	Gui, resizer: Add, Text, x218 y258, Quick save/load size and position
 	Gui, resizer: Add, Text, x219 y355, Create .ini for permanent options
 	Gui, resizer: Font, s9 c836DFF norm bold
-	Gui, resizer: Add, Edit, x517 y147 w24 h20 vVmove,1
+	Gui, resizer: Add, Edit, x517 y169 w40 h20 vVmove, %Vmove%
+	Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vmove%
+	Gui, resizer: Add, Edit, x187 y167 w40 h20 vVresize, %Vresize%
+	Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vresize%
 	Gui, resizer: Font, s9 cDCDCCC norm
 	Gui, resizer: Add, Button, x351 y77 w15 h15 gOrigxy, R
 	Gui, resizer: Add, Button, x56 y77 w15 h15 gOrigwh, R
-	Gui, resizer: Add, Button, x521 y89 w16 h16 gWup, U
-	Gui, resizer: Add, Button, x521 y125 w16 h16 gWdown, D
-	Gui, resizer: Add, Button, x503 y107 w16 h16 gWleft, L
-	Gui, resizer: Add, Button, x539 y107 w16 h16 gWright, R
-	Gui, resizer: Add, Button, x203 y272 w27 h21 gSavetemp1, T1
-	Gui, resizer: Add, Button, x203 y300 w27 h21 gLoadtemp1, T1
-	Gui, resizer: Add, Button, x235 y272 w27 h21 gSavetemp2, T2
-	Gui, resizer: Add, Button, x235 y300 w27 h21 gLoadtemp2, T2
-	Gui, resizer: Add, Button, x270 y272 w27 h21 gSave1, P1
-	Gui, resizer: Add, Button, x270 y300 w27 h21 gLoad1, P1
-	Gui, resizer: Add, Button, x302 y272 w27 h21 gSave2, P2
-	Gui, resizer: Add, Button, x302 y300 w27 h21 gLoad2, P2
-	Gui, resizer: Add, Button, x334 y272 w27 h21 gSave3, P3
-	Gui, resizer: Add, Button, x334 y300 w27 h21 gLoad3, P3
-	Gui, resizer: Add, Button, x366 y272 w27 h21 gSave4, P4
-	Gui, resizer: Add, Button, x366 y300 w27 h21 gLoad4, P4
-	Gui, resizer: Add, Button, x398 y272 w27 h21 gSave5, P5
-	Gui, resizer: Add, Button, x398 y300 w27 h21  gLoad5, P5
-	Gui, resizer: Add, Button, x231 y194 w52 h18 gResizenow, Resize
-	Gui, resizer: Add, Button, x496 y194 w52 h18 gMovenow, Move
-	Gui, resizer: Add, Button, x424 y96 w64 h18 gHcenter, H-Center
-	Gui, resizer: Add, Button, x424 y118 w64 h18 gVcenter, V-Center
+	Gui, resizer: Add, Button, x521 y110 w16 h16 gWup, U
+	Gui, resizer: Add, Button, x521 y146 w16 h16 gWdown, D
+	Gui, resizer: Add, Button, x503 y128 w16 h16 gWleft, L
+	Gui, resizer: Add, Button, x539 y128 w16 h16 gWright, R
+	Gui, resizer: Add, Button, x203 y282 w27 h21 gSavetemp1, T1
+	Gui, resizer: Add, Button, x203 y310 w27 h21 gLoadtemp1, T1
+	Gui, resizer: Add, Button, x235 y282 w27 h21 gSavetemp2, T2
+	Gui, resizer: Add, Button, x235 y310 w27 h21 gLoadtemp2, T2
+	Gui, resizer: Add, Button, x270 y282 w27 h21 gSave1, P1
+	Gui, resizer: Add, Button, x270 y310 w27 h21 gLoad1, P1
+	Gui, resizer: Add, Button, x302 y282 w27 h21 gSave2, P2
+	Gui, resizer: Add, Button, x302 y310 w27 h21 gLoad2, P2
+	Gui, resizer: Add, Button, x334 y282 w27 h21 gSave3, P3
+	Gui, resizer: Add, Button, x334 y310 w27 h21 gLoad3, P3
+	Gui, resizer: Add, Button, x366 y282 w27 h21 gSave4, P4
+	Gui, resizer: Add, Button, x366 y310 w27 h21 gLoad4, P4
+	Gui, resizer: Add, Button, x398 y282 w27 h21 gSave5, P5
+	Gui, resizer: Add, Button, x398 y310 w27 h21 gLoad5, P5
+	Gui, resizer: Add, Button, x231 y209 w52 h18 gResizenow, Resize
+	Gui, resizer: Add, Button, x496 y209 w52 h18 gMovenow, Move
+	Gui, resizer: Add, Button, x424 y117 w64 h18 gHcenter, H-Center
+	Gui, resizer: Add, Button, x424 y138 w64 h18 gVcenter, V-Center
+	Gui, resizer: Add, Button, x154 y131 w26 h16 gWplus, +W
+	Gui, resizer: Add, Button, x184 y131 w26 h16 gWminus, -W
+	Gui, resizer: Add, Button, x217 y122 w26 h16 gHplus, +H
+	Gui, resizer: Add, Button, x217 y142 w26 h16 gHminus, -H
 	Gui, resizer: Show, w640 h480, Move/Resize Window
 	Gui, newmenu: Destroy
 	Refresher()
@@ -672,7 +693,7 @@ Refresher()
 	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	GuiControl, resizer:, CurrentWH, W: %Wofwin%, H: %Hofwin%
 	GuiControl, resizer:, CurrentXY, X: %Xofwin%, Y: %Yofwin%
-	SetTimer, Refresher, 50
+	SetTimer, Refresher, 100
 	Return
 }
 
@@ -689,13 +710,13 @@ RefresherEdit()
 
 Resizenow:
 	Gui, Submit, NoHide
-	WinMove, ahk_id %TBResized%,,,, %Wnew%, %Hnew%
+	WinMove, ahk_id %TBResized%, , , , %Wnew%, %Hnew%
 	RefresherEdit()
 Return	
 
 Movenow:
 	Gui, Submit, NoHide
-	WinMove, ahk_id %TBResized%,, %Xnew%, %Ynew%
+	WinMove, ahk_id %TBResized%, , %Xnew%, %Ynew%
 	RefresherEdit()
 Return
 
@@ -704,9 +725,9 @@ Vcenter:
 	mHeight := monitorBottom-monitorTop
 	mWidth := monitorRight-monitorLeft
 	if(monitorIndex!=1){
-		WinMove,ahk_id %TBResized%,,,(mHeight/2)-(Hofwin/2)+monitorTop-12
+		WinMove,ahk_id %TBResized%, , , (mHeight/2)-(Hofwin/2)+monitorTop
 	} else {
-		WinMove,ahk_id %TBResized%,,,(A_ScreenHeight/2)-(Hofwin/2)-12
+		WinMove,ahk_id %TBResized%, , , (A_ScreenHeight/2)-(Hofwin/2)
 	}
 	RefresherEdit()
 Return
@@ -716,63 +737,99 @@ Hcenter:
 	mHeight := monitorBottom-monitorTop
 	mWidth := monitorRight-monitorLeft
 	if(monitorIndex!=1){
-		WinMove,ahk_id %TBResized%,,(mWidth/2)-(Wofwin/2)+monitorLeft,
+		WinMove,ahk_id %TBResized%, , (mWidth/2)-(Wofwin/2)+monitorLeft,
 	} else {
-		WinMove,ahk_id %TBResized%,,(A_ScreenWidth/2)-(Wofwin/2),
+		WinMove,ahk_id %TBResized%, , (A_ScreenWidth/2)-(Wofwin/2),
 	}
 	RefresherEdit()
 Return
 
 Wup:
 	Gui, Submit, NoHide
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	newcrap := Yofwin-Vmove
-	WinMove,ahk_id %TBResized%,,,%newcrap%
+	WinMove, ahk_id %TBResized%, , , %newcrap%
 	RefresherEdit()
 Return
 
 Wdown:
 	Gui, Submit, NoHide
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	newcrap := Yofwin+Vmove
-	WinMove,ahk_id %TBResized%,,,%newcrap%
+	WinMove, ahk_id %TBResized%, , , %newcrap%
 	RefresherEdit()
 Return
 
 Wleft:
 	Gui, Submit, NoHide
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	newcrap := Xofwin-Vmove
-	WinMove,ahk_id %TBResized%,,%newcrap%,
+	WinMove, ahk_id %TBResized%, , %newcrap%,
 	RefresherEdit()
 Return
 
 Wright:
 	Gui, Submit, NoHide
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	newcrap := Xofwin+Vmove
-	WinMove,ahk_id %TBResized%,,%newcrap%,
+	WinMove, ahk_id %TBResized%, , %newcrap%,
+	RefresherEdit()
+Return
+
+Wplus:
+	Gui, Submit, NoHide
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+	newcrap := Wofwin+Vresize
+	WinMove, ahk_id %TBResized%, , , , %newcrap%
+	RefresherEdit()
+Return
+
+Wminus:
+	Gui, Submit, NoHide
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+	newcrap := Wofwin-Vresize
+	WinMove, ahk_id %TBResized%, , , , %newcrap%
+	RefresherEdit()
+Return
+
+Hplus:
+	Gui, Submit, NoHide
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+	newcrap := Hofwin+Vresize
+	WinMove, ahk_id %TBResized%, , , , ,%newcrap%
+	RefresherEdit()
+Return
+
+Hminus:
+	Gui, Submit, NoHide
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+	newcrap := Hofwin-Vresize
+	WinMove, ahk_id %TBResized%, , , , ,%newcrap%
 	RefresherEdit()
 Return
 
 Origxy:
-	WinMove,ahk_id %TBResized%,,%Xorig%,%Yorig%
+	WinMove, ahk_id %TBResized%, , %Xorig%, %Yorig%
 Return
 
 Origwh:
-	WinMove,ahk_id %TBResized%,,,,%Worig%,%Horig%
+	WinMove, ahk_id %TBResized%, , , , %Worig%, %Horig%
 Return
 
 Savetemp1:
-	WinGetPos,Temp1X,Temp1Y,Temp1W,Temp1H,ahk_id %TBResized%
+	WinGetPos, Temp1X, Temp1Y, Temp1W, Temp1H, ahk_id %TBResized%
 Return
 
 Loadtemp1:
-	WinMove,ahk_id %TBResized%,,%Temp1X%,%Temp1Y%,%Temp1W%,%Temp1H%
+	WinMove, ahk_id %TBResized%, , %Temp1X%, %Temp1Y%, %Temp1W%, %Temp1H%
 Return
 
 Savetemp2:
-	WinGetPos,Temp2X,Temp2Y,Temp2W,Temp2H,ahk_id %TBResized%
+	WinGetPos, Temp2X, Temp2Y, Temp2W, Temp2H, ahk_id %TBResized%
 Return
 
 Loadtemp2:
-	WinMove,ahk_id %TBResized%,,%Temp2X%,%Temp2Y%,%Temp2W%,%Temp2H%
+	WinMove,ahk_id %TBResized%, , %Temp2X%, %Temp2Y%, %Temp2W%, %Temp2H%
 Return
 
 Save1:
@@ -826,7 +883,7 @@ Loadpos(posnr)
 	{
 		DrawHud("Saved position or .ini file doesn't exist.","y180","c836DFF","1350")
 	} else {
-		WinMove,ahk_id %TBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
+		WinMove, ahk_id %TBResized%, , %PermX%, %PermY%, %PermW%, %PermH%
 	}
 	Return
 }
@@ -962,6 +1019,59 @@ KillHooker(){
 	Return
 }
 ;Hooker End
+
+;Dummy Start
+
+StartDummyWindow:
+	Gui, Destroy
+	Gui, Dummy: +Resize +AlwaysOnTop
+	Gui, Dummy: Color, 292929
+	Gui, Dummy: Font, s10 c836DFF, Segoe UI
+	Gui, Dummy: Add, Button, x35 y25 w164 h26 gCloseDummy, Close Dummy Window
+	Gui, Dummy: Add, Button, x35 y60 w164 h26 gSaveDummy, Save && Close
+	Gui, Dummy: Font, cDCDCCC
+	Gui, Dummy: Add, Text, x43 y100 h13, Move 
+	Gui, Dummy: Add, Text, x147 y100 h13, Resize 
+	Gui, Dummy: Add, Text, x26 y188 h13, By: 
+	Gui, Dummy: Add, Text, x129 y188 h13, By: 
+	Gui, Dummy: Font, s9 c836DFF norm bold
+	Gui, Dummy: Add, Edit, x47 y188 w40 h20 vVmove, %Vmove%
+	Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vmove%
+	Gui, Dummy: Add, Edit, x150 y188 w40 h20 vVresize, %Vresize%
+	Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vresize%
+	Gui, Dummy: Add, Button, x51 y124 w16 h16 gWup, U
+	Gui, Dummy: Add, Button, x51 y160 w16 h16 gWdown, D
+	Gui, Dummy: Add, Button, x33 y142 w16 h16 gWleft, L
+	Gui, Dummy: Add, Button, x69 y142 w16 h16 gWright, R
+	Gui, Dummy: Add, Button, x130 y133 w28 h16 gWplus, +W
+	Gui, Dummy: Add, Button, x171 y133 w28 h16 gHplus, +H
+	Gui, Dummy: Add, Button, x130 y153 w28 h16 gWminus, -W
+	Gui, Dummy: Add, Button, x171 y153 w28 h16 gHminus, -H
+	if (SavedDummy) 
+	{
+		Gui, Dummy: Show, x%DummyX% y%DummyY% w%DummyW% h%DummyH%, Dummy Window for TSolidBackground
+	} else {
+		Gui, Dummy: Show, w640 h480, Dummy Window for TSolidBackground
+	}
+	TBResized := WinExist("A")
+Return
+
+CloseDummy:
+	Gui, Dummy: Destroy
+Return
+
+SaveDummy:
+	WinGetPos, DummyX, DummyY, DummyW, DummyH, A
+	SysGet, Border_Size, 32
+	SysGet, Border_Size2, 33
+	SysGet, Caption_Size, 4
+	DummyH := DummyH - 2*Border_Size2 - Caption_Size
+	DummyW := DummyW - 2*Border_Size
+	SavedDummy := 1
+	Gui, Dummy: Destroy
+Return
+
+;Dummy End
 
 Reloaded:
 	Reload
