@@ -27,7 +27,7 @@ and later added more features that are useful for me.
 
 **Version 2.6.0**  
 
-Moving buttons added to advanced move menu.
+Moving buttons added to advanced move menu.  
 "Make a Dummy Window for TSolidBackground" added. Use this to get a custom sized TSolidBackground.
 
 
