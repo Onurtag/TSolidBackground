@@ -721,6 +721,7 @@ Movenow:
 Return
 
 Vcenter:	
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	GetMonitorIndexFromWindow(Activewin)
 	mHeight := monitorBottom-monitorTop
 	mWidth := monitorRight-monitorLeft
@@ -733,6 +734,7 @@ Vcenter:
 Return
 
 Hcenter:
+	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
 	GetMonitorIndexFromWindow(Activewin)
 	mHeight := monitorBottom-monitorTop
 	mWidth := monitorRight-monitorLeft
@@ -1034,11 +1036,13 @@ StartDummyWindow:
 	Gui, Dummy: Add, Text, x147 y100 h13, Resize 
 	Gui, Dummy: Add, Text, x26 y188 h13, By: 
 	Gui, Dummy: Add, Text, x129 y188 h13, By: 
+	Gui, Dummy: Add, Text, x55 y235, Center:
 	Gui, Dummy: Font, s9 c836DFF norm bold
 	Gui, Dummy: Add, Edit, x47 y188 w40 h20 vVmove, %Vmove%
 	Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vmove%
 	Gui, Dummy: Add, Edit, x150 y188 w40 h20 vVresize, %Vresize%
 	Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vresize%
+	Gui, Dummy: Font, s9 c836DFF norm
 	Gui, Dummy: Add, Button, x51 y124 w16 h16 gWup, U
 	Gui, Dummy: Add, Button, x51 y160 w16 h16 gWdown, D
 	Gui, Dummy: Add, Button, x33 y142 w16 h16 gWleft, L
@@ -1047,6 +1051,8 @@ StartDummyWindow:
 	Gui, Dummy: Add, Button, x171 y133 w28 h16 gHplus, +H
 	Gui, Dummy: Add, Button, x130 y153 w28 h16 gWminus, -W
 	Gui, Dummy: Add, Button, x171 y153 w28 h16 gHminus, -H
+	Gui, Dummy: Add, Button, x103 y227 w64 h18 gHcenter, H-Center
+	Gui, Dummy: Add, Button, x103 y248 w64 h18 gVcenter, V-Center
 	if (SavedDummy) 
 	{
 		Gui, Dummy: Show, x%DummyX% y%DummyY% w%DummyW% h%DummyH%, Dummy Window for TSolidBackground
