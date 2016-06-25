@@ -29,7 +29,7 @@ and later added more features that are useful for me.
 
 Moving buttons added to advanced move menu.  
 "Make a Dummy Window for TSolidBackground" added. Use this to get a custom sized TSolidBackground.
-
+Ver. 2.6.1: Save dummy to .ini.
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
 

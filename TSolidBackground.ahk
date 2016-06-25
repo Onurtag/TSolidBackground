@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.6.0"
+Version := "v2.6.1"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -1026,6 +1026,7 @@ KillHooker(){
 
 StartDummyWindow:
 	Gui, Destroy
+	Gui, Dummy: Destroy
 	Gui, Dummy: +Resize +AlwaysOnTop
 	Gui, Dummy: Color, 292929
 	Gui, Dummy: Font, s10 c836DFF, Segoe UI
@@ -1053,7 +1054,15 @@ StartDummyWindow:
 	Gui, Dummy: Add, Button, x171 y153 w28 h16 gHminus, -H
 	Gui, Dummy: Add, Button, x103 y227 w64 h18 gHcenter, H-Center
 	Gui, Dummy: Add, Button, x103 y248 w64 h18 gVcenter, V-Center
-	if (SavedDummy) 
+	IfExist, TSolidBackground.ini
+	{
+		IniRead, DummyX, TSolidBackground.ini, Dummy Window, Dummy X
+		IniRead, DummyY, TSolidBackground.ini, Dummy Window, Dummy Y
+		IniRead, DummyW, TSolidBackground.ini, Dummy Window, Dummy W
+		IniRead, DummyH, TSolidBackground.ini, Dummy Window, Dummy H
+		SavedDummy := 1
+	}
+	if (SavedDummy && DummyX != "ERROR") 
 	{
 		Gui, Dummy: Show, x%DummyX% y%DummyY% w%DummyW% h%DummyH%, Dummy Window for TSolidBackground
 	} else {
@@ -1074,6 +1083,13 @@ SaveDummy:
 	DummyH := DummyH - 2*Border_Size2 - Caption_Size
 	DummyW := DummyW - 2*Border_Size
 	SavedDummy := 1
+	IfExist, TSolidBackground.ini
+	{
+		IniWrite, %DummyX%, TSolidBackground.ini, Dummy Window, Dummy X
+		IniWrite, %DummyY%, TSolidBackground.ini, Dummy Window, Dummy Y
+		IniWrite, %DummyW%, TSolidBackground.ini, Dummy Window, Dummy W
+		IniWrite, %DummyH%, TSolidBackground.ini, Dummy Window, Dummy H
+	}
 	Gui, Dummy: Destroy
 Return
 
