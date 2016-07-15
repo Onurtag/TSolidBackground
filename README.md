@@ -25,26 +25,26 @@ and later added more features that are useful for me.
 
 *Compiled using latest Ahk2Exe. Not compressed so you can check the source code easily.  
 
-**Version 2.6.0**  
+**Version 2.6.2**  
 
-Moving buttons added to advanced move menu.  
-"Make a Dummy Window for TSolidBackground" added. Use this to get a custom sized TSolidBackground.
-Ver. 2.6.1: Save dummy to .ini.
+Added Debug variable to ini. Setting it to 1 will activate F11 Debug variables hotkey.  
+Put some more work into the window hooker (currently Beta).  
+
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
 
 --------------------  
 ## Things To Know  
 
-* Experimental window hooking currently works like this: After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.  
+* Experimental window hooking currently works like this: After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top when that tab/window is currently active. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.  
 
 
 * TSolidBackground.ini file will be created when you create a .ini using the Advanced Options (default Shift+U key).  
 After creating the .ini file you can open it using a text editor to change the hotkeys.  
 [HOTKEY EDITING GUIDE](http://www.autohotkey.com/docs/Hotkeys.htm)  
-* You have to select the window before using most hotkeys.  
+* You have to select the window (make it active) before using most hotkeys.  
 * You can change the background color using Advanced Options in Advanced Features (default Shift+U key) menu.  
-Change the color to a red hue if you want a softer experience (Press that [R] near it).  
+Change the color to a red hue if you want a softer experience (Red encourages sleep). Press that [R] near the color to switch between red and blue.  
 * When you are on the Move/Resize Window menu you can use the Advanced Features (default Shift+U key) hotkey to get a new window to move/resize.  
 * Always on top mode can be used for multiple windows at the same time  
 Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  
@@ -54,17 +54,23 @@ You can use the always on top hotkey afterwards if you really want the window on
 --------------------  
 **Known Bugs:**  
 
-* Hiding taskbar might not work right away, try it again.  
-* Explorer.exe might crash and restart if you spam the hotkeys too much. (Especially Show Hide taskbar key)  
+* Hiding taskbar sometimes might not work right away on slow computers, try it again.  
+* Explorer.exe might crash and restart if you spam the hotkeys too much (Especially Show Hide taskbar key).  
 It might also crash if you try to resize a window smaller than allowed etc.  
 
-If you have any other problems, open an issue. I'll try to fix it.  
+If you have any other problems, [open an issue here](https://github.com/Onurtag/TSolidBackground/issues). I'll try to fix it.  
 
 
 --------------------  
 ##Old Updates (DD.MM.YY)  
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
+
+* **Version 2.6.0**  
+
+Moving buttons added to advanced move menu.  
+"Make a Dummy Window for TSolidBackground" added. Use this to get a custom sized TSolidBackground.
+Ver. 2.6.1: Save dummy to .ini.
 
 
 * **Version 2.5.1**  

@@ -13,7 +13,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.6.1"
+Version := "v2.6.2"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -36,6 +36,7 @@ TitleTwo := "Hooked Window Title"
 Vmove := 5
 Vresize := 5
 SavedDummy := 0
+Debug := 0
 
 Menu, Tray, Icon,,, 0
 Menu, Tray, NoStandard
@@ -64,6 +65,7 @@ IfExist, TSolidBackground.ini
 	IniRead, CustomHeightTop, TSolidBackground.ini, TSolidBackground Settings, Custom Height Top
 	IniRead, CustomHeightBottom, TSolidBackground.ini, TSolidBackground Settings, Custom Height Bottom
 	IniRead, StartupWindow, TSolidBackground.ini, TSolidBackground Settings, Enable Startup Window 
+	IniRead, Debug, TSolidBackground.ini, TSolidBackground Settings, Debug
 	IniRead, TitleOne, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
 	IniRead, TitleTwo, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
 	Hotkey, %OnTopKey%, +Y
@@ -230,7 +232,7 @@ ShowNewMenu(){
 	Gui, newmenu: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
 	Gui, newmenu: Font, s12 c836DFF bold
 	Gui, newmenu: Add, Button, x198 y80 w242 h38 gStartResizeGui, &Move/Resize Window
-	Gui, newmenu: Add, Button, x198 y140 w242 h38 gStartHookGui, &Window Hooker (Alpha)
+	Gui, newmenu: Add, Button, x198 y140 w242 h38 gStartHookGui, &Window Hooker (Beta)
 	Gui, newmenu: Add, Button, x198 y200 w242 h38 gStartOptionsGui, &Advanced Options
 	Gui, newmenu: Font, s10 c836DFF bold
 	Gui, newmenu: Add, Button, x198 y290 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
@@ -253,9 +255,11 @@ Advanced:
 	ShowNewMenu()
 Return
 
-
-F11::
-	ListVars			;debug
+~F11::
+	if (Debug)
+	{
+		ListVars			;Debug Vars
+	}
 Return
 
 
@@ -476,7 +480,8 @@ Makeini()
 	IniWrite, %CustomWidthRight%, TSolidBackground.ini, TSolidBackground Settings, Custom Width Right
 	IniWrite, %CustomHeightTop%, TSolidBackground.ini, TSolidBackground Settings, Custom Height Top
 	IniWrite, %CustomHeightBottom%, TSolidBackground.ini, TSolidBackground Settings, Custom Height Bottom
-	IniWrite, %StartupWindow%, TSolidBackground.ini, TSolidBackground Settings, Enable Startup Window 
+	IniWrite, %StartupWindow%, TSolidBackground.ini, TSolidBackground Settings, Enable Startup Window
+	IniWrite, %Debug%, TSolidBackground.ini, TSolidBackground Settings, Debug
 	IniWrite, %TitleOne%, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
 	IniWrite, %TitleTwo%, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
 	IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color 
@@ -912,7 +917,7 @@ ShowHooker(){
 	Gui, hook: +AlwaysOnTop
 	Gui, hook: Color, 292929
 	Gui, hook: Font, s14 c836DFF bold, Segoe UI
-	Gui, hook: Add, Text, x242 y12, Window Hooker (Alpha)
+	Gui, hook: Add, Text, x242 y12, Window Hooker (Beta)
 	Gui, hook: Font, s10 c836DFF norm Underline
 	Gui, hook: Add, Text, x219 y355, Create .ini for permanent options
 	Gui, hook: Font, s10 cDCDCCC norm
@@ -934,7 +939,7 @@ ShowHooker(){
 	}
 	Gui, hook: Font, s10 cBlack norm Bold
 	Gui, hook: Add, Button, x174 y439 w290 h24, Close
-	Gui, hook: Show, w640 h480, Window Hooker (Alpha)
+	Gui, hook: Show, w640 h480, Window Hooker (Beta)
 	Gui, newmenu: Destroy
 	Return
 }
@@ -974,38 +979,41 @@ StopHook:
 	KillHooker()
 Return
 
-Hooker(){
+;TitleOne: Base Window, TitleTwo: Hooked Window
+Hooker(){	
 	Global
-	;WinGet, isNotMin, MinMax, %TitleOne%
+	WinGet, isNotMin, MinMax, %TitleTwo%
 	WinGet, WindowExStyle, ExStyle, %TitleTwo%
-	CurrActiveID := WinExist("A")
-	WinGetTitle, CurrActiveTitle, ahk_id %CurrActiveID%
-	if ((CurrActiveTitle == TitleOne) || (CurrActiveTitle == TitleTwo))
+	;CurrActiveID := WinExist("A")
+	;WinGetTitle, CurrActiveTitle, ahk_id %CurrActiveID%
+	WinGetTitle, CurrActiveTitle, A
+	if (CurrActiveTitle == TitleOne)
 	{
-		if (WindowExStyle & 0x8) 
-		{ 
-			/*
-			if ((isNotMin != 1) && (isNotMin != 0)) 
-			{
-				
-			}
-			*/
-		} else {
+		if (isNotMin == -1) 
+		{
 			WinRestore, %TitleTwo%
-			Sleep, 30
+		}
+		if (WindowExStyle & 0x8) 
+		{
+		} else {
 			WinSet, AlwaysOnTop, on, %TitleTwo%
 		}
 	} else {
-		if (WindowExStyle & 0x8) 
-		{ 
+		if ((WindowExStyle & 0x8) && (CurrActiveTitle != TitleTwo))
+		{
 			WinSet, AlwaysOnTop, off, %TitleTwo%
-			Sleep, 30
-			WinMinimize, %TitleTwo%
+		}
+		IfWinNotExist, %TitleOne%
+		{
+			if (isNotMin != -1) 
+			{
+				WinMinimize, %TitleTwo%
+			}
 		}
 	}
 	if (Hooking)
 	{
-		SetTimer, Hooker, 70
+		SetTimer, Hooker, 150
 	} else {
 		WinSet, AlwaysOnTop, off, %TitleTwo%
 	}
