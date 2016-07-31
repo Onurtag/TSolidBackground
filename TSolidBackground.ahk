@@ -4,7 +4,10 @@
 /*
 TSolidBackground
 By Onurtag
+
 https://onurtag.github.io/TSolidBackground/
+
+https://github.com/Onurtag/TSolidBackground
 
 If you have any good suggestions, feel free to contact me.
 */
@@ -13,7 +16,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.6.2"
+Version := "v2.6.3"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -68,6 +71,10 @@ IfExist, TSolidBackground.ini
 	IniRead, Debug, TSolidBackground.ini, TSolidBackground Settings, Debug
 	IniRead, TitleOne, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
 	IniRead, TitleTwo, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
+	if (TSolidBackgroundKey == "ERROR") 
+	{
+		DrawHud("Corrupt TSolidBackground.ini found. Delete it and make a new one.","y180","c836DFF","20000")
+	}
 	Hotkey, %OnTopKey%, +Y
 	Hotkey, %CenterKey%, +G
 	Hotkey, %TaskbarKey%, +F
@@ -102,7 +109,7 @@ IfExist, TSolidBackground.ini
 		Gui, start: Font, s10 cDCDCCC norm
 		Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
 		Gui, start: Font, s10 c3257BF underline
-		Gui, start: Add, Text, x18 y303 gGotoSite, https://onurtag.github.io/TSolidBackground/
+		Gui, start: Add, Text, x18 y303 gGotoSite, https://github.com/Onurtag/TSolidBackground
 		Gui, start: Font, s10 cBlack norm Bold
 		Gui, start: Add, Button, x243 y338 w64 h36, Ok
 		Gui, start: Show, w550 h393, Start TSolidBackground
@@ -469,7 +476,7 @@ Makeini()
 	{
 		bgcolor := 051523 
 	}
-	IniWrite, https://onurtag.github.io/TSolidBackground/, TSolidBackground.ini, Help, #For help go to 
+	IniWrite, https://github.com/Onurtag/TSolidBackground/, TSolidBackground.ini, Help, #For help go to 
 	IniWrite, %TSolidBackgroundKey%, TSolidBackground.ini, TSolidBackground Settings, TSolidBackground Key 
 	IniWrite, %OnTopKey%, TSolidBackground.ini, TSolidBackground Settings, On Top Key 
 	IniWrite, %CenterKey%, TSolidBackground.ini, TSolidBackground Settings, Center Window Key 
@@ -507,6 +514,7 @@ ShowOptions(){
 	Gui, options: Add, Text, x202 y117 h13, Custom Height Top:
 	Gui, options: Add, Text, x202 y138 h13, Custom Height Bottom:
 	Gui, options: Add, Text, x202 y205, TSolidBackground Color:
+	Gui, options: Add, Text, x486 y80 h13, Permanent `nSave/Load
 	Gui, options: Font, s10 c836DFF bold
 	Gui, options: Add, Button, x174 y439 w290 h24, Close
 	Gui, options: Add, Edit, x360 y73 w70 h20 vCustomWidthLeft,%CustomWidthLeft%
@@ -519,6 +527,12 @@ ShowOptions(){
 	Gui, options: Add, Text, x219 y355, Create .ini for permanent options
 	Gui, options: Font, s9 cDCDCCC norm
 	Gui, options: Add, Button, x434 y75 w16 h16 gResetcwh, R
+	Gui, options: Add, Button, x480 y120 w21 h16 gSaveCustom1, S1
+	Gui, options: Add, Button, x508 y120 w21 h16 gSaveCustom2, S2
+	Gui, options: Add, Button, x536 y120 w21 h16 gSaveCustom3, S3
+	Gui, options: Add, Button, x480 y141 w21 h16 gLoadCustom1, L1
+	Gui, options: Add, Button, x508 y141 w21 h16 gLoadCustom2, L2
+	Gui, options: Add, Button, x536 y141 w21 h16 gLoadCustom3, L3
 	Gui, options: Add, Button, x434 y205 w16 h16 gResetcolor, R
 	Gui, options: Add, Button, x361 y161 w68 h18 gSetnow, Set CWH
 	Gui, options: Add, Button, x361 y249 w68 h18 gSetcolor, Set Color
@@ -567,6 +581,68 @@ RefresherOptions()
 {
 	Global
 	GuiControl,+c%bgcolor% +Background%bgcolor%, barcolored
+	Return
+}
+
+SaveCustom1:
+	SaveCustom(1)
+Return
+
+LoadCustom1:
+	LoadCustom(1)
+Return
+
+SaveCustom2:
+	SaveCustom(2)
+Return
+
+LoadCustom2:
+	LoadCustom(2)
+Return
+
+SaveCustom3:
+	SaveCustom(3)
+Return
+
+LoadCustom3:
+	LoadCustom(3)
+Return
+
+SaveCustom(thenr)
+{
+	Global
+	IfNotExist, TSolidBackground.ini
+	{
+		Makeini()
+	}
+	IniWrite, %CustomWidthLeft%, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Width Left
+	IniWrite, %CustomWidthRight%, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Width Right
+	IniWrite, %CustomHeightTop%, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Top
+	IniWrite, %CustomHeightBottom%, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Bottom
+	Return
+}
+
+LoadCustom(thenr)
+{
+	Global
+	IniRead, PermWL, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Width Left
+	IniRead, PermWR, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Width Right
+	IniRead, PermHT, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Top
+	IniRead, PermHB, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Bottom
+	if (PermWL == "ERROR") 
+	{
+		DrawHud("Requested save or .ini file doesn't exist.","y180","c836DFF","1350")
+	} else {
+		CustomWidthLeft := PermWL
+		CustomWidthRight := PermWR
+		CustomHeightTop := PermHT
+		CustomHeightBottom := PermHB
+	}
+	GuiControl, options:, CustomHeightBottom, %CustomHeightBottom%
+	GuiControl, options:, CustomHeightTop, %CustomHeightTop%
+	GuiControl, options:, CustomWidthRight, %CustomWidthRight%
+	GuiControl, options:, CustomWidthLeft, %CustomWidthLeft%
+	Gui, Submit, NoHide
 	Return
 }
 ;Advanced Options End
@@ -882,10 +958,10 @@ Return
 Loadpos(posnr)
 {
 	Global
-	IniRead, PermX, TSolidBackground.ini, Saved %posnr%, X
-	IniRead, PermY, TSolidBackground.ini, Saved %posnr%, Y
-	IniRead, PermW, TSolidBackground.ini, Saved %posnr%, W
-	IniRead, PermH, TSolidBackground.ini, Saved %posnr%, H
+	IniRead, PermX, TSolidBackground.ini, Saved Position %posnr%, X
+	IniRead, PermY, TSolidBackground.ini, Saved Position %posnr%, Y
+	IniRead, PermW, TSolidBackground.ini, Saved Position %posnr%, W
+	IniRead, PermH, TSolidBackground.ini, Saved Position %posnr%, H
 	if (PermX == "ERROR") 
 	{
 		DrawHud("Saved position or .ini file doesn't exist.","y180","c836DFF","1350")
@@ -903,10 +979,11 @@ Savepos(posnr)
 		Makeini()
 	}
 	WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-	IniWrite, %Xofwin%, TSolidBackground.ini, Saved %posnr%, X
-	IniWrite, %Yofwin%, TSolidBackground.ini, Saved %posnr%, Y
-	IniWrite, %Wofwin%, TSolidBackground.ini, Saved %posnr%, W
-	IniWrite, %Hofwin%, TSolidBackground.ini, Saved %posnr%, H
+	IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position %posnr%, X
+	IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position %posnr%, Y
+	IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position %posnr%, W
+	IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position %posnr%, H
+	Return
 }
 ;Move/Resize End
 

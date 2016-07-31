@@ -25,10 +25,9 @@ and later added more features that are useful for me.
 
 *Compiled using latest Ahk2Exe. Not compressed so you can check the source code easily.  
 
-**Version 2.6.2**  
+**Version 2.6.3**  
 
-Added Debug variable to ini. Setting it to 1 will activate F11 Debug variables hotkey.  
-Put some more work into the window hooker (currently Beta).  
+New 3 Permanent custom TSolidBackground size settings.
 
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
@@ -65,6 +64,13 @@ If you have any other problems, [open an issue here](https://github.com/Onurtag/
 ##Old Updates (DD.MM.YY)  
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
+
+
+* **Version 2.6.2**  
+
+Added Debug variable to ini. Setting it to 1 will activate F11 Debug variables hotkey.  
+Put some more work into the window hooker (currently Beta).  
+
 
 * **Version 2.6.0**  
 
