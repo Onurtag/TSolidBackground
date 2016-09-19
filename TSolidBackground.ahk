@@ -107,7 +107,7 @@ IfExist, TSolidBackground.ini
 		Gui, start: Add, Text,, TSolidBackground %Version%
 		Gui, start: Font, s8 c836DFF bold
 		Gui, start: Font, s10 cDCDCCC norm
-		Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you can't understand anything above, `nor just want to check for updates visit the project page: 
+		Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you need to change the hotkeys, want to check for updates `nor just can't understand anything above visit the project page: 
 		Gui, start: Font, s10 c3257BF underline
 		Gui, start: Add, Text, x18 y303 gGotoSite, https://github.com/Onurtag/TSolidBackground
 		Gui, start: Font, s10 cBlack norm Bold
@@ -239,8 +239,8 @@ ShowNewMenu(){
 	Gui, newmenu: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
 	Gui, newmenu: Font, s12 c836DFF bold
 	Gui, newmenu: Add, Button, x198 y80 w242 h38 gStartResizeGui, &Move/Resize Window
-	Gui, newmenu: Add, Button, x198 y140 w242 h38 gStartHookGui, &Window Hooker (Beta)
-	Gui, newmenu: Add, Button, x198 y200 w242 h38 gStartOptionsGui, &Advanced Options
+	Gui, newmenu: Add, Button, x198 y140 w242 h38 gStartOptionsGui, &Advanced Options
+	Gui, newmenu: Add, Button, x198 y200 w242 h38 gStartHookGui, &Window Hooker (Beta)
 	Gui, newmenu: Font, s10 c836DFF bold
 	Gui, newmenu: Add, Button, x198 y290 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
 	Gui, newmenu: Add, Button, x174 y439 w290 h24, Close
@@ -280,7 +280,7 @@ Abouted:
 	Gui, about: Font, s10 c3257BF underline
 	Gui, about: Add, Text, x18 y100 gGotoSite, https://onurtag.github.io/TSolidBackground/
 	Gui, about: Font, s10 cBlack norm Bold
-	Gui, about: Add, Button, x113 y136 w64 h36, Ok
+	Gui, about: Add, Button, x118 y136 w64 h36, Ok
 	Gui, about: Show, w300 h192, About TSolidBackground
 Return
 
