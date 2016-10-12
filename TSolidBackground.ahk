@@ -16,7 +16,7 @@ Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.6.3"
+Version := "v2.6.4"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -46,6 +46,7 @@ Menu, Tray, NoStandard
 Menu, Tray, Add, About TSolidBackground, Abouted
 Menu, Tray, Add, Advanced Features, Advanced
 Menu, Tray, Add, Make a Dummy Window, StartDummyWindow
+Menu, Tray, Add, Edit TSolidBackground.ini, Editini
 Menu, Tray, Add, Stop Window Hooker, StopHook
 Menu, Tray, Disable, Stop Window Hooker
 Menu, Tray, Add, Reload, Reloaded
@@ -73,7 +74,7 @@ IfExist, TSolidBackground.ini
 	IniRead, TitleTwo, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
 	if (TSolidBackgroundKey == "ERROR") 
 	{
-		DrawHud("Corrupt TSolidBackground.ini found. Delete it and make a new one.","y180","c836DFF","20000")
+		DrawHud("Corrupt TSolidBackground.ini found. Delete it and make a new one.","y180","cE60000","5000")
 	}
 	Hotkey, %OnTopKey%, +Y
 	Hotkey, %CenterKey%, +G
@@ -112,7 +113,7 @@ IfExist, TSolidBackground.ini
 		Gui, start: Add, Text, x18 y303 gGotoSite, https://github.com/Onurtag/TSolidBackground
 		Gui, start: Font, s10 cBlack norm Bold
 		Gui, start: Add, Button, x243 y338 w64 h36, Ok
-		Gui, start: Show, w550 h393, Start TSolidBackground
+		Gui, start: Show, w550 h393, TSolidBackground Startup
 	}
 Return
 
@@ -240,7 +241,7 @@ ShowNewMenu(){
 	Gui, newmenu: Font, s12 c836DFF bold
 	Gui, newmenu: Add, Button, x198 y80 w242 h38 gStartResizeGui, &Move/Resize Window
 	Gui, newmenu: Add, Button, x198 y140 w242 h38 gStartOptionsGui, &Advanced Options
-	Gui, newmenu: Add, Button, x198 y200 w242 h38 gStartHookGui, &Window Hooker (Beta)
+	Gui, newmenu: Add, Button, x198 y200 w242 h38 gStartHookGui, &Window Hooker (Alpha)
 	Gui, newmenu: Font, s10 c836DFF bold
 	Gui, newmenu: Add, Button, x198 y290 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
 	Gui, newmenu: Add, Button, x174 y439 w290 h24, Close
@@ -464,6 +465,14 @@ DummyGuiEscape:
 	Gui, Dummy: Destroy
 Return
 
+BackGui:
+    Gui, cheat: Color, 292929                       ;Not planning to add tabs etc yet.
+	Gui, cheat: Show, w640 h480, TSolidBackground
+    Gui, Destroy
+    ShowNewMenu()
+    Gui, cheat: Destroy
+Return
+
 Createini:	
 	Gui, Submit, NoHide
 	Makeini()
@@ -517,6 +526,7 @@ ShowOptions(){
 	Gui, options: Add, Text, x486 y80 h13, Permanent `nSave/Load
 	Gui, options: Font, s10 c836DFF bold
 	Gui, options: Add, Button, x174 y439 w290 h24, Close
+	Gui, options: Add, Button, x10 y10 w44 h24 gBackGui, Back
 	Gui, options: Add, Edit, x360 y73 w70 h20 vCustomWidthLeft,%CustomWidthLeft%
 	Gui, options: Add, Edit, x360 y94 w70 h20 vCustomWidthRight,%CustomWidthRight%
 	Gui, options: Add, Edit, x360 y115 w70 h20 vCustomHeightTop,%CustomHeightTop%
@@ -539,6 +549,7 @@ ShowOptions(){
 	Gui, options: Font, s10 cDCDCCC norm
 	Gui, options: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
 	Gui, options: Add, Checkbox, x202 y290 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
+	Gui, options: Add, Checkbox, x202 y290 Checked%StartupWindow% vStartupWindow gSetnow, Show info window on startup
 	;Gui, options: Add, Checkbox, x202 y310 Checked%excludeborders% vexcludeborders gSetnow, TSolidBackground client area only					;Useless for now.
 	Gui, options: Show, w640 h480, Advanced Options
 	Gui, newmenu: Destroy
@@ -631,7 +642,7 @@ LoadCustom(thenr)
 	IniRead, PermHB, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Bottom
 	if (PermWL == "ERROR") 
 	{
-		DrawHud("Requested save or .ini file doesn't exist.","y180","c836DFF","1350")
+		DrawHud("Requested save or .ini file doesn't exist.","y180","cE60000","5000")
 	} else {
 		CustomWidthLeft := PermWL
 		CustomWidthRight := PermWR
@@ -645,6 +656,20 @@ LoadCustom(thenr)
 	Gui, Submit, NoHide
 	Return
 }
+
+Editini:
+    IfExist, TSolidBackground.ini
+    {
+        Run, %A_ScriptDir%\TSolidBackground.ini,,UseErrorLevel
+        if ErrorLevel = ERROR
+        {
+            Run, notepad %A_ScriptDir%\TSolidBackground.ini,,UseErrorLevel
+        }
+    } else {
+        DrawHud("You must create the ini in advanced options before editing it.","y180","cE60000","5000")
+    }
+Return
+
 ;Advanced Options End
 
 
@@ -716,6 +741,7 @@ ShowResizer(){
 	Gui, resizer: Add, Edit, x424 y221 w64 h20 vYnew, %Ynew%
 	Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Ynew%
 	Gui, resizer: Add, Button, x174 y439 w290 h24, Close
+	Gui, resizer: Add, Button, x10 y10 w44 h24 gBackGui, Back
 	Gui, resizer: Font, norm Underline
 	Gui, resizer: Add, Text, x218 y258, Quick save/load size and position
 	Gui, resizer: Add, Text, x219 y355, Create .ini for permanent options
@@ -964,7 +990,7 @@ Loadpos(posnr)
 	IniRead, PermH, TSolidBackground.ini, Saved Position %posnr%, H
 	if (PermX == "ERROR") 
 	{
-		DrawHud("Saved position or .ini file doesn't exist.","y180","c836DFF","1350")
+		DrawHud("Saved position or .ini file doesn't exist.","y180","cE60000","5000")
 	} else {
 		WinMove, ahk_id %TBResized%, , %PermX%, %PermY%, %PermW%, %PermH%
 	}
@@ -994,7 +1020,7 @@ ShowHooker(){
 	Gui, hook: +AlwaysOnTop
 	Gui, hook: Color, 292929
 	Gui, hook: Font, s14 c836DFF bold, Segoe UI
-	Gui, hook: Add, Text, x242 y12, Window Hooker (Beta)
+	Gui, hook: Add, Text, x242 y12, Window Hooker (Alpha)
 	Gui, hook: Font, s10 c836DFF norm Underline
 	Gui, hook: Add, Text, x219 y355, Create .ini for permanent options
 	Gui, hook: Font, s10 cDCDCCC norm
@@ -1016,7 +1042,8 @@ ShowHooker(){
 	}
 	Gui, hook: Font, s10 cBlack norm Bold
 	Gui, hook: Add, Button, x174 y439 w290 h24, Close
-	Gui, hook: Show, w640 h480, Window Hooker (Beta)
+	Gui, hook: Add, Button, x10 y10 w44 h24 gBackGui, Back
+	Gui, hook: Show, w640 h480, Window Hooker (Alpha)
 	Gui, newmenu: Destroy
 	Return
 }

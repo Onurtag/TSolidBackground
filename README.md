@@ -25,9 +25,10 @@ and later added more features that are useful for me.
 
 *Compiled using latest Ahk2Exe. Not compressed so you can check the source code easily.  
 
-**Version 2.6.3**  
+* **Version 2.6.4**  
 
-New 3 Permanent custom TSolidBackground size settings.
+Edit TSolidBackground.ini tray menu button.
+Back button in advanced menus.
 
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
@@ -64,6 +65,11 @@ If you have any other problems, [open an issue here](https://github.com/Onurtag/
 ##Old Updates (DD.MM.YY)  
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
+
+
+* **Version 2.6.3**  
+
+New 3 Permanent custom TSolidBackground size settings.
 
 
 * **Version 2.6.2**  
