@@ -27,7 +27,7 @@ and later added more features that are useful for me.
 
 * **Version 2.6.4**  
 
-Edit TSolidBackground.ini tray menu button.
+Edit TSolidBackground.ini tray menu button.  
 Back button in advanced menus.
 
 
@@ -62,7 +62,7 @@ If you have any other problems, [open an issue here](https://github.com/Onurtag/
 
 
 --------------------  
-##Old Updates (DD.MM.YY)  
+##Old Updates
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
 

@@ -1,6 +1,8 @@
 #SingleInstance Force
 #NoEnv
 
+
+
 /*
 TSolidBackground
 By Onurtag
@@ -32,7 +34,6 @@ StartupWindow := 1
 monitorIndex := 1
 protectVNR := 1
 excludeborders := 1
-Resizerunning := 0
 Hooking := 0
 TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
@@ -218,7 +219,7 @@ Return
 		WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
 	}
 	WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-	if (Resizerunning) 
+	if (WinExist("Move/Resize Window")) 
 	{ 
 		ShowResizer()
 	} else {
@@ -782,7 +783,6 @@ ShowResizer(){
 	Gui, resizer: Show, w640 h480, Move/Resize Window
 	Gui, newmenu: Destroy
 	Refresher()
-	Resizerunning := 1
 	Return
 }
 
@@ -791,7 +791,6 @@ resizerButtonClose:
 resizerGuiEscape:
 	SetTimer, Refresher, Off
 	Gui, resizer: Destroy
-	Resizerunning := 0
 Return
 
 Refresher()
