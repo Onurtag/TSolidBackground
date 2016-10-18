@@ -1,24 +1,23 @@
 #SingleInstance Force
 #NoEnv
 
-
-
 /*
-TSolidBackground
-By Onurtag
 
-https://onurtag.github.io/TSolidBackground/
+TSolidBackground
 
 https://github.com/Onurtag/TSolidBackground
 
-If you have any good suggestions, feel free to contact me.
+
+If you have any good suggestions, feel free to contact me or open an issue.
+
+
 */
 
 Arrs := Object()
 OnExit, Exited
 bgcolor := 051523 
 firsttime := 1
-Version := "v2.6.4"
+Version := "v2.6.5"
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
 CenterKey := "+G"
@@ -41,6 +40,7 @@ Vmove := 5
 Vresize := 5
 SavedDummy := 0
 Debug := 0
+Checking := 0
 
 Menu, Tray, Icon,,, 0
 Menu, Tray, NoStandard
@@ -240,11 +240,12 @@ ShowNewMenu(){
 	Gui, newmenu: Font, s10 cDCDCCC norm
 	Gui, newmenu: Add, Button, x254 y380 w130 h28 gCreateini, Create/Save .ini
 	Gui, newmenu: Font, s12 c836DFF bold
-	Gui, newmenu: Add, Button, x198 y80 w242 h38 gStartResizeGui, &Move/Resize Window
-	Gui, newmenu: Add, Button, x198 y140 w242 h38 gStartOptionsGui, &Advanced Options
-	Gui, newmenu: Add, Button, x198 y200 w242 h38 gStartHookGui, &Window Hooker (Alpha)
+	Gui, newmenu: Add, Button, x198 y70 w242 h38 gStartResizeGui, &Move/Resize Window
+	Gui, newmenu: Add, Button, x198 y125 w242 h38 gStartOptionsGui, &Advanced Options
+	Gui, newmenu: Add, Button, x198 y180 w242 h38 gStartHookGui, &Window Hooker (Alpha)
 	Gui, newmenu: Font, s10 c836DFF bold
-	Gui, newmenu: Add, Button, x198 y290 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
+	Gui, newmenu: Add, Button, x198 y260 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
+	Gui, newmenu: Add, Button, x198 y295 w242 h26 gCheckUpdates, &Check For Updates
 	Gui, newmenu: Add, Button, x174 y439 w290 h24, Close
 	Gui, newmenu: Show, w640 h480, TSolidBackground Advanced Features
 }
@@ -462,6 +463,11 @@ newmenuButtonClose:
 	Gui, newmenu: Destroy
 Return
 
+updateButtonOk:
+updateGuiEscape:
+	Gui, update: Destroy
+Return
+
 DummyGuiEscape:
 	Gui, Dummy: Destroy
 Return
@@ -670,6 +676,55 @@ Editini:
         DrawHud("You must create the ini in advanced options before editing it.","y180","cE60000","5000")
     }
 Return
+
+
+CheckUpdates:
+    if (Checking == 0) {
+        CheckForUpdates(Version)
+    }
+Return
+
+CheckForUpdates(currentver){
+    Checking := 1
+    updater := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+    updater.Open("GET", "https://github.com/Onurtag/TSolidBackground/releases/latest", true)
+    updater.Send()
+    updater.WaitForResponse()
+    Checking := 0
+    NewVersion := StrSplit(updater.Option(1),"/releases/tag/")
+    NewVersion := NewVersion[2]
+    if (NewVersion != currentver) {
+        Gui, update: Destroy
+        Gui, update: +AlwaysOnTop
+        Gui, update: Color, 292929
+        Gui, update: Font, s10 cDCDCCC
+        Gui, update: Add, Text,, `nNew TSolidBackground version available.
+        Gui, update: Font, s14 c836DFF, Segoe UI
+        Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %currentver%)
+        Gui, update: Font, s10 cDCDCCC
+        Gui, update: Add, Text,, Click the link below to get it.
+        Gui, update: Font, s11 c3257BF underline
+        Gui, update: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground/releases/latest
+        Gui, update: Font, s10 cBlack norm Bold
+        Gui, update: Add, Button, x193 y174 w64 h36, Ok
+        Gui, update: Show, w450 h236, New TSolidBackground Update Available! 
+    } else {
+        Gui, update: Destroy
+        Gui, update: +AlwaysOnTop
+        Gui, update: Color, 292929
+        Gui, update: Font, s10 cDCDCCC
+        Gui, update: Add, Text,, `nYour TSolidBackground is up to date.
+        Gui, update: Font, s14 c836DFF, Segoe UI
+        Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %currentver%)
+        Gui, update: Font, s10 cDCDCCC
+        Gui, update: Add, Text,, Click the link below if you want to download it again.
+        Gui, update: Font, s11 c3257BF underline
+        Gui, update: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground/releases/latest
+        Gui, update: Font, s10 cBlack norm Bold
+        Gui, update: Add, Button, x193 y174 w64 h36, Ok
+        Gui, update: Show, w450 h236, TSolidBackground is Up to Date!
+    }
+}
 
 ;Advanced Options End
 

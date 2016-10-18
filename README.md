@@ -11,7 +11,7 @@ and later added more features that are useful for me.
     Always On Top: +Y
     Center window: +G
     Show/Hide taskbar: +F
-    Advanced Ooptions: +U
+    Advanced Options: +U
     Suspend all other hotkeys: F8
     Default Color: 051523 (hex value without the #)
 	Custom rectangle width left: 0
@@ -24,12 +24,6 @@ and later added more features that are useful for me.
 ###[Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
 
 *Compiled using latest Ahk2Exe. Not compressed so you can check the source code easily.  
-
-* **Version 2.6.4**  
-
-Edit TSolidBackground.ini tray menu button.  
-Back button in advanced menus.
-
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
 
@@ -62,10 +56,19 @@ If you have any other problems, [open an issue here](https://github.com/Onurtag/
 
 
 --------------------  
-##Old Updates
+##Changelog
 
 ***Do not forget to generate a new TSolidBackground.ini if you are updating.***  
 
+* **Version 2.6.5**  
+
+Added a way to check for updates in the advanced options menu.  
+
+
+* **Version 2.6.4**  
+
+Edit TSolidBackground.ini tray menu button.  
+Back button in advanced menus.
 
 * **Version 2.6.3**  
 
@@ -81,7 +84,7 @@ Put some more work into the window hooker (currently Beta).
 * **Version 2.6.0**  
 
 Moving buttons added to advanced move menu.  
-"Make a Dummy Window for TSolidBackground" added. Use this to get a custom sized TSolidBackground.
+"Make a Dummy Window for TSolidBackground" added. Use this to get a custom sized TSolidBackground.  
 Ver. 2.6.1: Save dummy to .ini.
 
 
