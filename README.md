@@ -64,9 +64,9 @@ If you have any other problems, [open an issue here](https://github.com/Onurtag/
 --------------------  
 ##Changelog
 
-*If the release page or this changelog mentions  
-**TSolidBackground.ini changes,**  
-you should delete your TSolidBackground.ini and make a new one.*  
+*If the release page or this changelog mentions*  
+**TSolidBackground.ini changes**,   
+*you should delete your TSolidBackground.ini and make a new one.*  
 
 * **Version 2.7.0**  
 
