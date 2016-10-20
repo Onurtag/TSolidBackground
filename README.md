@@ -74,7 +74,7 @@ Added a way to check for updates in the advanced options menu.
 Added a way to auto check for updates. Make a new .ini and you will see the dialog.  
 Added a way to disable a hotkey by leaving the variable empty in the .ini.
 Fixed overlapping checkboxes.  
-There are **TSolidBackground.ini changes** in this update. You should delete yours and make a new .ini.  
+There are **TSolidBackground.ini changes** in this update. You should delete yours and make a new one.  
 
 
 * **Version 2.6.4**  

@@ -123,7 +123,7 @@ IfExist, TSolidBackground.ini
         Gui, start: Show, w550 h393, TSolidBackground Startup
     }
     if (AutoUpdate) {
-        Gosub, CheckUpdates
+        CheckForUpdates(Version,0)
     }
 Return
 
@@ -703,14 +703,13 @@ Editini:
     }
 Return
 
-
 CheckUpdates:
     if (Checking == 0) {
-        CheckForUpdates(Version)
+        CheckForUpdates(Version,1)
     }
 Return
 
-CheckForUpdates(currentver)
+CheckForUpdates(currentver,Notify)
 {
     Checking := 1
     updater := ComObjCreate("WinHttp.WinHttpRequest.5.1")
@@ -735,7 +734,7 @@ CheckForUpdates(currentver)
         Gui, update: Font, s10 cBlack norm Bold
         Gui, update: Add, Button, x193 y174 w64 h36, Ok
         Gui, update: Show, w450 h236, New TSolidBackground Update Available! 
-    } else {
+    } else if (Notify) {
         Gui, update: Destroy
         Gui, update: +AlwaysOnTop
         Gui, update: Color, 292929
