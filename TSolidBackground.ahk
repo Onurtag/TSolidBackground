@@ -692,7 +692,7 @@ CheckForUpdates(currentver,Notify) {
         Gui, update: Destroy
         Gui, update: +AlwaysOnTop
         Gui, update: Color, 292929
-        Gui, update: Font, s10 cDCDCCC
+        Gui, update: Font, s14 c39E600
         Gui, update: Add, Text,, `nNew TSolidBackground version available.
         Gui, update: Font, s14 c836DFF, Segoe UI
         Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %currentver%)
@@ -701,13 +701,13 @@ CheckForUpdates(currentver,Notify) {
         Gui, update: Font, s11 c3257BF underline
         Gui, update: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground/releases/latest
         Gui, update: Font, s10 cBlack norm Bold
-        Gui, update: Add, Button, x193 y174 w64 h36, Ok
-        Gui, update: Show, w450 h236, New TSolidBackground Update Available! 
+        Gui, update: Add, Button, x193 y190 w64 h36, Ok
+        Gui, update: Show, w450 h240, New TSolidBackground Update Available! 
     } else if (Notify) {
         Gui, update: Destroy
         Gui, update: +AlwaysOnTop
         Gui, update: Color, 292929
-        Gui, update: Font, s10 cDCDCCC
+        Gui, update: Font, s14 cDCDCCC
         Gui, update: Add, Text,, `nYour TSolidBackground is up to date.
         Gui, update: Font, s14 c836DFF, Segoe UI
         Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %currentver%)
@@ -716,8 +716,8 @@ CheckForUpdates(currentver,Notify) {
         Gui, update: Font, s11 c3257BF underline
         Gui, update: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground/releases/latest
         Gui, update: Font, s10 cBlack norm Bold
-        Gui, update: Add, Button, x193 y174 w64 h36, Ok
-        Gui, update: Show, w450 h236, TSolidBackground is Up to Date!
+        Gui, update: Add, Button, x193 y190 w64 h36, Ok
+        Gui, update: Show, w450 h240, TSolidBackground is Up to Date!
     }
 }
 
@@ -900,6 +900,7 @@ GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'P
             DropDownCurrent := A_Index + 1
         }
         WinGetTitle, LoopTitle, ahk_id %CurrID%
+        StringReplace, LoopTitle, LoopTitle, |
         if (!LoopTitle) {
             WinGetClass, LoopClass, ahk_id %CurrID%
             LoopTitle := "-!!!DANGEROUS!!!-   Untitled (Class:" . LoopClass . ") Window"
