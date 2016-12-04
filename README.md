@@ -8,7 +8,7 @@ and later added more features that are useful for me.
 
 **Default Hotkeys:** (All hotkeys and many more options can be changed in the .ini)  
 
-    TSolidBackground hotkey: +T (NOTE: [+] means Shift. Read the hotkey guide below.)
+    TSolidBackground hotkey: +T (NOTE: [+] means Shift. Read the hotkey guide below if you want to customize it.)
     Always On Top: +Y
     Center window: +G
     Show/Hide taskbar: +F
@@ -16,7 +16,7 @@ and later added more features that are useful for me.
     Suspend all other hotkeys: F8
     Default Color: 051523 (hex value without the #)
 
-**If you are planning to use TSolidBackground, you should also read Things To Know below.**  
+**If you are planning to use TSolidBackground, you should also read 'Things to Know' below.**  
 
 ###[Webm Preview](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)  
 ###[Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
@@ -58,7 +58,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 * Explorer.exe might crash and restart if you spam the hotkeys too much (Especially Show Hide taskbar key).  
 It might also crash if you try to resize a window smaller than allowed etc.  
 
-If you have any other problems, [open an issue here](https://github.com/Onurtag/TSolidBackground/issues). I'll try to fix it.  
+If you have any other problems, [open an issue](https://github.com/Onurtag/TSolidBackground/issues). I'll try to fix it.  
 
 
 --------------------  
@@ -68,11 +68,17 @@ If you have any other problems, [open an issue here](https://github.com/Onurtag/
 **TSolidBackground.ini changes,**  
 *you should delete your TSolidBackground.ini and make a new one.*  
 
+* **Version 2.7.1**  
+
+Experimental speed improvements.  
+Added a dropdown window selector to resizer menu as an alternative way to select windows. (Thanking xThorpyx for the inspiration)
+
+
 * **Version 2.7.0**  
 
 Added a way to check for updates in the advanced options menu.  
 Added a way to auto check for updates. Make a new .ini and you will see the dialog.  
-Added a way to disable a hotkey by leaving the variable empty in the .ini.
+Added a way to disable a hotkey by leaving the variable empty in the .ini.  
 Fixed overlapping checkboxes.  
 There are **TSolidBackground.ini changes** in this update. You should delete yours and make a new one.  
 
@@ -186,7 +192,7 @@ New dark color scheme.
 
 * **Version 2.0:**  
 
-TSolidBackground revamp, now the window borders are gone too! (Thanks biggest_decision for the heads up.)  
+TSolidBackground revamp, now the window borders are gone too! (Thanking biggest_decision for the heads up.)  
 Added show/hide taskbar key, removed the command that was included in TSolidBackground key.  
 This is probably the final version unless I go bug hunting or get a new feature request.  
 
