@@ -14,7 +14,7 @@ If you have any good suggestions, feel free to contact me or open an issue.
 
 Arrs := Object()
 OnExit, Exited
-Version := "v2.7.1"
+Version := "v2.7.2"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
@@ -76,7 +76,7 @@ IfExist, TSolidBackground.ini
     IniRead, TitleOne, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
     IniRead, TitleTwo, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
     if (bgcolor == "ERROR") {
-        DrawHud("Your TSolidBackground.ini is probably corrupt. Delete it and make a new one.","y180","cE60000","7000")
+        DrawHud("Your TSolidBackground.ini is probably corrupt. Delete it and make a new one.","y160","cE60000","7000")
     }
     if (TSolidBackgroundKey != "+T") {
         if (TSolidBackgroundKey != "") {
@@ -217,7 +217,7 @@ Return
 
 +U::
     if (WinExist("A") != TBResized) {
-        Drawhud("Got a new window to move/resize.","y200","c836DFF","1350")
+        Drawhud("Got a new window to move/resize.","y160","c836DFF","1350")
         TBResized := WinExist("A")
         WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
     }
@@ -356,25 +356,25 @@ TSolidBackground() {
     if (monitorIndex != 1) {
         if (wX < 0) {
             bg4W := Abs(bg4SX)+monitorRight
-            Gui, bg2: Show, NoActivate x%monitorLeft% y%monitorTop% h%mHeight% w%bg2FX%, TSolidBackground
-            Gui, bg4: Show, NoActivate x%bg4SX% y%monitorTop% h%mHeight% w%bg4W%, TSolidBackground
+            Gui, bg2: Show, NoActivate x%monitorLeft% y%monitorTop% h%mHeight% w%bg2FX%, TSolidBackground BG2 (RIGHT)
+            Gui, bg4: Show, NoActivate x%bg4SX% y%monitorTop% h%mHeight% w%bg4W%, TSolidBackground BG4 (LEFT)
         } else {
-            Gui, bg2: Show, NoActivate x%monitorLeft% y%monitorTop% h%mHeight% w%bg2FX%, TSolidBackground
-            Gui, bg4: Show, NoActivate x%bg4SX% y%monitorTop% h%mHeight% w%bg4W%, TSolidBackground
+            Gui, bg2: Show, NoActivate x%monitorLeft% y%monitorTop% h%mHeight% w%bg2FX%, TSolidBackground BG2 (LEFT)
+            Gui, bg4: Show, NoActivate x%bg4SX% y%monitorTop% h%mHeight% w%bg4W%, TSolidBackground BG4 (RIGHT)
         }
         if (wY < 0) {
             bg3H := Abs(bg3SY)+monitorBottom
-            Gui, bg3: Show, NoActivate x%monitorLeft% y%bg3SY% h%bg3H% w%mWidth%, TSolidBackground
-            Gui, bg1: Show, NoActivate x%monitorLeft% y%monitorTop% h%bg1FY% w%mWidth%, TSolidBackground
+            Gui, bg3: Show, NoActivate x%monitorLeft% y%bg3SY% h%bg3H% w%mWidth%, TSolidBackground BG3 (TOP)
+            Gui, bg1: Show, NoActivate x%monitorLeft% y%monitorTop% h%bg1FY% w%mWidth%, TSolidBackground BG1 (BOTTOM)
         } else {
-            Gui, bg3: Show, NoActivate x%monitorLeft% y%bg3SY% h%bg3H% w%mWidth%, TSolidBackground
-            Gui, bg1: Show, NoActivate x%monitorLeft% y%monitorTop% h%bg1FY% w%mWidth%, TSolidBackground
+            Gui, bg3: Show, NoActivate x%monitorLeft% y%bg3SY% h%bg3H% w%mWidth%, TSolidBackground BG3 (BOTTOM)
+            Gui, bg1: Show, NoActivate x%monitorLeft% y%monitorTop% h%bg1FY% w%mWidth%, TSolidBackground BG1 (TOP)
         }
-    } else {
-        Gui, bg3: Show, NoActivate x0 y%bg3SY% h%bg3H% w%A_ScreenWidth%, TSolidBackground
-        Gui, bg2: Show, NoActivate x0 y0 h%A_ScreenHeight% w%bg2FX%, TSolidBackground
-        Gui, bg4: Show, NoActivate x%bg4SX% y0 h%A_ScreenHeight% w%bg4W%, TSolidBackground
-        Gui, bg1: Show, NoActivate x0 y0 h%bg1FY% w%A_ScreenWidth%, TSolidBackground
+    } else {            ;Do I even need these anymore?
+        Gui, bg3: Show, NoActivate x0 y%bg3SY% h%bg3H% w%A_ScreenWidth%, TSolidBackground BG3 (BOTTOM)
+        Gui, bg2: Show, NoActivate x0 y0 h%A_ScreenHeight% w%bg2FX%, TSolidBackground BG2 (LEFT)
+        Gui, bg4: Show, NoActivate x%bg4SX% y0 h%A_ScreenHeight% w%bg4W%, TSolidBackground BG4 (RIGHT)
+        Gui, bg1: Show, NoActivate x0 y0 h%bg1FY% w%A_ScreenWidth%, TSolidBackground BG1 (TOP)
     }
     Return
 }
@@ -463,13 +463,19 @@ DummyGuiEscape:
     Gui, Dummy: Destroy
 Return
 
-BackGui:    ;Not planning to make the gui tabbed etc yet.
+BackGui:      ;Not planning to make the gui tabbed etc yet.
     WinGetPos, aX, aY, aW, aH, A
+    Gui, cheat: +ToolWindow +AlwaysOnTop
     Gui, cheat: Color, 292929
     Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground
     Gui, Destroy
     ShowNewMenu(aX,aY)
+    SetTimer, KillCheat, 250
+Return
+
+KillCheat:
     Gui, cheat: Destroy
+    SetTimer, KillCheat, Off
 Return
 
 Createini:    
@@ -504,7 +510,7 @@ Makeini() {
     IniWrite, %TitleOne%, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
     IniWrite, %TitleTwo%, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
     IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color
-    Drawhud("TSolidBackground.ini file was created/edited.","y180","c836DFF","1350")
+    Drawhud("TSolidBackground.ini file was created/edited.","y160","c836DFF","1350")
     Return
 }
 
@@ -530,11 +536,11 @@ ShowOptions() {
     Gui, options: Font, s10 c836DFF bold
     Gui, options: Add, Button, x174 y515 w290 h24, Close
     Gui, options: Add, Button, x10 y10 w44 h24 gBackGui, Back
-    Gui, options: Add, Edit, x360 y73 w70 h20 vCustomWidthLeft,%CustomWidthLeft%
-    Gui, options: Add, Edit, x360 y94 w70 h20 vCustomWidthRight,%CustomWidthRight%
-    Gui, options: Add, Edit, x360 y115 w70 h20 vCustomHeightTop,%CustomHeightTop%
-    Gui, options: Add, Edit, x360 y136 w70 h20 vCustomHeightBottom,%CustomHeightBottom%
-    Gui, options: Add, Edit, x360 y203  w70 h20 vbgcolor,%bgcolor%
+    Gui, options: Add, Edit, x360 y73 w70 h20 vCustomWidthLeft, %CustomWidthLeft%
+    Gui, options: Add, Edit, x360 y94 w70 h20 vCustomWidthRight, %CustomWidthRight%
+    Gui, options: Add, Edit, x360 y115 w70 h20 vCustomHeightTop, %CustomHeightTop%
+    Gui, options: Add, Edit, x360 y136 w70 h20 vCustomHeightBottom, %CustomHeightBottom%
+    Gui, options: Add, Edit, x360 y203  w70 h20 vbgcolor, %bgcolor%
     Gui, options: Add, Progress, x360 y225 w70 h20 c%bgcolor% Background%bgcolor% vbarcolored, 100
     Gui, options: Font, norm Underline
     Gui, options: Add, Text, x219 y435, Create .ini for permanent options
@@ -565,10 +571,28 @@ ShowOptions() {
 
 OptionsButtonClose:
 OptionsGuiEscape:
-    Gui, options: Destroy
+    ;Gui, options: Destroy
+    Gosub, BackGui
 Return
 
 Setnow:
+    Gui, Submit, NoHide
+    if CustomHeightBottom is not integer
+    {
+        GuiControl, options:, CustomHeightBottom, 0
+    }
+    if CustomHeightTop is not integer
+    {
+        GuiControl, options:, CustomHeightTop, 0
+    }
+    if CustomWidthRight is not integer
+    {
+        GuiControl, options:, CustomWidthRight, 0
+    }
+    if CustomWidthLeft is not integer
+    {
+        GuiControl, options:, CustomWidthLeft, 0
+    }
     Gui, Submit, NoHide
 Return
 
@@ -645,7 +669,7 @@ LoadCustom(thenr) {
     IniRead, PermHT, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Top
     IniRead, PermHB, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Bottom
     if (PermWL == "ERROR") {
-        DrawHud("Requested save or .ini file doesn't exist.","y180","cE60000","5000")
+        DrawHud("Requested save or .ini file doesn't exist.","y160","cE60000","5000")
     } else {
         CustomWidthLeft := PermWL
         CustomWidthRight := PermWR
@@ -669,7 +693,7 @@ Editini:
             Run, notepad %A_ScriptDir%\TSolidBackground.ini,,UseErrorLevel
         }
     } else {
-        DrawHud("You must create the ini in advanced options before editing it.","y180","cE60000","5000")
+        DrawHud("You must create the ini in advanced options before editing it.","y160","cE60000","5000")
     }
 Return
 
@@ -778,7 +802,7 @@ ShowResizer() {
         Gui, resizer: Add, Text, x370 y302, New Y:
         Gui, resizer: Add, Text, x370 y206, Center:
         Gui, resizer: Add, Text, x497 y248, By:
-        Gui, resizer: Add, Text, x167 y248, By:
+        Gui, resizer: Add, Text, x147 y248, By:
         Gui, resizer: Add, Text, x90 y363, Temp/Perm Save:
         Gui, resizer: Add, Text, x90 y391, Load Saved Pos:
         Gui, resizer: Font, s9 cDCDCCC norm
@@ -809,15 +833,15 @@ ShowResizer() {
         Gui, resizer: Font, s9 c836DFF norm bold
         Gui, resizer: Add, Edit, x517 y249 w40 h20 vVmove, %Vmove%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vmove%
-        Gui, resizer: Add, Edit, x187 y247 w40 h20 vVresize, %Vresize%
+        Gui, resizer: Add, Edit, x167 y247 w40 h20 vVresize, %Vresize%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vresize%
         Gui, resizer: Font, s9 cDCDCCC norm
         Gui, resizer: Add, Button, x350 y147 w15 h15 gOrigxy, R
         Gui, resizer: Add, Button, x55 y147 w15 h15 gOrigwh, R
-        Gui, resizer: Add, Button, x521 y190 w16 h16 gWup, U
-        Gui, resizer: Add, Button, x521 y226 w16 h16 gWdown, D
-        Gui, resizer: Add, Button, x503 y208 w16 h16 gWleft, L
-        Gui, resizer: Add, Button, x539 y208 w16 h16 gWright, R
+        Gui, resizer: Add, Button, x521 y189 w16 h16 gWup, U
+        Gui, resizer: Add, Button, x521 y225 w16 h16 gWdown, D
+        Gui, resizer: Add, Button, x503 y207 w16 h16 gWleft, L
+        Gui, resizer: Add, Button, x539 y207 w16 h16 gWright, R
         Gui, resizer: Add, Button, x203 y362 w27 h21 gSavetemp1, T1
         Gui, resizer: Add, Button, x203 y390 w27 h21 gLoadtemp1, T1
         Gui, resizer: Add, Button, x235 y362 w27 h21 gSavetemp2, T2
@@ -834,12 +858,12 @@ ShowResizer() {
         Gui, resizer: Add, Button, x398 y390 w27 h21 gLoad5, P5
         Gui, resizer: Add, Button, x231 y289 w52 h18 gResizenow, Resize
         Gui, resizer: Add, Button, x496 y289 w52 h18 gMovenow, Move
-        Gui, resizer: Add, Button, x424 y197 w64 h18 gHcenter, H-Center
-        Gui, resizer: Add, Button, x424 y218 w64 h18 gVcenter, V-Center
-        Gui, resizer: Add, Button, x154 y211 w26 h16 gWplus, +W
-        Gui, resizer: Add, Button, x184 y211 w26 h16 gWminus, -W
-        Gui, resizer: Add, Button, x217 y202 w26 h16 gHplus, +H
-        Gui, resizer: Add, Button, x217 y222 w26 h16 gHminus, -H
+        Gui, resizer: Add, Button, x424 y196 w64 h18 gHcenter, H-Center
+        Gui, resizer: Add, Button, x424 y217 w64 h18 gVcenter, V-Center
+        Gui, resizer: Add, Button, x164 y210 w26 h16 gWplus, +W
+        Gui, resizer: Add, Button, x134 y210 w26 h16 gWminus, -W
+        Gui, resizer: Add, Button, x197 y201 w26 h16 gHplus, +H
+        Gui, resizer: Add, Button, x197 y221 w26 h16 gHminus, -H
     }
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
     if (resX != "") {
@@ -858,7 +882,8 @@ resizerGuiClose:
 resizerButtonClose:
 resizerGuiEscape:
     SetTimer, Refresher, Off
-    Gui, resizer: Destroy
+    ;Gui, resizer: Destroy
+    Gosub, BackGui
 Return
 
 Refresher() {
@@ -1088,7 +1113,7 @@ Loadpos(posnr) {
     IniRead, PermW, TSolidBackground.ini, Saved Position %posnr%, W
     IniRead, PermH, TSolidBackground.ini, Saved Position %posnr%, H
     if (PermX == "ERROR") {
-        DrawHud("Saved position or .ini file doesn't exist.","y180","cE60000","5000")
+        DrawHud("Saved position or .ini file doesn't exist.","y160","cE60000","5000")
     } else {
         WinMove, ahk_id %TBResized%, , %PermX%, %PermY%, %PermW%, %PermH%
     }
@@ -1114,9 +1139,13 @@ DropDownSelected:
     VarIndex := DropDownCurrent - 1
     if (VarIndex != 0) {
         if (TBResized != WinIDAll%VarIndex%) {
-            Drawhud("Got a new window to move/resize.","y200","c836DFF","1350")
+            Drawhud("Got a new window to move/resize.","y160","c836DFF","1350")
             TBResized := WinIDAll%VarIndex%
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
+            if (Xorig == -32000) {
+                Xorig := 100
+                Yorig := 100
+            }
         }
         ShowResizer()
     }
@@ -1173,7 +1202,8 @@ Return
 
 hookButtonClose:
 hookGuiEscape:
-    Gui, hook: Destroy
+    ;Gui, hook: Destroy
+    Gosub, BackGui
 Return
 
 GetactiveOne:
@@ -1273,10 +1303,10 @@ StartDummyWindow:
     Gui, Dummy: Add, Button, x51 y160 w16 h16 gWdown, D
     Gui, Dummy: Add, Button, x33 y142 w16 h16 gWleft, L
     Gui, Dummy: Add, Button, x69 y142 w16 h16 gWright, R
-    Gui, Dummy: Add, Button, x130 y133 w28 h16 gWplus, +W
-    Gui, Dummy: Add, Button, x171 y133 w28 h16 gHplus, +H
-    Gui, Dummy: Add, Button, x130 y153 w28 h16 gWminus, -W
-    Gui, Dummy: Add, Button, x171 y153 w28 h16 gHminus, -H
+    Gui, Dummy: Add, Button, x147 y143 w28 h16 gWplus, +W
+    Gui, Dummy: Add, Button, x181 y133 w28 h16 gHplus, +H
+    Gui, Dummy: Add, Button, x115 y143 w28 h16 gWminus, -W
+    Gui, Dummy: Add, Button, x181 y153 w28 h16 gHminus, -H
     Gui, Dummy: Add, Button, x103 y227 w64 h18 gHcenter, H-Center
     Gui, Dummy: Add, Button, x103 y248 w64 h18 gVcenter, V-Center
     SavedDummy := 0
@@ -1288,7 +1318,7 @@ StartDummyWindow:
         IniRead, DummyH, TSolidBackground.ini, Dummy Window, Dummy H
         SavedDummy := 1
     } else {
-        DrawHud("You must create the ini in advanced options before editing it.","y180","cE60000","5000")
+        DrawHud("You must create the ini in advanced options before editing it.","y160","cE60000","5000")
     }
     if (SavedDummy && DummyX != "ERROR") {
         Gui, Dummy: Show, x%DummyX% y%DummyY% w%DummyW% h%DummyH%, TSolidBackground Dummy Window
