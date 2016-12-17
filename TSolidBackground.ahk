@@ -570,8 +570,10 @@ ShowOptions() {
 }
 
 OptionsButtonClose:
+    Gui, options: Destroy
+Return
+
 OptionsGuiEscape:
-    ;Gui, options: Destroy
     Gosub, BackGui
 Return
 
@@ -769,7 +771,7 @@ ShowResizer() {
     Ynew := Yofwin
     Hclient := Hofwin - 2*Border_Size2 - Caption_Size
     Wclient := Wofwin - 2*Border_Size
-    Gui, resizer: +AlwaysOnTop
+    Gui, resizer: +AlwaysOnTop +Delimiter`n
     Gui, resizer: Font, s14 c836DFF bold, Segoe UI
     Gui, resizer: Add, Text, x77 y18, Selected Window:
     IfWinNotExist, ahk_id %TBResized%
@@ -880,9 +882,12 @@ ShowResizer() {
 
 resizerGuiClose:
 resizerButtonClose:
+    SetTimer, Refresher, Off
+    Gui, resizer: Destroy
+Return
+
 resizerGuiEscape:
     SetTimer, Refresher, Off
-    ;Gui, resizer: Destroy
     Gosub, BackGui
 Return
 
@@ -925,7 +930,7 @@ GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'P
             DropDownCurrent := A_Index + 1
         }
         WinGetTitle, LoopTitle, ahk_id %CurrID%
-        StringReplace, LoopTitle, LoopTitle, |
+        ;StringReplace, LoopTitle, LoopTitle,`n,,All        ;Escape newline in window title?
         if (!LoopTitle) {
             WinGetClass, LoopClass, ahk_id %CurrID%
             LoopTitle := "-!!!DANGEROUS!!!-   Untitled (Class:" . LoopClass . ") Window"
@@ -934,7 +939,7 @@ GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'P
             }
         }
         WinTitleAll%A_Index% := A_Index . " - " . LoopTitle
-        DropDownAll .= LoopTitle . "|"
+        DropDownAll .= LoopTitle . "`n"
     }
     StringTrimRight, DropDownAll, DropDownAll, 1
     ;DetectHiddenWindows, Off
@@ -1201,8 +1206,10 @@ StartHookGui:
 Return
 
 hookButtonClose:
+    Gui, hook: Destroy
+Return
+
 hookGuiEscape:
-    ;Gui, hook: Destroy
     Gosub, BackGui
 Return
 
