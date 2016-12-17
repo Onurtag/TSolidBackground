@@ -68,6 +68,13 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 **TSolidBackground.ini changes,**  
 *you should delete your TSolidBackground.ini and make a new one.*  
 
+* **Version 2.7.2**  
+
+Fixes for the new resize/move selector.  
+Esc now goes back to the main menu.  
+Named the 4 TSB hidden windows so you can move/resize them using the new resize/move selector.   
+Better cheating capabilities.  
+
 * **Version 2.7.1**  
 
 Experimental speed improvements.  
