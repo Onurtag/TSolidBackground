@@ -7,14 +7,15 @@ https://github.com/Onurtag/TSolidBackground
 
 To anyone reading the code,
 This script contains many unrecommended globals and hacks.
-It would be a waste of time to fix them all so they will stay like this until they bother me.
+It would be a waste of time and I don't care enough to fix them all so they will stay like this until they bother me.
 
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
 Arrs := Object()
 OnExit, Exited
-Version := "v2.7.3"
+Version := "v2.8.0"
+IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
@@ -36,7 +37,7 @@ Vmove := 5
 Vresize := 5
 Debug := 0
 Checking := 0
-AutoUpdate := 0
+CheckForUpdates := 0
 
 ;-----EXPERIMENTAL-----
 SetWinDelay, 0
@@ -59,25 +60,32 @@ Menu, Tray, Tip, TSolidBackground
 IfExist, TSolidBackground.ini
 {
     Iniexists := "Yes"
-    IniRead, bgcolor, TSolidBackground.ini, TSolidBackground Settings, Background Color
-    IniRead, TSolidBackgroundKey, TSolidBackground.ini, TSolidBackground Settings, TSolidBackground Key
-    IniRead, OnTopKey, TSolidBackground.ini, TSolidBackground Settings, On Top Key 
-    IniRead, CenterKey, TSolidBackground.ini, TSolidBackground Settings, Center Window Key 
-    IniRead, TaskbarKey, TSolidBackground.ini, TSolidBackground Settings, Show Hide Taskbar Key 
-    IniRead, OptionsKey, TSolidBackground.ini, TSolidBackground Settings, Advanced Features Key 
-    IniRead, SuspendKey, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key 
-    IniRead, CustomWidthLeft, TSolidBackground.ini, TSolidBackground Settings, Custom Width Left
-    IniRead, CustomWidthRight, TSolidBackground.ini, TSolidBackground Settings, Custom Width Right
-    IniRead, CustomHeightTop, TSolidBackground.ini, TSolidBackground Settings, Custom Height Top
-    IniRead, CustomHeightBottom, TSolidBackground.ini, TSolidBackground Settings, Custom Height Bottom
-    IniRead, StartupWindow, TSolidBackground.ini, TSolidBackground Settings, Enable Startup Window 
-    IniRead, AutoUpdate, TSolidBackground.ini, TSolidBackground Settings, Check for Updates on Startup
-    IniRead, Debug, TSolidBackground.ini, TSolidBackground Settings, Debug
-    IniRead, TitleOne, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
-    IniRead, TitleTwo, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
-    if (bgcolor == "ERROR") {
-        DrawHud("Your TSolidBackground.ini is probably corrupt. Delete it and make a new one.","y160","cE60000","7000")
+    Readini(WrittenIniVersion, "Settings", "Ini Version")
+    if ((WrittenIniVersion == "ERROR") || (WrittenIniVersion != IniVersion)) {
+        if (WrittenIniVersion == "ERROR") {
+            DrawHUD("Your TSolidBackground.ini is likely corrupt.`nIt was automatically renamed and replaced with a new one.", "y160", "cE60000", "s11", "7000")
+        } else if (WrittenIniVersion != IniVersion) {
+            DrawHUD("Your TSolidBackground.ini needs to be updated.`nIt was automatically renamed and replaced with a new one.", "y160", "cE60000", "s11", "7000")
+        }
+        FileMove, TSolidBackground.ini, TSolidBackground_OLD_%A_DD%-%A_MM%-%A_YYYY%.ini
+        CreateSaveini(0)
     }
+    Readini(TSolidBackgroundKey, "Hotkeys", "TSolidBackground Key")
+    Readini(OnTopKey, "Hotkeys", "On Top Key")
+    Readini(CenterKey, "Hotkeys", "Center Window Key")
+    Readini(TaskbarKey, "Hotkeys", "Show Hide Taskbar Key")
+    Readini(OptionsKey, "Hotkeys", "Advanced Features Key")
+    Readini(SuspendKey, "Hotkeys", "Suspend Hotkeys Key")
+    Readini(bgcolor, "Settings", "Background Color")
+    Readini(CustomWidthLeft, "Settings", "Custom Width Left")
+    Readini(CustomWidthRight, "Settings", "Custom Width Right")
+    Readini(CustomHeightTop, "Settings", "Custom Height Top")
+    Readini(CustomHeightBottom, "Settings", "Custom Height Bottom")
+    Readini(StartupWindow, "Settings", "Enable Startup Window ")
+    Readini(CheckForUpdates, "Settings", "Check for Updates on Startup")
+    Readini(Debug, "Settings", "Debug")
+    Readini(TitleOne, "Settings", "Hooker Main Window")
+    Readini(TitleTwo, "Settings", "Hooker Hooked Window")
     if (TSolidBackgroundKey != "+T") {
         if (TSolidBackgroundKey != "") {
             Hotkey, %TSolidBackgroundKey%, +T
@@ -118,9 +126,9 @@ IfExist, TSolidBackground.ini
 
 if (StartupWindow) {
     Gui, start: Color, 292929
-    Gui, start: Font, s14 c836DFF bold, Segoe UI
+    Gui, start: Font, s14 c836DFF Bold, Segoe UI
     Gui, start: Add, Text,, TSolidBackground %Version%
-    Gui, start: Font, s8 c836DFF bold
+    Gui, start: Font, s8 c836DFF Bold
     Gui, start: Font, s10 cDCDCCC norm
     Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you need to change the hotkeys, want to check for updates `nor just can't understand anything above visit the project page:
     Gui, start: Font, s10 c3257BF underline
@@ -129,8 +137,9 @@ if (StartupWindow) {
     Gui, start: Add, Button, x243 y338 w64 h36, Ok
     Gui, start: Show, w550 h393, TSolidBackground Startup
 }
-if (AutoUpdate) {
-    CheckForUpdates(Version,0)
+
+if (CheckForUpdates) {
+    CheckUpdate(0)
 }
 Return
 
@@ -161,7 +170,7 @@ Return
     toggle := !toggle
     if (toggle == "1") {
         if (WinExist("A") != Activewin) {
-            Drawhud("Got a new window for TSolidBackground.","","c836DFF","1350")
+            DrawHUD("Got a new window for TSolidBackground.", "", "c836DFF", "s11", "1350")
             Activewin := WinExist("A")
         }
         TSolidBackground()
@@ -178,7 +187,7 @@ Return
     if (monitorIndex != 1) {
         WinMove, A,, (mWidth/2)-(WWWidth/2)+monitorLeft, (mHeight/2)-(HHHeight/2)+monitorTop-12
     } else {
-        WinMove, A,, (A_ScreenWidth/2)-(WWWidth/2), (A_ScreenHeight/2)-(HHHeight/2)-12        ;For new Win10 borders and stuff.
+        WinMove, A,, (A_ScreenWidth/2)-(WWWidth/2), (A_ScreenHeight/2)-(HHHeight/2)-12        ;-12 For new Win10 borders and stuff.
     }
     if (toggle == "1") {
         TSolidBackground()
@@ -217,7 +226,7 @@ Return
 
 +U::
     if (WinExist("A") != TBResized) {
-        Drawhud("Got a new window to move/resize.","y160","c836DFF","1350")
+        DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
         TBResized := WinExist("A")
         WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
     }
@@ -228,24 +237,24 @@ Return
     }
 Return
 
-ShowNewMenu(nmX,nmY) {
+ShowNewMenu(nmX, nmY) {
     Global
     Gui, newmenu: Destroy
     Gui, newmenu: +AlwaysOnTop
     Gui, newmenu: Color, 292929
-    Gui, newmenu: Font, s14 c836DFF bold, Segoe UI
+    Gui, newmenu: Font, s14 c836DFF Bold, Segoe UI
     Gui, newmenu: Add, Text, x236 y15, Advanced Features
     Gui, newmenu: Font, s10 c836DFF norm Underline
     Gui, newmenu: Add, Text, x219 y435, Create .ini for permanent options
     Gui, newmenu: Font, s10 cDCDCCC norm
-    Gui, newmenu: Add, Button, x254 y460 w130 h28 gCreateini, Create/Save .ini
-    Gui, newmenu: Font, s12 c836DFF bold
+    Gui, newmenu: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
+    Gui, newmenu: Font, s12 c836DFF Bold
     Gui, newmenu: Add, Button, x198 y70 w242 h38 gStartResizeGui, &Move/Resize Window
     Gui, newmenu: Add, Button, x198 y125 w242 h38 gStartOptionsGui, &Advanced Options
     Gui, newmenu: Add, Button, x198 y180 w242 h38 gStartHookGui, &Window Hooker (Alpha)
-    Gui, newmenu: Font, s10 c836DFF bold
+    Gui, newmenu: Font, s10 c836DFF Bold
     Gui, newmenu: Add, Button, x198 y260 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
-    Gui, newmenu: Add, Button, x198 y295 w242 h26 gCheckUpdates, &Check For Updates
+    Gui, newmenu: Add, Button, x198 y295 w242 h26 gRunCheckUpdate, &Check For Updates
     Gui, newmenu: Add, Button, x174 y515 w290 h24, Close
     if (nmX == "") {
         Gui, newmenu: Show, w640 h560, TSolidBackground Advanced Features
@@ -277,6 +286,7 @@ Return
 Return
 
 Abouted:
+    Gui, about: +AlwaysOnTop
     Gui, about: Destroy
     Gui, about: Color, 292929
     Gui, about: Font, s14 c836DFF, Segoe UI
@@ -419,11 +429,11 @@ GetMonitorIndexFromWindow(windowHandle) {    ;Pre-made function by shinywong, th
     Return
 }
 
-Drawhud(hudtext,xyvalue,hudtextcolor,hudtimer) {
+DrawHUD(hudtext, xyvalue, hudtextcolor := "c836DFF", hudtextsize := "s11", hudtimer := 1350) {
     Gui, hud: Destroy
     Gui, hud: +AlwaysOnTop -Caption +ToolWindow +Border
     Gui, hud: Color, 292929
-    Gui, hud: Font, s11 %hudtextcolor% Bold Verdana
+    Gui, hud: Font, %hudtextsize% %hudtextcolor% Bold, Segoe UI
     Gui, hud: Add, Text,, %hudtext%
     Gui, hud: Show, NoActivate %xyvalue%
     SetTimer, Deletehud, %hudtimer%
@@ -454,7 +464,7 @@ newmenuButtonClose:
     Gui, newmenu: Destroy
 Return
 
-updateButtonOk:
+updateButtonClose:
 updateGuiEscape:
     Gui, update: Destroy
 Return
@@ -478,42 +488,6 @@ KillCheat:
     SetTimer, KillCheat, Off
 Return
 
-Createini:    
-    Gui, Submit, NoHide
-    Makeini()
-Return
-
-Makeini() {
-    Global
-    if (bgcolor == "") {
-        bgcolor := 051523
-    }
-    if (AutoUpdate == 0) {
-        MsgBox, 4100, TSolidBackground, Would you like to check for updates on startup?
-        IfMsgBox Yes
-            AutoUpdate := 1
-    }
-    IniWrite, https://github.com/Onurtag/TSolidBackground/, TSolidBackground.ini, Help, #For help go to
-    IniWrite, %TSolidBackgroundKey%, TSolidBackground.ini, TSolidBackground Settings, TSolidBackground Key
-    IniWrite, %OnTopKey%, TSolidBackground.ini, TSolidBackground Settings, On Top Key
-    IniWrite, %CenterKey%, TSolidBackground.ini, TSolidBackground Settings, Center Window Key
-    IniWrite, %TaskbarKey%, TSolidBackground.ini, TSolidBackground Settings, Show Hide Taskbar Key
-    IniWrite, %OptionsKey%, TSolidBackground.ini, TSolidBackground Settings, Advanced Features Key
-    IniWrite, %SuspendKey%, TSolidBackground.ini, TSolidBackground Settings, Suspend Hotkeys Key
-    IniWrite, %CustomWidthLeft%, TSolidBackground.ini, TSolidBackground Settings, Custom Width Left
-    IniWrite, %CustomWidthRight%, TSolidBackground.ini, TSolidBackground Settings, Custom Width Right
-    IniWrite, %CustomHeightTop%, TSolidBackground.ini, TSolidBackground Settings, Custom Height Top
-    IniWrite, %CustomHeightBottom%, TSolidBackground.ini, TSolidBackground Settings, Custom Height Bottom
-    IniWrite, %StartupWindow%, TSolidBackground.ini, TSolidBackground Settings, Enable Startup Window
-    IniWrite, %AutoUpdate%, TSolidBackground.ini, TSolidBackground Settings, Check for Updates on Startup
-    IniWrite, %Debug%, TSolidBackground.ini, TSolidBackground Settings, Debug
-    IniWrite, %TitleOne%, TSolidBackground.ini, TSolidBackground Settings, Hooker Main Window
-    IniWrite, %TitleTwo%, TSolidBackground.ini, TSolidBackground Settings, Hooker Hooked Window
-    IniWrite, %bgcolor%, TSolidBackground.ini, TSolidBackground Settings, Background Color
-    Drawhud("TSolidBackground.ini file was created/edited.","y160","c836DFF","1350")
-    Return
-}
-
 ;Advanced Options Start
 StartOptionsGui:
     ShowOptions()
@@ -523,7 +497,7 @@ ShowOptions() {
     Global
     Gui, options: Destroy
     Gui, options: +AlwaysOnTop
-    Gui, options: Font, s14 c836DFF bold, Segoe UI
+    Gui, options: Font, s14 c836DFF Bold, Segoe UI
     Gui, options: Add, Text, x238 y15, Advanced Options
     Gui, options: Color, 292929
     Gui, options: Font, s10 cDCDCCC norm
@@ -533,7 +507,7 @@ ShowOptions() {
     Gui, options: Add, Text, x202 y138, Custom Height Bottom:
     Gui, options: Add, Text, x202 y205, TSolidBackground Color:
     Gui, options: Add, Text, x486 y80, Permanent `nSave/Load
-    Gui, options: Font, s10 c836DFF bold
+    Gui, options: Font, s10 c836DFF Bold
     Gui, options: Add, Button, x174 y515 w290 h24, Close
     Gui, options: Add, Button, x10 y10 w44 h24 gBackGui, Back
     Gui, options: Add, Edit, x360 y73 w70 h20 vCustomWidthLeft, %CustomWidthLeft%
@@ -556,7 +530,7 @@ ShowOptions() {
     Gui, options: Add, Button, x361 y161 w68 h18 gSetnow, Set CWH
     Gui, options: Add, Button, x361 y249 w68 h18 gSetcolor, Set Color
     Gui, options: Font, s10 cDCDCCC norm
-    Gui, options: Add, Button, x254 y460 w130 h28 gCreateini, Create/Save .ini
+    Gui, options: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     Gui, options: Add, Checkbox, x202 y280 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
     Gui, options: Add, Checkbox, x202 y302 Checked%StartupWindow% vStartupWindow gSetnow, Show info window on startup
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
@@ -579,7 +553,7 @@ Return
 
 Setnow:
     Gui, Submit, NoHide
-    if CustomHeightBottom is not integer
+    if CustomHeightBottom is not integer        ;Not really necessary
     {
         GuiControl, options:, CustomHeightBottom, 0
     }
@@ -613,9 +587,9 @@ Return
 
 Resetcolor:
     if (bgcolor == 051523) {
-        GuiControl, options:,bgcolor,250000
+        GuiControl, options:, bgcolor, 250000
     } else {
-        GuiControl, options:,bgcolor,051523
+        GuiControl, options:, bgcolor, 051523
     }
     Gui, Submit, NoHide
     RefresherOptions()
@@ -655,23 +629,23 @@ SaveCustom(thenr) {
     Global
     IfNotExist, TSolidBackground.ini 
     {
-        Makeini()
+        CreateSaveini(1)
     }
-    IniWrite, %CustomWidthLeft%, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Width Left
-    IniWrite, %CustomWidthRight%, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Width Right
-    IniWrite, %CustomHeightTop%, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Top
-    IniWrite, %CustomHeightBottom%, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Bottom
+    Writeini(CustomWidthLeft, "Custom TSB Sizes " . thenr, "Custom Width Left")
+    Writeini(CustomWidthRight, "Custom TSB Sizes " . thenr, "Custom Width Right")
+    Writeini(CustomHeightTop, "Custom TSB Sizes " . thenr, "Custom Height Top")
+    Writeini(CustomHeightBottom, "Custom TSB Sizes " . thenr, "Custom Height Bottom")
     Return
 }
 
 LoadCustom(thenr) {
     Global
-    IniRead, PermWL, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Width Left
-    IniRead, PermWR, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Width Right
-    IniRead, PermHT, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Top
-    IniRead, PermHB, TSolidBackground.ini, Custom TSB Sizes %thenr%, Custom Height Bottom
+    Readini(PermWL, "Custom TSB Sizes " . thenr, "Custom Width Left")
+    Readini(PermWR, "Custom TSB Sizes " . thenr, "Custom Width Right")
+    Readini(PermHT, "Custom TSB Sizes " . thenr, "Custom Height Top")
+    Readini(PermHB, "Custom TSB Sizes " . thenr, "Custom Height Bottom")
     if (PermWL == "ERROR") {
-        DrawHud("Requested save or .ini file doesn't exist.","y160","cE60000","5000")
+        DrawHUD("Requested save or .ini file doesn't exist.", "y160", "cE60000", "s11", "5000")
     } else {
         CustomWidthLeft := PermWL
         CustomWidthRight := PermWR
@@ -695,48 +669,49 @@ Editini:
             Run, notepad %A_ScriptDir%\TSolidBackground.ini,,UseErrorLevel
         }
     } else {
-        DrawHud("You must create the ini in advanced options before editing it.","y160","cE60000","5000")
+        DrawHUD("You must first create an ini in the advanced features menu before editing it.", "y160", "cE60000", "s11", "5000")
     }
 Return
 
-CheckUpdates:
+RunCheckUpdate:
     if (Checking == 0) {
-        CheckForUpdates(Version,1)
+        CheckUpdate(1)
     }
 Return
 
-CheckForUpdates(currentver,Notify) {
+CheckUpdate(notify) {
+    Global
     Checking := 1
     updater := ComObjCreate("WinHttp.WinHttpRequest.5.1")
     updater.Open("GET", "https://github.com/Onurtag/TSolidBackground/releases/latest", true)
     updater.Send()
     updater.WaitForResponse()
-    Checking := 0
-    NewVersion := StrSplit(updater.Option(1),"/releases/tag/")
-    NewVersion := NewVersion[2]
-    if (NewVersion != currentver) {
+    NewVersion := StrSplit(updater.Option(1),"/releases/tag/")[2]
+    if (NewVersion != Version) {
         Gui, update: Destroy
         Gui, update: +AlwaysOnTop
         Gui, update: Color, 292929
-        Gui, update: Font, s14 c39E600
-        Gui, update: Add, Text,, `nNew TSolidBackground version available.
+        Gui, update: Font, s14 c27A100
+        Gui, update: Add, Text,, A TSolidBackground update is available.
         Gui, update: Font, s14 c836DFF, Segoe UI
-        Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %currentver%)
-        Gui, update: Font, s10 cDCDCCC
-        Gui, update: Add, Text,, Click the link below to get it.
-        Gui, update: Font, s11 c3257BF underline
-        Gui, update: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground/releases/latest
+        Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %Version%)
+        Gui, update: Font, s9 cDCDCCC
+        Gui, update: Add, Text,, Note: If your TSolidBackground.exe is currently in a system protected folder`n(eg. C:\Program Files\TSolidBackground)`nyou need to run TSolidBackground as admin if you want to update.
+        ;Gui, update: Font, s11 c3257BF underline
+        ;Gui, update: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground/releases/latest
+        Gui, update: Font, s12 cBlack norm Bold
+        Gui, update: Add, Button, x110 y160 w230 h48 gRunAutoUpdateNow, Update and Restart Now
         Gui, update: Font, s10 cBlack norm Bold
-        Gui, update: Add, Button, x193 y190 w64 h36, Ok
-        Gui, update: Show, w450 h240, New TSolidBackground Update Available! 
-    } else if (Notify) {
+        Gui, update: Add, Button, x193 y230 w64 h30, Close
+        Gui, update: Show, w450 h280, TSolidBackground Update Available!
+    } else if (notify) {
         Gui, update: Destroy
         Gui, update: +AlwaysOnTop
         Gui, update: Color, 292929
         Gui, update: Font, s14 cDCDCCC
         Gui, update: Add, Text,, `nYour TSolidBackground is up to date.
         Gui, update: Font, s14 c836DFF, Segoe UI
-        Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %currentver%)
+        Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %Version%)
         Gui, update: Font, s10 cDCDCCC
         Gui, update: Add, Text,, Click the link below if you want to download it again.
         Gui, update: Font, s11 c3257BF underline
@@ -745,6 +720,27 @@ CheckForUpdates(currentver,Notify) {
         Gui, update: Add, Button, x193 y190 w64 h36, Ok
         Gui, update: Show, w450 h240, TSolidBackground is Up to Date!
     }
+    Checking := 0
+}
+
+RunAutoUpdateNow:
+    if (A_IsCompiled) {
+        AutoUpdateNow(NewVersion)
+    } else {
+        Run, "https://github.com/Onurtag/TSolidBackground/releases/latest"
+    }
+Return
+
+AutoUpdateNow(NewVersion) {
+    DrawHUD("TSolidBackground will now update and restart.`nJust hold on a second...", "", "c27A100", "s13", "120000")
+    UrlDownloadToFile, https://github.com/Onurtag/TSolidBackground/releases/download/%NewVersion%/TSolidBackground.exe, TSolidBackground_NEWVER.exe
+    FileDelete, TSolidBackgroundUpdater.bat
+    FileAppend, del TSolidBackground.exe`n, TSolidBackgroundUpdater.bat
+    FileAppend, ren TSolidBackground_NEWVER.exe TSolidBackground.exe`n, TSolidBackgroundUpdater.bat
+    FileAppend, start TSolidBackground.exe`n, TSolidBackgroundUpdater.bat
+    FileAppend, del TSolidBackgroundUpdater.bat`n, TSolidBackgroundUpdater.bat
+    Run, TSolidBackgroundUpdater.bat,, Hide
+    ExitApp
 }
 
 ;Advanced Options End
@@ -772,7 +768,7 @@ ShowResizer() {
     Hclient := Hofwin - 2*Border_Size2 - Caption_Size
     Wclient := Wofwin - 2*Border_Size
     Gui, resizer: +AlwaysOnTop +Delimiter`n
-    Gui, resizer: Font, s14 c836DFF bold, Segoe UI
+    Gui, resizer: Font, s14 c836DFF Bold, Segoe UI
     Gui, resizer: Add, Text, x77 y18, Selected Window:
     IfWinNotExist, ahk_id %TBResized%
     {
@@ -819,8 +815,8 @@ ShowResizer() {
         Gui, resizer: Add, Text, x150 y165, W: %Wclient%, H: %Hclient%            ;Disabled because its useless.
         Gui, resizer: Add, Text, x150 y145, W: %Worig%, H: %Horig%
         Gui, resizer: Add, Text, x426 y145, X: %Xorig%, Y: %Yorig%
-        Gui, resizer: Add, Button, x254 y460 w130 h28 gCreateini, Create/Save .ini
-        Gui, resizer: Font, s10 c836DFF bold
+        Gui, resizer: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
+        Gui, resizer: Font, s10 c836DFF Bold
         Gui, resizer: Add, Edit, x158 y278 w64 h20 vWnew, %Wnew%
         Gui, resizer: Add, UpDown, 0x80 Range0-90000, %Wnew%
         Gui, resizer: Add, Edit, x158 y301 w64 h20 vHnew, %Hnew%
@@ -832,7 +828,7 @@ ShowResizer() {
         Gui, resizer: Font, norm Underline
         Gui, resizer: Add, Text, x218 y338, Quick save/load size and position
         Gui, resizer: Add, Text, x219 y435, Create .ini for permanent options
-        Gui, resizer: Font, s9 c836DFF norm bold
+        Gui, resizer: Font, s9 c836DFF norm Bold
         Gui, resizer: Add, Edit, x517 y249 w40 h20 vVmove, %Vmove%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vmove%
         Gui, resizer: Add, Edit, x167 y247 w40 h20 vVresize, %Vresize%
@@ -930,7 +926,7 @@ GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'P
             DropDownCurrent := A_Index + 1
         }
         WinGetTitle, LoopTitle, ahk_id %CurrID%
-        ;StringReplace, LoopTitle, LoopTitle,`n,,All        ;Escape newline in window title?
+        ;StringReplace, LoopTitle, LoopTitle,`n,,All        ;Only if window titles have new lines.
         if (!LoopTitle) {
             WinGetClass, LoopClass, ahk_id %CurrID%
             LoopTitle := "-!!!DANGEROUS!!!-   Untitled (Class:" . LoopClass . ") Window"
@@ -1113,12 +1109,12 @@ Return
 
 Loadpos(posnr) {
     Global
-    IniRead, PermX, TSolidBackground.ini, Saved Position %posnr%, X
-    IniRead, PermY, TSolidBackground.ini, Saved Position %posnr%, Y
-    IniRead, PermW, TSolidBackground.ini, Saved Position %posnr%, W
-    IniRead, PermH, TSolidBackground.ini, Saved Position %posnr%, H
+    Readini(PermX, "Saved Position " . posnr, "X")
+    Readini(PermY, "Saved Position " . posnr, "Y")
+    Readini(PermW, "Saved Position " . posnr, "W")
+    Readini(PermH, "Saved Position " . posnr, "H")
     if (PermX == "ERROR") {
-        DrawHud("Saved position or .ini file doesn't exist.","y160","cE60000","5000")
+        DrawHUD("Saved position or .ini file doesn't exist.", "y160", "cE60000", "s11", "5000")
     } else {
         WinMove, ahk_id %TBResized%, , %PermX%, %PermY%, %PermW%, %PermH%
     }
@@ -1129,13 +1125,13 @@ Savepos(posnr) {
     Global
     IfNotExist, TSolidBackground.ini 
     {
-        Makeini()
+        CreateSaveini(1)
     }
-    WinGetPos,Xofwin,Yofwin,Wofwin,Hofwin,ahk_id %TBResized%
-    IniWrite, %Xofwin%, TSolidBackground.ini, Saved Position %posnr%, X
-    IniWrite, %Yofwin%, TSolidBackground.ini, Saved Position %posnr%, Y
-    IniWrite, %Wofwin%, TSolidBackground.ini, Saved Position %posnr%, W
-    IniWrite, %Hofwin%, TSolidBackground.ini, Saved Position %posnr%, H
+    WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+    Writeini(Xofwin, "Saved Position " . posnr, "X")
+    Writeini(Yofwin, "Saved Position " . posnr, "Y")
+    Writeini(Wofwin, "Saved Position " . posnr, "W")
+    Writeini(Hofwin, "Saved Position " . posnr, "H")
     Return
 }
 
@@ -1144,7 +1140,7 @@ DropDownSelected:
     VarIndex := DropDownCurrent - 1
     if (VarIndex != 0) {
         if (TBResized != WinIDAll%VarIndex%) {
-            Drawhud("Got a new window to move/resize.","y160","c836DFF","1350")
+            DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
             TBResized := WinIDAll%VarIndex%
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
             if (Xorig == -32000) {
@@ -1167,12 +1163,12 @@ ShowHooker() {
     Gui, hook: Destroy
     Gui, hook: +AlwaysOnTop
     Gui, hook: Color, 292929
-    Gui, hook: Font, s14 c836DFF bold, Segoe UI
+    Gui, hook: Font, s14 c836DFF Bold, Segoe UI
     Gui, hook: Add, Text, x238 y15, Window Hooker (Alpha)
     Gui, hook: Font, s10 c836DFF norm Underline
     Gui, hook: Add, Text, x219 y435, Create .ini for permanent options
     Gui, hook: Font, s10 cDCDCCC norm
-    Gui, hook: Add, Button, x254 y460 w130 h28 gCreateini, Create/Save .ini
+    Gui, hook: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     Gui, hook: Add, Text, x112 y112, Main Window:  
     Gui, hook: Add, Text, x112 y152, Hooked Window:  
     Gui, hook: Add, Text, x60 y47 , Window Hooker currently only works for minimizing/switching tabs on browsers.`nFor now it can't make them move together. The .ini file will save the window titles too.
@@ -1300,7 +1296,7 @@ StartDummyWindow:
     Gui, Dummy: Add, Text, x26 y188, By: 
     Gui, Dummy: Add, Text, x129 y188, By: 
     Gui, Dummy: Add, Text, x55 y235, Center:
-    Gui, Dummy: Font, s9 c836DFF norm bold
+    Gui, Dummy: Font, s9 c836DFF norm Bold
     Gui, Dummy: Add, Edit, x47 y188 w40 h20 vVmove, %Vmove%
     Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vmove%
     Gui, Dummy: Add, Edit, x150 y188 w40 h20 vVresize, %Vresize%
@@ -1319,13 +1315,13 @@ StartDummyWindow:
     SavedDummy := 0
     IfExist, TSolidBackground.ini
     {
-        IniRead, DummyX, TSolidBackground.ini, Dummy Window, Dummy X
-        IniRead, DummyY, TSolidBackground.ini, Dummy Window, Dummy Y
-        IniRead, DummyW, TSolidBackground.ini, Dummy Window, Dummy W
-        IniRead, DummyH, TSolidBackground.ini, Dummy Window, Dummy H
+        Readini(DummyX, "Dummy Window", "Dummy X")
+        Readini(DummyY, "Dummy Window", "Dummy Y")
+        Readini(DummyW, "Dummy Window", "Dummy W")
+        Readini(DummyH, "Dummy Window", "Dummy H")
         SavedDummy := 1
     } else {
-        DrawHud("You must create the ini in advanced options before editing it.","y160","cE60000","5000")
+        DrawHUD("You must create the ini in advanced options before editing it.", "y160", "cE60000", "s11", "5000")
     }
     if (SavedDummy && DummyX != "ERROR") {
         Gui, Dummy: Show, x%DummyX% y%DummyY% w%DummyW% h%DummyH%, TSolidBackground Dummy Window
@@ -1348,16 +1344,80 @@ SaveDummy:
     DummyW := DummyW - 2*Border_Size
     IfNotExist, TSolidBackground.ini 
     {
-        Makeini()
+        CreateSaveini(1)
     }
-    IniWrite, %DummyX%, TSolidBackground.ini, Dummy Window, Dummy X
-    IniWrite, %DummyY%, TSolidBackground.ini, Dummy Window, Dummy Y
-    IniWrite, %DummyW%, TSolidBackground.ini, Dummy Window, Dummy W
-    IniWrite, %DummyH%, TSolidBackground.ini, Dummy Window, Dummy H
+    Writeini(DummyX, "Dummy Window", "Dummy X")
+    Writeini(DummyY, "Dummy Window", "Dummy Y")
+    Writeini(DummyW, "Dummy Window", "Dummy W")
+    Writeini(DummyH, "Dummy Window", "Dummy H")
     SavedDummy := 1
     Gui, Dummy: Destroy
 Return
 ;Dummy End
+
+;ini handling
+RunCreateSaveini:    
+    Gui, Submit, NoHide
+    CreateSaveini(1)
+Return
+
+CreateSaveini(showit) {
+    Global
+    if (bgcolor == "") {
+        bgcolor := 051523
+    }
+    if ((Iniexists == "No") && (CheckForUpdates == 0)) {
+        MsgBox, 4100, TSolidBackground, Would you like to automatically check for updates on startup?
+        IfMsgBox, Yes
+            CheckForUpdates := 1
+    }
+    IfNotExist, TSolidBackground.ini            ;Keep the ini in order.
+    {
+        FileAppend, [Help]`n, TSolidBackground.ini
+        FileAppend, [Hotkeys]`n, TSolidBackground.ini
+        FileAppend, [Settings]`n, TSolidBackground.ini
+        FileAppend, [Custom TSB Sizes 1]`n, TSolidBackground.ini
+        FileAppend, [Custom TSB Sizes 2]`n, TSolidBackground.ini
+        FileAppend, [Custom TSB Sizes 3]`n, TSolidBackground.ini
+        FileAppend, [Saved Position 1]`n, TSolidBackground.ini
+        FileAppend, [Saved Position 2]`n, TSolidBackground.ini
+        FileAppend, [Saved Position 3]`n, TSolidBackground.ini
+        FileAppend, [Saved Position 4]`n, TSolidBackground.ini
+        FileAppend, [Saved Position 5]`n, TSolidBackground.ini
+        FileAppend, [Dummy Window], TSolidBackground.ini
+    }
+    Writeini(" https://github.com/Onurtag/TSolidBackground/#tsolidbackground", "Help", "#For help, check out the readme")
+    Writeini(TSolidBackgroundKey, "Hotkeys", "TSolidBackground Key")
+    Writeini(OnTopKey, "Hotkeys", "On Top Key")
+    Writeini(CenterKey, "Hotkeys", "Center Window Key")
+    Writeini(TaskbarKey, "Hotkeys", "Show Hide Taskbar Key")
+    Writeini(OptionsKey, "Hotkeys", "Advanced Features Key")
+    Writeini(SuspendKey, "Hotkeys", "Suspend Hotkeys Key")
+    Writeini(IniVersion, "Settings", "Ini Version")
+    Writeini(bgcolor, "Settings", "Background Color")
+    Writeini(CustomWidthLeft, "Settings", "Custom Width Left")
+    Writeini(CustomWidthRight, "Settings", "Custom Width Right")
+    Writeini(CustomHeightTop, "Settings", "Custom Height Top")
+    Writeini(CustomHeightBottom, "Settings", "Custom Height Bottom")
+    Writeini(StartupWindow, "Settings", "Enable Startup Window")
+    Writeini(CheckForUpdates, "Settings", "Check for Updates on Startup")
+    Writeini(TitleOne, "Settings", "Hooker Main Window")
+    Writeini(TitleTwo, "Settings", "Hooker Hooked Window")
+    Writeini(Debug, "Settings", "Debug")
+    if (showit) {
+        DrawHUD("TSolidBackground.ini file was created/saved.", "y160", "c836DFF", "s11", "1350")
+    }
+    Return
+}
+
+Writeini(value, section, key) {
+    IniWrite, %value%, TSolidBackground.ini, %section%, %key%
+}
+
+Readini(ByRef outvalue, section, key) {
+    IniRead, outvalue, TSolidBackground.ini, %section%, %key%
+}
+;ini handling end
 
 Restarted:
     Reload

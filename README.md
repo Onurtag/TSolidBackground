@@ -38,17 +38,18 @@ You can also quickly edit the .ini by using the "Edit TSolidBackground.ini" butt
 * You have to select the window (make it active) before using most hotkeys.  
 
 * You can change the background color using the Advanced Options menu in Advanced Features menu (default hotkey: Shift+U).  
-Change the color to a red hue if you want a softer experience (Red encourages sleep). Press that [R] near the color to switch between red and blue.  
+Change the color to a red hue if you want a softer experience (it seems red encourages sleep). Press that [R] near the color to switch between red and blue.  
 
 * When you are on the Move/Resize Window menu you can use the Advanced Features (default Shift+U key) hotkey to get a new window to move/resize.  
 
-* Always on top mode can be used for multiple windows at the same time  
+* Always on top mode can be used for multiple windows at the same time.  
 Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  
 
-* TSolidBackground function will disable always on top if the selected window is always on top.  
+* Using the TSolidBackground function will disable always on top if the selected window is always on top.  
 You can use the always on top hotkey afterwards if you really want the window on top.  
 
-* Experimental window hooking currently works like this: After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top when that tab/window is currently active. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.  
+* Experimental window hooking currently works like this:  
+After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top when that tab/window is currently active. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.  
 
 
 --------------------  
@@ -64,9 +65,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ##Changelog
 
-*If the release page or this changelog mentions*  
-**TSolidBackground.ini changes,**  
-*you should delete your TSolidBackground.ini and make a new one.*  
+* **Version 2.8.0**  
+
+Full Automatic updater added.  
+Ini versions added for easier ini version control. Inis will now last longer.  
 
 * **Version 2.7.2**  
 
