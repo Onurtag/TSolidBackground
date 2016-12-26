@@ -14,7 +14,7 @@ If you have any good suggestions, feel free to contact me or open an issue.
 
 Arrs := Object()
 OnExit, Exited
-Version := "v2.8.0"
+Version := "v2.8.1"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
@@ -464,6 +464,7 @@ newmenuButtonClose:
     Gui, newmenu: Destroy
 Return
 
+updateButtonOk:
 updateButtonClose:
 updateGuiEscape:
     Gui, update: Destroy
@@ -696,14 +697,15 @@ CheckUpdate(notify) {
         Gui, update: Font, s14 c836DFF, Segoe UI
         Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %Version%)
         Gui, update: Font, s9 cDCDCCC
-        Gui, update: Add, Text,, Note: If your TSolidBackground.exe is currently in a system protected folder`n(eg. C:\Program Files\TSolidBackground)`nyou need to run TSolidBackground as admin if you want to update.
-        ;Gui, update: Font, s11 c3257BF underline
-        ;Gui, update: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground/releases/latest
+        Gui, update: Add, Text, x15 y90, Note: If your TSolidBackground.exe is currently in a system protected folder`n(eg. C:\Program Files\TSolidBackground)`nyou need to run TSolidBackground as admin if you want to update.
+        Gui, update: Add, Text, x15 y150, Check out the changelog to see what has changed:
+        Gui, update: Font, s10 c3257BF underline
+        Gui, update: Add, Text, x15 y165 gGotoSite, https://github.com/Onurtag/TSolidBackground#changelog
         Gui, update: Font, s12 cBlack norm Bold
-        Gui, update: Add, Button, x110 y160 w230 h48 gRunAutoUpdateNow, Update and Restart Now
+        Gui, update: Add, Button, x110 y200 w230 h48 gRunAutoUpdateNow, Update and Restart Now
         Gui, update: Font, s10 cBlack norm Bold
-        Gui, update: Add, Button, x193 y230 w64 h30, Close
-        Gui, update: Show, w450 h280, TSolidBackground Update Available!
+        Gui, update: Add, Button, x193 y270 w64 h30, Close
+        Gui, update: Show, w450 h320, TSolidBackground Update Available!
     } else if (notify) {
         Gui, update: Destroy
         Gui, update: +AlwaysOnTop
