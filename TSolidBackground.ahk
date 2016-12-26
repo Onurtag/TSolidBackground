@@ -14,7 +14,7 @@ If you have any good suggestions, feel free to contact me or open an issue.
 
 Arrs := Object()
 OnExit, Exited
-Version := "v2.8.1"
+Version := "v2.8.0"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
