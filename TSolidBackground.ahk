@@ -14,7 +14,7 @@ If you have any good suggestions, feel free to contact me or open an issue.
 
 Arrs := Object()
 OnExit, Exited
-Version := "v2.7.2"
+Version := "v2.7.3"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
 OnTopKey := "+Y"
@@ -51,7 +51,7 @@ Menu, Tray, Add, Make a Dummy Window, StartDummyWindow
 Menu, Tray, Add, Edit TSolidBackground.ini, Editini
 Menu, Tray, Add, Stop Window Hooker, StopHook
 Menu, Tray, Disable, Stop Window Hooker
-Menu, Tray, Add, Reload, Reloaded
+Menu, Tray, Add, Restart, Restarted
 Menu, Tray, Add, Exit, Exited
 Menu, Tray, Default, Advanced Features
 Menu, Tray, Tip, TSolidBackground
@@ -789,7 +789,7 @@ ShowResizer() {
     Gui, resizer: Add, Button, x174 y515 w290 h24, Close
     Gui, resizer: Add, Button, x10 y10 w44 h24 gBackGui, Back
     Gui, resizer: Font, norm
-    Gui, resizer: Add, DropDownList, x70 y53 w450 Choose%DropDownCurrent% vDropDownCurrent gDropDownSelected AltSubmit, Select a Window|%DropDownAll%
+    Gui, resizer: Add, DropDownList, x70 y53 w450 Choose%DropDownCurrent% vDropDownCurrent gDropDownSelected AltSubmit, Select a Window`n%DropDownAll%
     Gui, resizer: Add, Button, x527 y55 w54 h21 gReloadDropDown, Reload
     Gui, resizer: Add, Text, x500 y355, Tip: You can use `nyour advanced `nfeatures (%OptionsKey%) `nhotkey to select `na new window.
     if (!BlockResizer) {
@@ -1359,7 +1359,7 @@ SaveDummy:
 Return
 ;Dummy End
 
-Reloaded:
+Restarted:
     Reload
 Return
 
