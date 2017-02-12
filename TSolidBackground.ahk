@@ -12,9 +12,11 @@ It would be a waste of time and I don't care enough to fix them all so they will
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
+;TD: ADD MORE DANGEROUS EXCEPTIONS or something?
+
 Arrs := Object()
 OnExit, Exited
-Version := "v2.8.0"
+Version := "v2.8.1"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
@@ -63,9 +65,9 @@ IfExist, TSolidBackground.ini
     Readini(WrittenIniVersion, "Settings", "Ini Version")
     if ((WrittenIniVersion == "ERROR") || (WrittenIniVersion != IniVersion)) {
         if (WrittenIniVersion == "ERROR") {
-            DrawHUD("Your TSolidBackground.ini is likely corrupt.`nIt was automatically renamed and replaced with a new one.", "y160", "cE60000", "s11", "7000")
+            DrawHUD("Your TSolidBackground.ini is likely corrupt.`nIt was automatically renamed and replaced with a new one.", "y160", "cE60000", "s11", "10000")
         } else if (WrittenIniVersion != IniVersion) {
-            DrawHUD("Your TSolidBackground.ini needs to be updated.`nIt was automatically renamed and replaced with a new one.", "y160", "cE60000", "s11", "7000")
+            DrawHUD("Your TSolidBackground.ini needs to be updated.`nIt was automatically renamed and replaced with a new one.", "y160", "cE60000", "s11", "10000")
         }
         FileMove, TSolidBackground.ini, TSolidBackground_OLD_%A_DD%-%A_MM%-%A_YYYY%.ini
         CreateSaveini(0)
@@ -167,8 +169,8 @@ Return
     if (Activewin == "") {
         Activewin := WinExist("A")
     }
-    toggle := !toggle
-    if (toggle == "1") {
+    Toggle := !Toggle
+    if (Toggle == "1") {
         if (WinExist("A") != Activewin) {
             DrawHUD("Got a new window for TSolidBackground.", "", "c836DFF", "s11", "1350")
             Activewin := WinExist("A")
@@ -181,17 +183,10 @@ Return
 
 +G::
     WinGetPos,,, WWWidth, HHHeight, A
-    GetMonitorIndexFromWindow(Activewin)
+    GetMonitorIndexFromWindow(WinExist("A"))
     mHeight := monitorBottom-monitorTop
     mWidth := monitorRight-monitorLeft
-    if (monitorIndex != 1) {
-        WinMove, A,, (mWidth/2)-(WWWidth/2)+monitorLeft, (mHeight/2)-(HHHeight/2)+monitorTop-12
-    } else {
-        WinMove, A,, (A_ScreenWidth/2)-(WWWidth/2), (A_ScreenHeight/2)-(HHHeight/2)-12        ;-12 For new Win10 borders and stuff.
-    }
-    if (toggle == "1") {
-        TSolidBackground()
-    }
+    WinMove, A,, (mWidth-WWWidth)/2+monitorLeft, (mHeight-HHHeight)/2+monitorTop-12        ;-12 For new Win10 borders and stuff.
 Return
 
 +F::
@@ -208,7 +203,7 @@ Return
         WinHide, ahk_class Shell_TrayWnd
         WinHide, Start ahk_class Button
         Sleep, 500
-        WinHide, ahk_class Shell_TrayWnd    ;Might as well do these again. They bug a lot.
+        WinHide, ahk_class Shell_TrayWnd    ;Do these again as they bug a lot.
         WinHide, Start ahk_class Button
         TBtoggle := 1
     } else {
@@ -217,7 +212,7 @@ Return
         NumPut( ( ABS_ALWAYSONTOP := 0x2 ), APPBARDATA, 32, "UInt" )
         DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
         Sleep, 100
-        WinShow, ahk_class Shell_TrayWnd    ;Might as well do these again. They bug a lot.
+        WinShow, ahk_class Shell_TrayWnd    ;Do these again as they bug a lot.
         WinShow, Start ahk_class Button
         DllCall( "Shell32.dll\SHAppBarMessage", "UInt", ( ABM_SETSTATE := 0xA ), "UInt", &APPBARDATA )
         TBtoggle := 0
@@ -281,7 +276,7 @@ Return
 ;Debug Vars
 ~F10::
     if (Debug) {
-        ListVars            
+        ListVars
     }
 Return
 
@@ -329,7 +324,7 @@ TSolidBackground() {
         }
     }
 
-    if ((WinStyle & 0x40000) == 0) {   ;Unresizable window fix
+    if ((WinStyle & 0x40000) == 0) {        ;Unresizable windows have smaller borders?
         bg1FY -= 5
         bg2FX -= 5
         bg3SY += 5
@@ -340,18 +335,11 @@ TSolidBackground() {
     bg2FX -= %CustomWidthLeft%
     bg3SY += %CustomHeightBottom%
     bg4SX += %CustomWidthRight%
-    
-    SysGet, Allwidth, 78
-    SysGet, Allheight, 79 
-    if (monitorIndex != 1) {
-        bg2FX -= monitorLeft
-        bg1FY -= monitorTop
-        bg3H := Allheight-bg3SY
-        bg4W := Allwidth-bg4SX
-    } else {
-        bg3H := A_ScreenHeight-bg3SY
-        bg4W := A_ScreenWidth-bg4SX
-    }
+
+    bg2FX -= monitorLeft
+    bg1FY -= monitorTop
+    bg3H := monitorBottom-bg3SY
+    bg4W := monitorRight-bg4SX
     
     Gui, +Disabled -Caption +ToolWindow
     Gui, bg1: +AlwaysOnTop -Caption +ToolWindow
@@ -363,28 +351,21 @@ TSolidBackground() {
     Gui, bg4: +AlwaysOnTop -Caption +ToolWindow
     Gui, bg4: Color, %bgcolor%
     WinSet, Top,, ahk_id %Activewin%
-    if (monitorIndex != 1) {
-        if (wX < 0) {
-            bg4W := Abs(bg4SX)+monitorRight
-            Gui, bg2: Show, NoActivate x%monitorLeft% y%monitorTop% h%mHeight% w%bg2FX%, TSolidBackground BG2 (RIGHT)
-            Gui, bg4: Show, NoActivate x%bg4SX% y%monitorTop% h%mHeight% w%bg4W%, TSolidBackground BG4 (LEFT)
-        } else {
-            Gui, bg2: Show, NoActivate x%monitorLeft% y%monitorTop% h%mHeight% w%bg2FX%, TSolidBackground BG2 (LEFT)
-            Gui, bg4: Show, NoActivate x%bg4SX% y%monitorTop% h%mHeight% w%bg4W%, TSolidBackground BG4 (RIGHT)
-        }
-        if (wY < 0) {
-            bg3H := Abs(bg3SY)+monitorBottom
-            Gui, bg3: Show, NoActivate x%monitorLeft% y%bg3SY% h%bg3H% w%mWidth%, TSolidBackground BG3 (TOP)
-            Gui, bg1: Show, NoActivate x%monitorLeft% y%monitorTop% h%bg1FY% w%mWidth%, TSolidBackground BG1 (BOTTOM)
-        } else {
-            Gui, bg3: Show, NoActivate x%monitorLeft% y%bg3SY% h%bg3H% w%mWidth%, TSolidBackground BG3 (BOTTOM)
-            Gui, bg1: Show, NoActivate x%monitorLeft% y%monitorTop% h%bg1FY% w%mWidth%, TSolidBackground BG1 (TOP)
-        }
-    } else {            ;Do I even need these anymore?
-        Gui, bg3: Show, NoActivate x0 y%bg3SY% h%bg3H% w%A_ScreenWidth%, TSolidBackground BG3 (BOTTOM)
-        Gui, bg2: Show, NoActivate x0 y0 h%A_ScreenHeight% w%bg2FX%, TSolidBackground BG2 (LEFT)
-        Gui, bg4: Show, NoActivate x%bg4SX% y0 h%A_ScreenHeight% w%bg4W%, TSolidBackground BG4 (RIGHT)
-        Gui, bg1: Show, NoActivate x0 y0 h%bg1FY% w%A_ScreenWidth%, TSolidBackground BG1 (TOP)
+    if (wX < 0) {
+        bg4W := Abs(bg4SX)+monitorRight
+        Gui, bg2: Show, NoActivate x%monitorLeft% y%monitorTop% h%mHeight% w%bg2FX%, TSolidBackground BG2 (RIGHT)
+        Gui, bg4: Show, NoActivate x%bg4SX% y%monitorTop% h%mHeight% w%bg4W%, TSolidBackground BG4 (LEFT)
+    } else {
+        Gui, bg2: Show, NoActivate x%monitorLeft% y%monitorTop% h%mHeight% w%bg2FX%, TSolidBackground BG2 (LEFT)
+        Gui, bg4: Show, NoActivate x%bg4SX% y%monitorTop% h%mHeight% w%bg4W%, TSolidBackground BG4 (RIGHT)
+    }
+    if (wY < 0) {
+        bg3H := Abs(bg3SY)+monitorBottom
+        Gui, bg3: Show, NoActivate x%monitorLeft% y%bg3SY% h%bg3H% w%mWidth%, TSolidBackground BG3 (TOP)
+        Gui, bg1: Show, NoActivate x%monitorLeft% y%monitorTop% h%bg1FY% w%mWidth%, TSolidBackground BG1 (BOTTOM)
+    } else {
+        Gui, bg3: Show, NoActivate x%monitorLeft% y%bg3SY% h%bg3H% w%mWidth%, TSolidBackground BG3 (BOTTOM)
+        Gui, bg1: Show, NoActivate x%monitorLeft% y%monitorTop% h%bg1FY% w%mWidth%, TSolidBackground BG1 (TOP)
     }
     Return
 }
@@ -397,7 +378,7 @@ DestroyTSolidBackground() {
     Return
 }
 
-GetMonitorIndexFromWindow(windowHandle) {    ;Pre-made function by shinywong, thank you.
+GetMonitorIndexFromWindow(windowHandle) {           ;Pre-made function by Shinywong. Many thanks.
     Global
     monitorIndex := 1
     VarSetCapacity(monitorInfo, 40)
@@ -474,7 +455,7 @@ DummyGuiEscape:
     Gui, Dummy: Destroy
 Return
 
-BackGui:      ;Not planning to make the gui tabbed etc yet.
+BackGui:          ;Not planning to make the gui tabbed etc yet.
     WinGetPos, aX, aY, aW, aH, A
     Gui, cheat: +ToolWindow +AlwaysOnTop
     Gui, cheat: Color, 292929
@@ -554,7 +535,7 @@ Return
 
 Setnow:
     Gui, Submit, NoHide
-    if CustomHeightBottom is not integer        ;Not really necessary
+    if CustomHeightBottom is not integer        ;Just trying out. Restricting using ahk gui properties is preferred in a real situation.
     {
         GuiControl, options:, CustomHeightBottom, 0
     }
@@ -807,22 +788,22 @@ ShowResizer() {
         Gui, resizer: Add, Text, x90 y391, Load Saved Pos:
         Gui, resizer: Font, s9 cDCDCCC norm
         Gui, resizer: Font, s10 cb396ff norm
-        Wofwin := 0000        ;Ahk gui bug temp fix.
-        Hofwin := 0000 
-        Xofwin := 0000 
-        Yofwin := 0000
+        Wofwin := 00000            ;Fix for some tiny gui bug(?).
+        Hofwin := 00000
+        Xofwin := 00000
+        Yofwin := 00000
         Gui, resizer: Add, Text, x150 y125 vCurrentWH, W: %Wofwin%, H: %Hofwin%
         Gui, resizer: Add, Text, x426 y125 vCurrentXY, X: %Xofwin%, Y: %Yofwin%
         Gui, resizer: Font, s10 c836DFF norm
-        Gui, resizer: Add, Text, x150 y165, W: %Wclient%, H: %Hclient%            ;Disabled because its useless.
+        Gui, resizer: Add, Text, x150 y165, W: %Wclient%, H: %Hclient%
         Gui, resizer: Add, Text, x150 y145, W: %Worig%, H: %Horig%
         Gui, resizer: Add, Text, x426 y145, X: %Xorig%, Y: %Yorig%
         Gui, resizer: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
         Gui, resizer: Font, s10 c836DFF Bold
         Gui, resizer: Add, Edit, x158 y278 w64 h20 vWnew, %Wnew%
-        Gui, resizer: Add, UpDown, 0x80 Range0-90000, %Wnew%
+        Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Wnew%
         Gui, resizer: Add, Edit, x158 y301 w64 h20 vHnew, %Hnew%
-        Gui, resizer: Add, UpDown, 0x80 Range0-90000, %Hnew%
+        Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Hnew%
         Gui, resizer: Add, Edit, x424 y278 w64 h20 vXnew, %Xnew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Xnew%
         Gui, resizer: Add, Edit, x424 y301 w64 h20 vYnew, %Ynew%
@@ -908,7 +889,7 @@ RefresherEdit() {
     Return
 }
 
-GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'Pseudo-arrays' are just easier to debug.
+GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'Pseudo-arrays' were just easier to debug.
     Global
     Loop, %WinIDAll%        ;Sadly they are not perfect.
     {
@@ -919,7 +900,7 @@ GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'P
         VarSetCapacity(WinTitleAll%A_Index%, 0)
     }
     DropDownAll := ""
-    ;DetectHiddenWindows, On
+    ;DetectHiddenWindows, On                    ;Detect hidden windows.
     WinGet, WinIDAll, List
     Loop, %WinIDAll%
     {
@@ -928,12 +909,12 @@ GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'P
             DropDownCurrent := A_Index + 1
         }
         WinGetTitle, LoopTitle, ahk_id %CurrID%
-        ;StringReplace, LoopTitle, LoopTitle,`n,,All        ;Only if window titles have new lines.
+        ;StringReplace, LoopTitle, LoopTitle,`n,,All            ;If window titles had new lines.
         if (!LoopTitle) {
             WinGetClass, LoopClass, ahk_id %CurrID%
-            LoopTitle := "-!!!DANGEROUS!!!-   Untitled (Class:" . LoopClass . ") Window"
+            LoopTitle := "[DANGEROUS]  Untitled (Class:" . LoopClass . ") Window"
             if (!LoopClass) {
-                LoopTitle := "-!!!DANGEROUS!!!-   Untitled " . A_Index . " .th Window"
+                LoopTitle := "[DANGEROUS]  Untitled " . A_Index . " .th Window"
             }
         }
         WinTitleAll%A_Index% := A_Index . " - " . LoopTitle
@@ -945,112 +926,104 @@ GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'P
 
 Resizenow:
     Gui, Submit, NoHide
-    WinMove, ahk_id %TBResized%, , , , %Wnew%, %Hnew%
+    WinMove, ahk_id %TBResized%,,,, %Wnew%, %Hnew%
     RefresherEdit()
 Return    
 
 Movenow:
     Gui, Submit, NoHide
-    WinMove, ahk_id %TBResized%, , %Xnew%, %Ynew%
+    WinMove, ahk_id %TBResized%,, %Xnew%, %Ynew%
     RefresherEdit()
 Return
 
 Vcenter:    
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    GetMonitorIndexFromWindow(Activewin)
+    GetMonitorIndexFromWindow(TBResized)
     mHeight := monitorBottom-monitorTop
     mWidth := monitorRight-monitorLeft
-    if (monitorIndex != 1) {
-        WinMove,ahk_id %TBResized%, , , (mHeight/2)-(Hofwin/2)+monitorTop
-    } else {
-        WinMove,ahk_id %TBResized%, , , (A_ScreenHeight/2)-(Hofwin/2)
-    }
+    WinMove, ahk_id %TBResized%,,, (mHeight-Hofwin)/2+monitorTop
     RefresherEdit()
 Return
 
 Hcenter:
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    GetMonitorIndexFromWindow(Activewin)
+    GetMonitorIndexFromWindow(TBResized)
     mHeight := monitorBottom-monitorTop
     mWidth := monitorRight-monitorLeft
-    if (monitorIndex != 1) {
-        WinMove,ahk_id %TBResized%, , (mWidth/2)-(Wofwin/2)+monitorLeft,
-    } else {
-        WinMove,ahk_id %TBResized%, , (A_ScreenWidth/2)-(Wofwin/2),
-    }
+    WinMove, ahk_id %TBResized%,, (mWidth-Wofwin)/2+monitorLeft,
     RefresherEdit()
 Return
 
 Wup:
     Gui, Submit, NoHide
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    newcrap := Yofwin-Vmove
-    WinMove, ahk_id %TBResized%, , , %newcrap%
+    newthing := Yofwin-Vmove
+    WinMove, ahk_id %TBResized%,,, %newthing%
     RefresherEdit()
 Return
 
 Wdown:
     Gui, Submit, NoHide
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    newcrap := Yofwin+Vmove
-    WinMove, ahk_id %TBResized%, , , %newcrap%
+    newthing := Yofwin+Vmove
+    WinMove, ahk_id %TBResized%,,, %newthing%
     RefresherEdit()
 Return
 
 Wleft:
     Gui, Submit, NoHide
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    newcrap := Xofwin-Vmove
-    WinMove, ahk_id %TBResized%, , %newcrap%,
+    newthing := Xofwin-Vmove
+    WinMove, ahk_id %TBResized%,, %newthing%,
     RefresherEdit()
 Return
 
 Wright:
     Gui, Submit, NoHide
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    newcrap := Xofwin+Vmove
-    WinMove, ahk_id %TBResized%, , %newcrap%,
+    newthing := Xofwin+Vmove
+    WinMove, ahk_id %TBResized%,, %newthing%,
     RefresherEdit()
 Return
 
 Wplus:
     Gui, Submit, NoHide
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    newcrap := Wofwin+Vresize
-    WinMove, ahk_id %TBResized%, , , , %newcrap%
+    newthing := Wofwin+Vresize
+    WinMove, ahk_id %TBResized%,,,, %newthing%
     RefresherEdit()
 Return
 
 Wminus:
     Gui, Submit, NoHide
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    newcrap := Wofwin-Vresize
-    WinMove, ahk_id %TBResized%, , , , %newcrap%
+    newthing := Wofwin-Vresize
+    WinMove, ahk_id %TBResized%,,,, %newthing%
     RefresherEdit()
 Return
 
 Hplus:
     Gui, Submit, NoHide
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    newcrap := Hofwin+Vresize
-    WinMove, ahk_id %TBResized%, , , , ,%newcrap%
+    newthing := Hofwin+Vresize
+    WinMove, ahk_id %TBResized%,,,,, %newthing%
     RefresherEdit()
 Return
 
 Hminus:
     Gui, Submit, NoHide
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    newcrap := Hofwin-Vresize
-    WinMove, ahk_id %TBResized%, , , , ,%newcrap%
+    newthing := Hofwin-Vresize
+    WinMove, ahk_id %TBResized%,,,,, %newthing%
     RefresherEdit()
 Return
 
 Origxy:
-    WinMove, ahk_id %TBResized%, , %Xorig%, %Yorig%
+    WinMove, ahk_id %TBResized%,, %Xorig%, %Yorig%
 Return
 
 Origwh:
-    WinMove, ahk_id %TBResized%, , , , %Worig%, %Horig%
+    WinMove, ahk_id %TBResized%,,,, %Worig%, %Horig%
 Return
 
 Savetemp1:
@@ -1058,7 +1031,7 @@ Savetemp1:
 Return
 
 Loadtemp1:
-    WinMove, ahk_id %TBResized%, , %Temp1X%, %Temp1Y%, %Temp1W%, %Temp1H%
+    WinMove, ahk_id %TBResized%,, %Temp1X%, %Temp1Y%, %Temp1W%, %Temp1H%
 Return
 
 Savetemp2:
@@ -1066,7 +1039,7 @@ Savetemp2:
 Return
 
 Loadtemp2:
-    WinMove,ahk_id %TBResized%, , %Temp2X%, %Temp2Y%, %Temp2W%, %Temp2H%
+    WinMove, ahk_id %TBResized%,, %Temp2X%, %Temp2Y%, %Temp2W%, %Temp2H%
 Return
 
 Save1:
@@ -1118,7 +1091,7 @@ Loadpos(posnr) {
     if (PermX == "ERROR") {
         DrawHUD("Saved position or .ini file doesn't exist.", "y160", "cE60000", "s11", "5000")
     } else {
-        WinMove, ahk_id %TBResized%, , %PermX%, %PermY%, %PermW%, %PermH%
+        WinMove, ahk_id %TBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
     }
     Return
 }
@@ -1145,7 +1118,7 @@ DropDownSelected:
             DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
             TBResized := WinIDAll%VarIndex%
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
-            if (Xorig == -32000) {
+            if (Xorig == -32000) {      ;Minimized windows
                 Xorig := 100
                 Yorig := 100
             }
