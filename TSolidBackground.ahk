@@ -12,11 +12,11 @@ It would be a waste of time and I don't care enough to fix them all so they will
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
-;TD: ADD MORE DANGEROUS EXCEPTIONS or something?
+;TD: ADD MORE [DANGEROUS] EXCEPTIONS or something?
 
 Arrs := Object()
 OnExit, Exited
-Version := "v2.8.1"
+Version := "v2.8.2"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
@@ -37,6 +37,7 @@ TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
 Vmove := 5
 Vresize := 5
+MoveBy := 1
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
@@ -247,9 +248,10 @@ ShowNewMenu(nmX, nmY) {
     Gui, newmenu: Add, Button, x198 y70 w242 h38 gStartResizeGui, &Move/Resize Window
     Gui, newmenu: Add, Button, x198 y125 w242 h38 gStartOptionsGui, &Advanced Options
     Gui, newmenu: Add, Button, x198 y180 w242 h38 gStartHookGui, &Window Hooker (Alpha)
+    Gui, newmenu: Add, Button, x198 y235 w242 h38 gStartMouseMoveGui, Mouse Mo&ver
     Gui, newmenu: Font, s10 c836DFF Bold
-    Gui, newmenu: Add, Button, x198 y260 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
-    Gui, newmenu: Add, Button, x198 y295 w242 h26 gRunCheckUpdate, &Check For Updates
+    Gui, newmenu: Add, Button, x198 y320 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
+    Gui, newmenu: Add, Button, x198 y355 w242 h26 gRunCheckUpdate, &Check For Updates
     Gui, newmenu: Add, Button, x174 y515 w290 h24, Close
     if (nmX == "") {
         Gui, newmenu: Show, w640 h560, TSolidBackground Advanced Features
@@ -492,10 +494,10 @@ ShowOptions() {
     Gui, options: Font, s10 c836DFF Bold
     Gui, options: Add, Button, x174 y515 w290 h24, Close
     Gui, options: Add, Button, x10 y10 w44 h24 gBackGui, Back
-    Gui, options: Add, Edit, x360 y73 w70 h20 vCustomWidthLeft, %CustomWidthLeft%
-    Gui, options: Add, Edit, x360 y94 w70 h20 vCustomWidthRight, %CustomWidthRight%
-    Gui, options: Add, Edit, x360 y115 w70 h20 vCustomHeightTop, %CustomHeightTop%
-    Gui, options: Add, Edit, x360 y136 w70 h20 vCustomHeightBottom, %CustomHeightBottom%
+    Gui, options: Add, Edit, x360 y73 w70 h20 Number vCustomWidthLeft, %CustomWidthLeft%
+    Gui, options: Add, Edit, x360 y94 w70 h20 Number vCustomWidthRight, %CustomWidthRight%
+    Gui, options: Add, Edit, x360 y115 w70 h20 Number vCustomHeightTop, %CustomHeightTop%
+    Gui, options: Add, Edit, x360 y136 w70 h20 Number vCustomHeightBottom, %CustomHeightBottom%
     Gui, options: Add, Edit, x360 y203  w70 h20 vbgcolor, %bgcolor%
     Gui, options: Add, Progress, x360 y225 w70 h20 c%bgcolor% Background%bgcolor% vbarcolored, 100
     Gui, options: Font, norm Underline
@@ -515,6 +517,7 @@ ShowOptions() {
     Gui, options: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     Gui, options: Add, Checkbox, x202 y280 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
     Gui, options: Add, Checkbox, x202 y302 Checked%StartupWindow% vStartupWindow gSetnow, Show info window on startup
+    Gui, options: Add, Checkbox, x202 y324 Checked%CheckForUpdates% vCheckForUpdates gSetnow, Check for updates on startup (Save to ini required)
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
     if (optX == "") {
         Gui, options: Show, w640 h560, TSolidBackground Advanced Options
@@ -534,23 +537,6 @@ OptionsGuiEscape:
 Return
 
 Setnow:
-    Gui, Submit, NoHide
-    if CustomHeightBottom is not integer        ;Just trying out. Restricting using ahk gui properties is preferred in a real situation.
-    {
-        GuiControl, options:, CustomHeightBottom, 0
-    }
-    if CustomHeightTop is not integer
-    {
-        GuiControl, options:, CustomHeightTop, 0
-    }
-    if CustomWidthRight is not integer
-    {
-        GuiControl, options:, CustomWidthRight, 0
-    }
-    if CustomWidthLeft is not integer
-    {
-        GuiControl, options:, CustomWidthLeft, 0
-    }
     Gui, Submit, NoHide
 Return
 
@@ -800,21 +786,21 @@ ShowResizer() {
         Gui, resizer: Add, Text, x426 y145, X: %Xorig%, Y: %Yorig%
         Gui, resizer: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
         Gui, resizer: Font, s10 c836DFF Bold
-        Gui, resizer: Add, Edit, x158 y278 w64 h20 vWnew, %Wnew%
+        Gui, resizer: Add, Edit, x158 y278 w64 h20 Number vWnew, %Wnew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Wnew%
-        Gui, resizer: Add, Edit, x158 y301 w64 h20 vHnew, %Hnew%
+        Gui, resizer: Add, Edit, x158 y301 w64 h20 Number vHnew, %Hnew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Hnew%
-        Gui, resizer: Add, Edit, x424 y278 w64 h20 vXnew, %Xnew%
+        Gui, resizer: Add, Edit, x424 y278 w64 h20 Number vXnew, %Xnew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Xnew%
-        Gui, resizer: Add, Edit, x424 y301 w64 h20 vYnew, %Ynew%
+        Gui, resizer: Add, Edit, x424 y301 w64 h20 Number vYnew, %Ynew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Ynew%
         Gui, resizer: Font, norm Underline
         Gui, resizer: Add, Text, x218 y338, Quick save/load size and position
         Gui, resizer: Add, Text, x219 y435, Create .ini for permanent options
         Gui, resizer: Font, s9 c836DFF norm Bold
-        Gui, resizer: Add, Edit, x517 y249 w40 h20 vVmove, %Vmove%
+        Gui, resizer: Add, Edit, x517 y249 w40 h20 Number vVmove, %Vmove%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vmove%
-        Gui, resizer: Add, Edit, x167 y247 w40 h20 vVresize, %Vresize%
+        Gui, resizer: Add, Edit, x167 y247 w40 h20 Number vVresize, %Vresize%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vresize%
         Gui, resizer: Font, s9 cDCDCCC norm
         Gui, resizer: Add, Button, x350 y147 w15 h15 gOrigxy, R
@@ -1272,9 +1258,9 @@ StartDummyWindow:
     Gui, Dummy: Add, Text, x129 y188, By: 
     Gui, Dummy: Add, Text, x55 y235, Center:
     Gui, Dummy: Font, s9 c836DFF norm Bold
-    Gui, Dummy: Add, Edit, x47 y188 w40 h20 vVmove, %Vmove%
+    Gui, Dummy: Add, Edit, x47 y188 w40 h20 Number vVmove, %Vmove%
     Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vmove%
-    Gui, Dummy: Add, Edit, x150 y188 w40 h20 vVresize, %Vresize%
+    Gui, Dummy: Add, Edit, x150 y188 w40 h20 Number vVresize, %Vresize%
     Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vresize%
     Gui, Dummy: Font, s9 c836DFF norm
     Gui, Dummy: Add, Button, x51 y124 w16 h16 gWup, U
@@ -1329,6 +1315,78 @@ SaveDummy:
     Gui, Dummy: Destroy
 Return
 ;Dummy End
+
+;Mouse Mover Start
+MouseMover() {
+    Global
+    Gui, mmover: Destroy
+    ;Gui, mmover: +AlwaysOnTop
+    Gui, mmover: Color, 292929
+    Gui, mmover: Font, s14 c836DFF Bold, Segoe UI
+    Gui, mmover: Add, Text, x258 y15, Mouse Mover
+    Gui, mmover: Font, s9
+    Gui, mmover: Add, Text, x260 y335, I can also add clicks later.
+    Gui, mmover: Font, s9 c836DFF norm Bold
+    Gui, mmover: Add, Edit, x290 y257 w40 h20 Number vMoveBy, %MoveBy%
+    Gui, mmover: Add, UpDown, 0x80 Range1-90000, %MoveBy%
+    Gui, mmover: Font, s9 cBlack norm
+    Gui, mmover: Add, Button, x340 y258 w34 h18 gSetnow, Set
+    Gui, mmover: Font, s10 Bold
+    Gui, mmover: Add, Button, x174 y515 w290 h24, Close
+    Gui, mmover: Add, Button, x10 y10 w44 h24 gBackGui, Back
+    Gui, mmover: Font, s10 cDCDCCC norm
+    Gui, mmover: Add, Text, x270 y256, By:
+    Gui, mmover: Font, s13
+    Gui, mmover: Add, Text, x220 y147, When this window is open,
+    Gui, mmover: Add, Text, x140 y177, Use arrow keys to move the mouse pixel by pixel.
+    Gui, mmover: Font, s10 c836DFF norm Underline
+    Gui, mmover: Add, Text, x219 y435, Create .ini for permanent options
+    Gui, mmover: Font, s10 cDCDCCC norm
+    Gui, mmover: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
+    WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
+    if (optX == "") {
+        Gui, mmover: Show, w640 h560, TSolidBackground Window Hooker (Alpha)
+    } else {
+        Gui, mmover: Show, w640 h560 x%optX% y%optY%, TSolidBackground Window Hooker (Alpha)
+    }
+    Gui, newmenu: Destroy
+    mouseMoving := 1
+    Return
+}
+
+StartMouseMoveGui:
+    MouseMover()
+Return
+
+mmoverGuiClose:
+mmoverButtonClose:
+    mouseMoving := 0
+    Gui, mmover: Destroy
+Return
+
+mmoverGuiEscape:
+    mouseMoving := 0
+    Gosub, BackGui
+Return
+
+#If mouseMoving
+~Left::
+    MouseMove, -%MoveBy%, 0,, R
+Return
+
+~Right::
+    MouseMove, %MoveBy%, 0,, R
+Return
+
+~Up::
+    MouseMove, 0, -%MoveBy%,, R
+Return
+
+~Down::
+    MouseMove, 0, %MoveBy%,, R
+Return
+#If
+;Mouse Mover End
 
 ;ini handling
 RunCreateSaveini:    

@@ -65,6 +65,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ##Changelog
 
+* **Version 2.8.2**  
+
+Added mouse mover using keyboard.
+
 * **Version 2.8.1**  
 
 Various bug fixes. (Centering, Multimonitor stuff)
