@@ -16,7 +16,7 @@ If you have any good suggestions, feel free to contact me or open an issue.
 
 Arrs := Object()
 OnExit, Exited
-Version := "v2.8.2"
+Version := "v2.8.3"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
@@ -32,12 +32,13 @@ CustomHeightTop := 0
 CustomHeightBottom := 0
 StartupWindow := 1
 protectVNR := 1
+PreventSend := 1
 Hooking := 0
 TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
 Vmove := 5
 Vresize := 5
-MoveBy := 1
+MoveBy := 5
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
@@ -1250,7 +1251,7 @@ StartDummyWindow:
     Gui, Dummy: Color, 292929
     Gui, Dummy: Font, s10 c836DFF, Segoe UI
     Gui, Dummy: Add, Button, x35 y25 w164 h26 gCloseDummy, Close Dummy Window
-    Gui, Dummy: Add, Button, x35 y60 w164 h26 gSaveDummy, Save && Close
+    Gui, Dummy: Add, Button, x35 y60 w164 h26 gSaveDummy, Save to .ini && Close
     Gui, Dummy: Font, cDCDCCC
     Gui, Dummy: Add, Text, x43 y100, Move 
     Gui, Dummy: Add, Text, x147 y100, Resize 
@@ -1324,33 +1325,36 @@ MouseMover() {
     Gui, mmover: Color, 292929
     Gui, mmover: Font, s14 c836DFF Bold, Segoe UI
     Gui, mmover: Add, Text, x258 y15, Mouse Mover
-    Gui, mmover: Font, s9
-    Gui, mmover: Add, Text, x260 y335, I can also add clicks later.
     Gui, mmover: Font, s9 c836DFF norm Bold
-    Gui, mmover: Add, Edit, x290 y257 w40 h20 Number vMoveBy, %MoveBy%
+    Gui, mmover: Add, Edit, x305 y287 w40 h20 Number vMoveBy, %MoveBy%
     Gui, mmover: Add, UpDown, 0x80 Range1-90000, %MoveBy%
     Gui, mmover: Font, s9 cBlack norm
-    Gui, mmover: Add, Button, x340 y258 w34 h18 gSetnow, Set
+    Gui, mmover: Add, Button, x355 y288 w34 h18 gSetnow, Set
     Gui, mmover: Font, s10 Bold
     Gui, mmover: Add, Button, x174 y515 w290 h24, Close
-    Gui, mmover: Add, Button, x10 y10 w44 h24 gBackGui, Back
+    Gui, mmover: Add, Button, x10 y10 w44 h24 gmmoverGuiEscape, Back
     Gui, mmover: Font, s10 cDCDCCC norm
-    Gui, mmover: Add, Text, x270 y256, By:
+    Gui, mmover: Add, Checkbox, x212 y317 Checked%PreventSend% vPreventSend gSetnow, Also prevent hotkeys from working
+    Gui, mmover: Add, Text, x135 y235, (or [Numpad End])
+    Gui, mmover: Add, Text, x325 y235, (or [Numpad Down])
+    Gui, mmover: Add, Text, x245 y286, Move by:
     Gui, mmover: Font, s13
     Gui, mmover: Add, Text, x220 y147, When this window is open,
     Gui, mmover: Add, Text, x140 y177, Use arrow keys to move the mouse pixel by pixel.
+    Gui, mmover: Add, Text, x115 y207, Use [Numpad 1] for left click, [Numpad 2] for right click.
     Gui, mmover: Font, s10 c836DFF norm Underline
-    Gui, mmover: Add, Text, x219 y435, Create .ini for permanent options
+    ;Gui, mmover: Add, Text, x219 y435, Create .ini for permanent options
     Gui, mmover: Font, s10 cDCDCCC norm
-    Gui, mmover: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
+    ;Gui, mmover: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
     if (optX == "") {
-        Gui, mmover: Show, w640 h560, TSolidBackground Window Hooker (Alpha)
+        Gui, mmover: Show, w640 h560, TSolidBackground Mouse Mover
     } else {
-        Gui, mmover: Show, w640 h560 x%optX% y%optY%, TSolidBackground Window Hooker (Alpha)
+        Gui, mmover: Show, w640 h560 x%optX% y%optY%, TSolidBackground Mouse Mover
     }
     Gui, newmenu: Destroy
     mouseMoving := 1
+    SetMouseDelay, 0
     Return
 }
 
@@ -1370,20 +1374,52 @@ mmoverGuiEscape:
 Return
 
 #If mouseMoving
-~Left::
+Left::
     MouseMove, -%MoveBy%, 0,, R
+    if (!PreventSend)
+        Send, {Left} 
 Return
 
-~Right::
+Right::
     MouseMove, %MoveBy%, 0,, R
+    if (!PreventSend)
+        Send, {Right}
 Return
 
-~Up::
+Up::
     MouseMove, 0, -%MoveBy%,, R
+    if (!PreventSend)
+        Send, {Up}
 Return
 
-~Down::
+Down::
     MouseMove, 0, %MoveBy%,, R
+    if (!PreventSend)
+        Send, {Down}
+Return
+
+Numpad1::
+    Click Left
+    if (!PreventSend)
+        Send, {Numpad1}
+Return
+
+Numpad2::
+    Click Right
+    if (!PreventSend)
+        Send, {Numpad2}
+Return
+
+NumpadEnd::
+    Click Left
+    if (!PreventSend)
+        Send, {Numpad1}
+Return
+
+NumpadDown::
+    Click Right
+    if (!PreventSend)
+        Send, {Numpad2}
 Return
 #If
 ;Mouse Mover End

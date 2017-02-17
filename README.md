@@ -65,6 +65,11 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ##Changelog
 
+* **Version 2.8.3**  
+
+Added clicks to mouse mover.  
+Bug fixes.  
+
 * **Version 2.8.2**  
 
 Added mouse mover using keyboard.
