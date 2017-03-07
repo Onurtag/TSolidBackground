@@ -38,9 +38,11 @@ You can also quickly edit the .ini by using the "Edit TSolidBackground.ini" butt
 * You have to select the window (make it active) before using most hotkeys.  
 
 * You can change the background color using the Advanced Options menu in Advanced Features menu (default hotkey: Shift+U).  
-Change the color to a red hue if you want a softer experience (it seems red encourages sleep). Press that [R] near the color to switch between red and blue.  
+Change the color to a red hue if you want a softer experience (it seems red encourages sleep and blue does the opposite). Press that [R] near the color to switch between red and blue.  
 
-* When you are on the Move/Resize Window menu you can use the Advanced Features (default Shift+U key) hotkey to get a new window to move/resize.  
+* When you are on the Move/Resize Window menu you can use the Advanced Features (default: Shift+U) hotkey to get a new window to move/resize.  
+
+* If your window doesn't show up on the Move/Resize dropdown menu, you can disable excluding system windows & untitled windows under advanced options.
 
 * Always on top mode can be used for multiple windows at the same time.  
 Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  

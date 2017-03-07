@@ -3,20 +3,19 @@
 
 /*
 TSolidBackground
+AIO Autohotkey script that can make any window pseudo-fullscreen using padding over window borders and background. It can also move/resize windows and make them always on top.
 https://github.com/Onurtag/TSolidBackground
 
 To anyone reading the code,
-This script contains many unrecommended globals and hacks.
+This script contains many unoptimal globals and hacks.
 It would be a waste of time and I don't care enough to fix them all so they will stay like this until they bother me.
 
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
-;TD: ADD MORE [DANGEROUS] EXCEPTIONS or something?
-
 Arrs := Object()
 OnExit, Exited
-Version := "v2.8.3"
+Version := "v2.8.4"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
@@ -30,9 +29,10 @@ CustomWidthLeft := 0
 CustomWidthRight := 0
 CustomHeightTop := 0
 CustomHeightBottom := 0
-StartupWindow := 1
+startupWindow := 1
 protectVNR := 1
-PreventSend := 1
+preventSend := 1
+excludeSystemWindows := 1
 Hooking := 0
 TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
@@ -85,11 +85,12 @@ IfExist, TSolidBackground.ini
     Readini(CustomWidthRight, "Settings", "Custom Width Right")
     Readini(CustomHeightTop, "Settings", "Custom Height Top")
     Readini(CustomHeightBottom, "Settings", "Custom Height Bottom")
-    Readini(StartupWindow, "Settings", "Enable Startup Window ")
+    Readini(startupWindow, "Settings", "Enable Startup Window")
+    Readini(excludeSystemWindows, "Settings", "Exclude system windows from dropdown")
     Readini(CheckForUpdates, "Settings", "Check for Updates on Startup")
-    Readini(Debug, "Settings", "Debug")
     Readini(TitleOne, "Settings", "Hooker Main Window")
     Readini(TitleTwo, "Settings", "Hooker Hooked Window")
+    Readini(Debug, "Settings", "Debug")
     if (TSolidBackgroundKey != "+T") {
         if (TSolidBackgroundKey != "") {
             Hotkey, %TSolidBackgroundKey%, +T
@@ -128,7 +129,7 @@ IfExist, TSolidBackground.ini
     }
 }
 
-if (StartupWindow) {
+if (startupWindow) {
     Gui, start: Color, 292929
     Gui, start: Font, s14 c836DFF Bold, Segoe UI
     Gui, start: Add, Text,, TSolidBackground %Version%
@@ -254,7 +255,7 @@ ShowNewMenu(nmX, nmY) {
     Gui, newmenu: Add, Button, x198 y320 w242 h26 gStartDummyWindow, Ma&ke a Dummy Window
     Gui, newmenu: Add, Button, x198 y355 w242 h26 gRunCheckUpdate, &Check For Updates
     Gui, newmenu: Add, Button, x174 y515 w290 h24, Close
-    if (nmX == "") {
+    if ((nmX == "") || (nmX == -32000)) {
         Gui, newmenu: Show, w640 h560, TSolidBackground Advanced Features
     } else {
         Gui, newmenu: Show, w640 h560 x%nmX% y%nmY%, TSolidBackground Advanced Features
@@ -486,41 +487,42 @@ ShowOptions() {
     Gui, options: Add, Text, x238 y15, Advanced Options
     Gui, options: Color, 292929
     Gui, options: Font, s10 cDCDCCC norm
-    Gui, options: Add, Text, x202 y75, Custom Width Left:
-    Gui, options: Add, Text, x202 y96, Custom Width Right:
-    Gui, options: Add, Text, x202 y117, Custom Height Top:
-    Gui, options: Add, Text, x202 y138, Custom Height Bottom:
-    Gui, options: Add, Text, x202 y205, TSolidBackground Color:
-    Gui, options: Add, Text, x486 y80, Permanent `nSave/Load
+    Gui, options: Add, Text, x152 y75, Custom Width Left:
+    Gui, options: Add, Text, x152 y96, Custom Width Right:
+    Gui, options: Add, Text, x152 y117, Custom Height Top:
+    Gui, options: Add, Text, x152 y138, Custom Height Bottom:
+    Gui, options: Add, Text, x152 y205, TSolidBackground Color:
+    Gui, options: Add, Text, x436 y80, Permanent `nSave/Load
     Gui, options: Font, s10 c836DFF Bold
     Gui, options: Add, Button, x174 y515 w290 h24, Close
     Gui, options: Add, Button, x10 y10 w44 h24 gBackGui, Back
-    Gui, options: Add, Edit, x360 y73 w70 h20 Number vCustomWidthLeft, %CustomWidthLeft%
-    Gui, options: Add, Edit, x360 y94 w70 h20 Number vCustomWidthRight, %CustomWidthRight%
-    Gui, options: Add, Edit, x360 y115 w70 h20 Number vCustomHeightTop, %CustomHeightTop%
-    Gui, options: Add, Edit, x360 y136 w70 h20 Number vCustomHeightBottom, %CustomHeightBottom%
-    Gui, options: Add, Edit, x360 y203  w70 h20 vbgcolor, %bgcolor%
-    Gui, options: Add, Progress, x360 y225 w70 h20 c%bgcolor% Background%bgcolor% vbarcolored, 100
+    Gui, options: Add, Edit, x310 y73 w70 h20 Number vCustomWidthLeft, %CustomWidthLeft%
+    Gui, options: Add, Edit, x310 y94 w70 h20 Number vCustomWidthRight, %CustomWidthRight%
+    Gui, options: Add, Edit, x310 y115 w70 h20 Number vCustomHeightTop, %CustomHeightTop%
+    Gui, options: Add, Edit, x310 y136 w70 h20 Number vCustomHeightBottom, %CustomHeightBottom%
+    Gui, options: Add, Edit, x310 y203  w70 h20 vbgcolor, %bgcolor%
+    Gui, options: Add, Progress, x310 y225 w70 h20 c%bgcolor% Background%bgcolor% vbarcolored, 100
     Gui, options: Font, norm Underline
     Gui, options: Add, Text, x219 y435, Create .ini for permanent options
     Gui, options: Font, s9 cDCDCCC norm
-    Gui, options: Add, Button, x434 y75 w16 h16 gResetcwh, R
-    Gui, options: Add, Button, x480 y120 w21 h16 gSaveCustom1, S1
-    Gui, options: Add, Button, x508 y120 w21 h16 gSaveCustom2, S2
-    Gui, options: Add, Button, x536 y120 w21 h16 gSaveCustom3, S3
-    Gui, options: Add, Button, x480 y141 w21 h16 gLoadCustom1, L1
-    Gui, options: Add, Button, x508 y141 w21 h16 gLoadCustom2, L2
-    Gui, options: Add, Button, x536 y141 w21 h16 gLoadCustom3, L3
-    Gui, options: Add, Button, x434 y205 w16 h16 gResetcolor, R
-    Gui, options: Add, Button, x361 y161 w68 h18 gSetnow, Set CWH
-    Gui, options: Add, Button, x361 y249 w68 h18 gSetcolor, Set Color
+    Gui, options: Add, Button, x384 y75 w16 h16 gResetcwh, R
+    Gui, options: Add, Button, x430 y120 w21 h16 gSaveCustom1, S1
+    Gui, options: Add, Button, x458 y120 w21 h16 gSaveCustom2, S2
+    Gui, options: Add, Button, x486 y120 w21 h16 gSaveCustom3, S3
+    Gui, options: Add, Button, x430 y141 w21 h16 gLoadCustom1, L1
+    Gui, options: Add, Button, x458 y141 w21 h16 gLoadCustom2, L2
+    Gui, options: Add, Button, x486 y141 w21 h16 gLoadCustom3, L3
+    Gui, options: Add, Button, x384 y205 w16 h16 gResetcolor, R
+    Gui, options: Add, Button, x311 y161 w68 h18 gSetnow, Set CWH
+    Gui, options: Add, Button, x311 y249 w68 h18 gSetcolor, Set Color
     Gui, options: Font, s10 cDCDCCC norm
     Gui, options: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
-    Gui, options: Add, Checkbox, x202 y280 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
-    Gui, options: Add, Checkbox, x202 y302 Checked%StartupWindow% vStartupWindow gSetnow, Show info window on startup
-    Gui, options: Add, Checkbox, x202 y324 Checked%CheckForUpdates% vCheckForUpdates gSetnow, Check for updates on startup (Save to ini required)
+    Gui, options: Add, Checkbox, x152 y280 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
+    Gui, options: Add, Checkbox, x152 y302 Checked%excludeSystemWindows% vexcludeSystemWindows gSetnow, Exclude system windows etc. from Move/Resize dropdown menu.
+    Gui, options: Add, Checkbox, x152 y324 Checked%startupWindow% vstartupWindow gSetnow, Show info window on startup
+    Gui, options: Add, Checkbox, x152 y346 Checked%CheckForUpdates% vCheckForUpdates gSetnow, Check for updates on startup (Save to ini required)
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
-    if (optX == "") {
+    if ((optX == "") || (optX == -32000)) {
         Gui, options: Show, w640 h560, TSolidBackground Advanced Options
     } else {
         Gui, options: Show, w640 h560 x%optX% y%optY%, TSolidBackground Advanced Options
@@ -834,9 +836,9 @@ ShowResizer() {
         Gui, resizer: Add, Button, x197 y221 w26 h16 gHminus, -H
     }
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
-    if (resX != "") {
+    if ((resX != "") && (resX != -32000)) {
         Gui, resizer: Show, w640 h560 x%resX% y%resY%, TSolidBackground Move/Resize Window
-    } else if (optX != "") {
+    } else if ((optX != "") && (optX != -32000)) {
         Gui, resizer: Show, w640 h560 x%optX% y%optY%, TSolidBackground Move/Resize Window
     } else {
         Gui, resizer: Show, w640 h560, TSolidBackground Move/Resize Window
@@ -876,40 +878,82 @@ RefresherEdit() {
     Return
 }
 
-GetAllWindows() {       ;ahk_id's are in WinIDAll, titles are in WinTitleAll. 'Pseudo-arrays' were just easier to debug.
+GetAllWindows() {
     Global
-    Loop, %WinIDAll%        ;Sadly they are not perfect.
+    excludedTitles := Object("Program Manager", "", "SCM", "", "ExampleWindowTitle x y z TSolidBackground", "")      ;excludedTitles.HasKey(): Alternative of .indexOf etc. You can add more excluded window titles here.
+    Loop, %WinIDPseudoAll%           ;Clean up
     {
-        VarSetCapacity(WinIDAll%A_Index%, 0)
+        VarSetCapacity(WinIDPseudoAll%A_Index%, 0)
     }
-    Loop, %WinTitleAll%
-    {
-        VarSetCapacity(WinTitleAll%A_Index%, 0)
-    }
+    WinIDAll := 0
     DropDownAll := ""
-    ;DetectHiddenWindows, On                    ;Detect hidden windows.
-    WinGet, WinIDAll, List
-    Loop, %WinIDAll%
+    ;DetectHiddenWindows, On                    ;Detect hidden windows if needed.
+    WinGet, WinIDPseudoAll, List
+    WinIDAll := Object()
+    Loop, %WinIDPseudoAll%              ;Copy pseudo-array to the real array
     {
-        CurrID := WinIDAll%A_Index%
-        if (TBResized == CurrID) {
-            DropDownCurrent := A_Index + 1
+        WinIDAll.InsertAt(A_Index, WinIDPseudoAll%A_Index%)
+    }
+    currentIndex := 1
+    Loop                                ;for-loop index can't be modified.
+    {
+        if (currentIndex > WinIDAll.Length()) {
+            Break
         }
-        WinGetTitle, LoopTitle, ahk_id %CurrID%
+        thisWasRemoved := 0
+        currentID := WinIDAll[currentIndex]
+        WinGetTitle, LoopTitle, ahk_id %currentID%
         ;StringReplace, LoopTitle, LoopTitle,`n,,All            ;If window titles had new lines.
         if (!LoopTitle) {
-            WinGetClass, LoopClass, ahk_id %CurrID%
-            LoopTitle := "[DANGEROUS]  Untitled (Class:" . LoopClass . ") Window"
-            if (!LoopClass) {
-                LoopTitle := "[DANGEROUS]  Untitled " . A_Index . " .th Window"
+            if (excludeSystemWindows) {
+                WinIDAll.RemoveAt(currentIndex)
+                currentIndex--
+                thisWasRemoved := 1
+            } else {
+                WinGetClass, LoopClass, ahk_id %currentID%
+                LoopTitle := "[DANGEROUS]  Untitled (Class:" . LoopClass . ") Window"
+                if (!LoopClass) {
+                    LoopTitle := "[DANGEROUS]  Untitled " . currentIndex . ".th Window"
+                }
+                DropDownAll .= LoopTitle . "`n"
+            }
+        } else {
+            if ((excludeSystemWindows) && (excludedTitles.HasKey(LoopTitle))) {
+                WinIDAll.RemoveAt(currentIndex)
+                currentIndex--
+                thisWasRemoved := 1
+            } else {
+                DropDownAll .= LoopTitle . "`n"
             }
         }
-        WinTitleAll%A_Index% := A_Index . " - " . LoopTitle
-        DropDownAll .= LoopTitle . "`n"
+        if (TBResized == currentID) {
+            DropDownCurrent := currentIndex + 1
+            if (thisWasRemoved) {
+                DropDownCurrent := 1
+            }
+        }
+        currentIndex++
     }
     StringTrimRight, DropDownAll, DropDownAll, 1
     ;DetectHiddenWindows, Off
 }
+
+DropDownSelected:
+    Gui, Submit, NoHide
+    VarIndex := DropDownCurrent - 1
+    if (VarIndex != 0) {
+        if (TBResized != WinIDAll[VarIndex]) {
+            DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
+            TBResized := WinIDAll[VarIndex]
+            WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
+            if (Xorig == -32000) {      ;Minimized windows
+                Xorig := 200
+                Yorig := 200
+            }
+        }
+        ShowResizer()
+    }
+Return
 
 Resizenow:
     Gui, Submit, NoHide
@@ -1097,23 +1141,6 @@ Savepos(posnr) {
     Return
 }
 
-DropDownSelected:
-    Gui, Submit, NoHide
-    VarIndex := DropDownCurrent - 1
-    if (VarIndex != 0) {
-        if (TBResized != WinIDAll%VarIndex%) {
-            DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
-            TBResized := WinIDAll%VarIndex%
-            WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
-            if (Xorig == -32000) {      ;Minimized windows
-                Xorig := 100
-                Yorig := 100
-            }
-        }
-        ShowResizer()
-    }
-Return
-
 ReloadDropDown:
     ShowResizer()
 Return
@@ -1150,7 +1177,7 @@ ShowHooker() {
     Gui, hook: Add, Button, x174 y515 w290 h24, Close
     Gui, hook: Add, Button, x10 y10 w44 h24 gBackGui, Back
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
-    if (optX == "") {
+    if ((optX == "") || (optX == -32000)) {
         Gui, hook: Show, w640 h560, TSolidBackground Window Hooker (Alpha)
     } else {
         Gui, hook: Show, w640 h560 x%optX% y%optY%, TSolidBackground Window Hooker (Alpha)
@@ -1285,7 +1312,7 @@ StartDummyWindow:
     } else {
         DrawHUD("You must create the ini in advanced options before editing it.", "y160", "cE60000", "s11", "5000")
     }
-    if (SavedDummy && DummyX != "ERROR") {
+    if ((SavedDummy) && (DummyX != "ERROR")) {
         Gui, Dummy: Show, x%DummyX% y%DummyY% w%DummyW% h%DummyH%, TSolidBackground Dummy Window
     } else {
         Gui, Dummy: Show, w640 h560, TSolidBackground Dummy Window
@@ -1334,7 +1361,7 @@ MouseMover() {
     Gui, mmover: Add, Button, x174 y515 w290 h24, Close
     Gui, mmover: Add, Button, x10 y10 w44 h24 gmmoverGuiEscape, Back
     Gui, mmover: Font, s10 cDCDCCC norm
-    Gui, mmover: Add, Checkbox, x212 y317 Checked%PreventSend% vPreventSend gSetnow, Also prevent hotkeys from working
+    Gui, mmover: Add, Checkbox, x212 y317 Checked%preventSend% vpreventSend gSetnow, Also prevent hotkeys from working
     Gui, mmover: Add, Text, x135 y235, (or [Numpad End])
     Gui, mmover: Add, Text, x325 y235, (or [Numpad Down])
     Gui, mmover: Add, Text, x245 y286, Move by:
@@ -1347,7 +1374,7 @@ MouseMover() {
     Gui, mmover: Font, s10 cDCDCCC norm
     ;Gui, mmover: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
-    if (optX == "") {
+    if ((optX == "") || (optX == -32000)) {
         Gui, mmover: Show, w640 h560, TSolidBackground Mouse Mover
     } else {
         Gui, mmover: Show, w640 h560 x%optX% y%optY%, TSolidBackground Mouse Mover
@@ -1376,49 +1403,49 @@ Return
 #If mouseMoving
 Left::
     MouseMove, -%MoveBy%, 0,, R
-    if (!PreventSend)
+    if (!preventSend)
         Send, {Left} 
 Return
 
 Right::
     MouseMove, %MoveBy%, 0,, R
-    if (!PreventSend)
+    if (!preventSend)
         Send, {Right}
 Return
 
 Up::
     MouseMove, 0, -%MoveBy%,, R
-    if (!PreventSend)
+    if (!preventSend)
         Send, {Up}
 Return
 
 Down::
     MouseMove, 0, %MoveBy%,, R
-    if (!PreventSend)
+    if (!preventSend)
         Send, {Down}
 Return
 
 Numpad1::
     Click Left
-    if (!PreventSend)
+    if (!preventSend)
         Send, {Numpad1}
 Return
 
 Numpad2::
     Click Right
-    if (!PreventSend)
+    if (!preventSend)
         Send, {Numpad2}
 Return
 
 NumpadEnd::
     Click Left
-    if (!PreventSend)
+    if (!preventSend)
         Send, {Numpad1}
 Return
 
 NumpadDown::
     Click Right
-    if (!PreventSend)
+    if (!preventSend)
         Send, {Numpad2}
 Return
 #If
@@ -1468,7 +1495,8 @@ CreateSaveini(showit) {
     Writeini(CustomWidthRight, "Settings", "Custom Width Right")
     Writeini(CustomHeightTop, "Settings", "Custom Height Top")
     Writeini(CustomHeightBottom, "Settings", "Custom Height Bottom")
-    Writeini(StartupWindow, "Settings", "Enable Startup Window")
+    Writeini(startupWindow, "Settings", "Enable Startup Window")
+    Writeini(excludeSystemWindows, "Settings", "Exclude system windows from dropdown")
     Writeini(CheckForUpdates, "Settings", "Check for Updates on Startup")
     Writeini(TitleOne, "Settings", "Hooker Main Window")
     Writeini(TitleTwo, "Settings", "Hooker Hooked Window")
@@ -1500,7 +1528,7 @@ WinStack(winid) {
 }
 
 Exited:
-    for currentWindow, b in Arrs 
+    for currentWindow, b in Arrs
     {
         WinSet, AlwaysOnTop, off, ahk_id %currentWindow%
     }
