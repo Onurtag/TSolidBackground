@@ -67,6 +67,11 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ##Changelog
 
+* **Version 2.8.4**  
+
+Can now exclude system windows & untitled windows from the move/resize dropdown menu. Enabled by default.  
+Tiny bug fix.  
+
 * **Version 2.8.3**  
 
 Added clicks to mouse mover.  
