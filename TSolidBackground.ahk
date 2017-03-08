@@ -15,7 +15,7 @@ If you have any good suggestions, feel free to contact me or open an issue.
 
 Arrs := Object()
 OnExit, Exited
-Version := "v2.8.4"
+Version := "v2.8.5"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
@@ -496,10 +496,10 @@ ShowOptions() {
     Gui, options: Font, s10 c836DFF Bold
     Gui, options: Add, Button, x174 y515 w290 h24, Close
     Gui, options: Add, Button, x10 y10 w44 h24 gBackGui, Back
-    Gui, options: Add, Edit, x310 y73 w70 h20 Number vCustomWidthLeft, %CustomWidthLeft%
-    Gui, options: Add, Edit, x310 y94 w70 h20 Number vCustomWidthRight, %CustomWidthRight%
-    Gui, options: Add, Edit, x310 y115 w70 h20 Number vCustomHeightTop, %CustomHeightTop%
-    Gui, options: Add, Edit, x310 y136 w70 h20 Number vCustomHeightBottom, %CustomHeightBottom%
+    Gui, options: Add, Edit, x310 y73 w70 h20 vCustomWidthLeft, %CustomWidthLeft%
+    Gui, options: Add, Edit, x310 y94 w70 h20 vCustomWidthRight, %CustomWidthRight%
+    Gui, options: Add, Edit, x310 y115 w70 h20 vCustomHeightTop, %CustomHeightTop%
+    Gui, options: Add, Edit, x310 y136 w70 h20 vCustomHeightBottom, %CustomHeightBottom%
     Gui, options: Add, Edit, x310 y203  w70 h20 vbgcolor, %bgcolor%
     Gui, options: Add, Progress, x310 y225 w70 h20 c%bgcolor% Background%bgcolor% vbarcolored, 100
     Gui, options: Font, norm Underline
@@ -789,13 +789,13 @@ ShowResizer() {
         Gui, resizer: Add, Text, x426 y145, X: %Xorig%, Y: %Yorig%
         Gui, resizer: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
         Gui, resizer: Font, s10 c836DFF Bold
-        Gui, resizer: Add, Edit, x158 y278 w64 h20 Number vWnew, %Wnew%
+        Gui, resizer: Add, Edit, x158 y278 w64 h20 vWnew, %Wnew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Wnew%
-        Gui, resizer: Add, Edit, x158 y301 w64 h20 Number vHnew, %Hnew%
+        Gui, resizer: Add, Edit, x158 y301 w64 h20 vHnew, %Hnew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Hnew%
-        Gui, resizer: Add, Edit, x424 y278 w64 h20 Number vXnew, %Xnew%
+        Gui, resizer: Add, Edit, x424 y278 w64 h20 vXnew, %Xnew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Xnew%
-        Gui, resizer: Add, Edit, x424 y301 w64 h20 Number vYnew, %Ynew%
+        Gui, resizer: Add, Edit, x424 y301 w64 h20 vYnew, %Ynew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Ynew%
         Gui, resizer: Font, norm Underline
         Gui, resizer: Add, Text, x218 y338, Quick save/load size and position
