@@ -18,8 +18,8 @@ and later added more features that are useful for me.
 
 **If you are planning to use TSolidBackground, you should also read 'Things to Know' below.**  
 
-###[Webm Preview](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)  
-###[Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
+### [Webm Preview](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)  
+### [Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
 
 *Compiled using latest Ahk2Exe. The exe is not compressed so you can check the source code easily.  
 
@@ -65,7 +65,7 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 
 
 --------------------  
-##Changelog
+## Changelog
 
 * **Version 2.8.5**  
 
