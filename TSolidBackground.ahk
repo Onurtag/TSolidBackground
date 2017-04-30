@@ -13,9 +13,11 @@ It would be a waste of time and I don't care enough to fix them all so they will
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
+;TD ADD BUILT-IN README, maybe automate it?
+
 Arrs := Object()
 OnExit, Exited
-Version := "v2.8.5"
+Version := "v2.8.6"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
@@ -488,18 +490,22 @@ ShowOptions() {
     Gui, options: Color, 292929
     Gui, options: Font, s10 cDCDCCC norm
     Gui, options: Add, Text, x152 y75, Custom Width Left:
-    Gui, options: Add, Text, x152 y96, Custom Width Right:
-    Gui, options: Add, Text, x152 y117, Custom Height Top:
-    Gui, options: Add, Text, x152 y138, Custom Height Bottom:
+    Gui, options: Add, Text, x152 y97, Custom Width Right:
+    Gui, options: Add, Text, x152 y119, Custom Height Top:
+    Gui, options: Add, Text, x152 y141, Custom Height Bottom:
     Gui, options: Add, Text, x152 y205, TSolidBackground Color:
     Gui, options: Add, Text, x436 y80, Permanent `nSave/Load
     Gui, options: Font, s10 c836DFF Bold
     Gui, options: Add, Button, x174 y515 w290 h24, Close
     Gui, options: Add, Button, x10 y10 w44 h24 gBackGui, Back
     Gui, options: Add, Edit, x310 y73 w70 h20 vCustomWidthLeft, %CustomWidthLeft%
-    Gui, options: Add, Edit, x310 y94 w70 h20 vCustomWidthRight, %CustomWidthRight%
-    Gui, options: Add, Edit, x310 y115 w70 h20 vCustomHeightTop, %CustomHeightTop%
-    Gui, options: Add, Edit, x310 y136 w70 h20 vCustomHeightBottom, %CustomHeightBottom%
+    Gui, options: Add, UpDown, 0x80 Range-90000-90000, %CustomWidthLeft%
+    Gui, options: Add, Edit, x310 y95 w70 h20 vCustomWidthRight, %CustomWidthRight%
+    Gui, options: Add, UpDown, 0x80 Range-90000-90000, %CustomWidthRight%
+    Gui, options: Add, Edit, x310 y117 w70 h20 vCustomHeightTop, %CustomHeightTop%
+    Gui, options: Add, UpDown, 0x80 Range-90000-90000, %CustomHeightTop%
+    Gui, options: Add, Edit, x310 y139 w70 h20 vCustomHeightBottom, %CustomHeightBottom%
+    Gui, options: Add, UpDown, 0x80 Range-90000-90000, %CustomHeightBottom%
     Gui, options: Add, Edit, x310 y203  w70 h20 vbgcolor, %bgcolor%
     Gui, options: Add, Progress, x310 y225 w70 h20 c%bgcolor% Background%bgcolor% vbarcolored, 100
     Gui, options: Font, norm Underline
@@ -513,7 +519,7 @@ ShowOptions() {
     Gui, options: Add, Button, x458 y141 w21 h16 gLoadCustom2, L2
     Gui, options: Add, Button, x486 y141 w21 h16 gLoadCustom3, L3
     Gui, options: Add, Button, x384 y205 w16 h16 gResetcolor, R
-    Gui, options: Add, Button, x311 y161 w68 h18 gSetnow, Set CWH
+    Gui, options: Add, Button, x311 y164 w68 h18 gSetnow, Set CWH
     Gui, options: Add, Button, x311 y249 w68 h18 gSetcolor, Set Color
     Gui, options: Font, s10 cDCDCCC norm
     Gui, options: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
