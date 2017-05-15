@@ -31,7 +31,8 @@ and later added more features that are useful for me.
 * TSolidBackground.ini file will be created when you create a .ini using the Advanced Options (default Shift+U key).  
 After creating the .ini file you can edit it using a text editor to change the hotkeys and many more options.  
 You can also quickly edit the .ini by using the "Edit TSolidBackground.ini" button in the tray menu.  
-[HOTKEY EDITING GUIDE](http://www.autohotkey.com/docs/Hotkeys.htm)  
+**[QUICK HOTKEY EDITING GUIDE.png](https://github.com/Onurtag/TSolidBackground/raw/gh-pages/images/Hotkey%20Guide.png)**  
+[Advanced hotkey Guide 1](https://autohotkey.com/docs/Hotkeys.htm), [Guide 2](https://www.autohotkey.com/docs/KeyList.htm)
 
 * If you want to disable a hotkey you can do it by leaving the related variable empty in the TSolidBackground.ini.  
 
