@@ -46,6 +46,7 @@ MoveBy := 5
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
+excludedTitles := Object("Program Manager", "", "SCM", "","Windows Shell Experience Host", "", "TSolidBackground Move/Resize Window", "", "TSolidBackground Advanced Features", "")      ;You can add more titles to exclude them from the Move/Resize dropdown menu. Stick with the syntax (1 title, 1 blank).
 
 ;-----EXPERIMENTAL-----
 SetWinDelay, 0
@@ -228,9 +229,14 @@ Return
 
 +U::
     if (WinExist("A") != TBResized) {
-        DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
         TBResized := WinExist("A")
-        WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
+        WinGetTitle, titleTBResized, ahk_id %TBResized%
+        if ((protectVNR) && (titleTBResized == "Kagami")) {
+            TBResized := ""
+        } else {
+            DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
+            WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
+        }
     }
     if (WinExist("TSolidBackground Move/Resize Window")) {
         ShowResizer()
@@ -325,10 +331,10 @@ TSolidBackground() {
     WinGet, WinExStyle, ExStyle, ahk_id %Activewin%
     WinGet, WinStyle, Style, ahk_id %Activewin%
     if (WinExStyle & 0x8) { 
-        WinGetTitle, currentTitle, ahk_id %Activewin%
-        if (currentTitle != "Kagami") {    ;VNR fix
+        WinGetTitle, currTitle, ahk_id %Activewin%
+        if (currTitle != "Kagami") {    ;VNR fix
             WinSet, AlwaysOnTop, off, ahk_id %Activewin%
-            TrayTip, Window [%currentTitle%], Always on top status: OFF
+            TrayTip, Window [%currTitle%], Always on top status: OFF
         }
     }
 
@@ -737,7 +743,7 @@ ShowResizer() {
     Gui, resizer: Add, Button, x174 y515 w290 h24, Close
     Gui, resizer: Add, Button, x10 y10 w44 h24 gBackGui, Back
     Gui, resizer: Font, norm
-    Gui, resizer: Add, DropDownList, x70 y53 w450 Choose%DropDownCurrent% vDropDownCurrent gDropDownSelected AltSubmit, Select a Window`n%DropDownAll%
+    Gui, resizer: Add, DropDownList, x70 y53 w450 Choose%DropDownCurrent% vDropDownCurrent gDropDownSelected AltSubmit, Select a Window (If it's not here, check Advanced Options)`n%DropDownAll%
     Gui, resizer: Add, Button, x527 y55 w54 h21 gReloadDropDown, Reload
     Gui, resizer: Add, Text, x500 y355, Tip: You can use `nyour advanced `nfeatures (%OptionsKey%) `nhotkey to select `na new window.
     if (!BlockResizer) {
@@ -785,13 +791,13 @@ ShowResizer() {
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vmove%
         Gui, resizer: Add, Edit, x167 y247 w40 h20 Number vVresize, %Vresize%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vresize%
-        Gui, resizer: Font, s13 cDCDCCC bold
-        Gui, resizer: Add, Button, x285 y96 w23 h21 hwndhMinWin gMinWin, ⎼⎼   ;Line
+        Gui, resizer: Font, s13 cDCDCCC norm
+        Gui, resizer: Add, Button, x285 y96 w21 h19 hwndhMinWin gMinWin, ⎼⎼         ;Line
         AddTooltip(hMinWin, "Minimize/Restore Window")
-        Gui, resizer: Add, Button, x311 y96 w23 h21 hwndhMaxWin gMaxWin, ◻    ;Square⬜ ◻
-        AddTooltip(hMaxWin, "Maximize Window")
-        Gui, resizer: Font, s10 norm
-        Gui, resizer: Add, Button, x337 y96 w23 h21 hwndhCloseWin gCloseWin, ❌    ;Cross(X)
+        Gui, resizer: Add, Button, x311 y96 w21 h19 hwndhMaxWin gMaxWin, ◻          ;Square (◻ or ⬜ or ◻)
+        AddTooltip(hMaxWin, "Maximize/Restore Window")
+        Gui, resizer: Font, s9.5
+        Gui, resizer: Add, Button, x337 y96 w21 h19 hwndhCloseWin gCloseWin, ❌      ;Cross ❌
         AddTooltip(hCloseWin, "Close Window")
         Gui, resizer: Font, s9
         Gui, resizer: Add, Button, x350 y147 w15 h15 hwndhOrigxy gOrigxy, R
@@ -870,7 +876,6 @@ RefresherEdit() {
 
 GetAllWindows() {
     Global
-    excludedTitles := Object("Program Manager", "", "SCM", "", "ExampleWindowTitle x y z TSolidBackground", "")      ;excludedTitles.HasKey(): Alternative of .indexOf etc. You can add more excluded window titles here.
     Loop, %WinIDPseudoAll%           ;Clean up
     {
         VarSetCapacity(WinIDPseudoAll%A_Index%, 0)
@@ -901,14 +906,18 @@ GetAllWindows() {
                 thisWasRemoved := 1
             } else {
                 WinGetClass, LoopClass, ahk_id %currentID%
-                LoopTitle := "[DANGEROUS]  Untitled (Class:" . LoopClass . ") Window"
+                LoopTitle := "[UNTITLED] (Class:" . LoopClass . ") Window"
                 if (!LoopClass) {
-                    LoopTitle := "[DANGEROUS]  Untitled " . currentIndex . ".th Window"
+                    LoopTitle := "[UNTITLED][WITHOUT CLASS] " . currentIndex . ".th Window"
                 }
                 DropDownAll .= LoopTitle . "`n"
             }
         } else {
-            if ((excludeSystemWindows) && (excludedTitles.HasKey(LoopTitle))) {
+            if ((excludeSystemWindows) && (excludedTitles.HasKey(LoopTitle))) {        ;.HasKey(): Similar to .indexOf etc. 
+                WinIDAll.RemoveAt(currentIndex)
+                currentIndex--
+                thisWasRemoved := 1
+            } else if ((protectVNR) && (LoopTitle == "Kagami")) {
                 WinIDAll.RemoveAt(currentIndex)
                 currentIndex--
                 thisWasRemoved := 1
@@ -1041,8 +1050,8 @@ Return
 
 MinWin:
     Gui, Submit, NoHide
-    WinGet, isWinNotMin, MinMax, ahk_id %TBResized%
-    if (isWinNotMin == -1) {
+    WinGet, isWinMin, MinMax, ahk_id %TBResized%
+    if (isWinMin == -1) {
         WinRestore, ahk_id %TBResized%
     } else {
         WinMinimize, ahk_id %TBResized%
@@ -1051,7 +1060,12 @@ Return
 
 MaxWin:
     Gui, Submit, NoHide
-    WinMaximize, ahk_id %TBResized%
+    WinGet, isWinMax, MinMax, ahk_id %TBResized%
+    if (isWinMax == 1) {
+        WinRestore, ahk_id %TBResized%
+    } else {
+        WinMaximize, ahk_id %TBResized%
+    }
 Return
 
 CloseWin:
@@ -1171,8 +1185,8 @@ ShowHooker() {
     Gui, hook: Add, Text, x112 y112, Main Window:  
     Gui, hook: Add, Text, x112 y152, Hooked Window:  
     Gui, hook: Add, Text, x60 y47 , Window Hooker currently only works for minimizing/switching tabs on browsers.`nFor now it can't make them move together. The .ini file will save the window titles too.
-    Gui, hook: Font, s9
-    Gui, hook: Add, Text, x500 y275, Tip: You can `nalso stop the `nwindow hooker `nusing the `ntray menu.
+    Gui, hook: Font, s10
+    Gui, hook: Add, Text, x500 y355, Tip: You can `nalso stop the `nwindow hooker `nusing the `ntray menu.
     Gui, hook: Font, s10 cBlack norm
     Gui, hook: Add, Edit, x234 y111 w170 h20 vTitleOne, %TitleOne%
     Gui, hook: Add, Edit, x234 y151 w170 h20 vTitleTwo, %TitleTwo%
@@ -1311,6 +1325,8 @@ StartDummyWindow:
     Gui, Dummy: Add, Button, x181 y153 w28 h16 gHminus, -H
     Gui, Dummy: Add, Button, x103 y227 w64 h18 gHcenter, H-Center
     Gui, Dummy: Add, Button, x103 y248 w64 h18 gVcenter, V-Center
+    Gui, Dummy: Font, s10 cDCDCCC
+    Gui, Dummy: Add, Text, x242 y90, Tip: You might not`nwant to use this`ntogether with the`nMove/Resize menu`nas they use the`nsame functions.
     SavedDummy := 0
     IfExist, TSolidBackground.ini
     {
@@ -1319,14 +1335,13 @@ StartDummyWindow:
         Readini(DummyW, "Dummy Window", "Dummy W")
         Readini(DummyH, "Dummy Window", "Dummy H")
         SavedDummy := 1
-    } else {
-        DrawHUD("You must create the ini in advanced options before editing it.", "y160", "cE60000", "s11", "5000")
     }
     if ((SavedDummy) && (DummyX != "ERROR")) {
         Gui, Dummy: Show, x%DummyX% y%DummyY% w%DummyW% h%DummyH%, TSolidBackground Dummy Window
     } else {
         Gui, Dummy: Show, w640 h560, TSolidBackground Dummy Window
     }
+
     TBResized := WinExist("A")
 Return
 

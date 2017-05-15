@@ -42,7 +42,8 @@ Change the color to a red hue if you want a softer experience (it seems red enco
 
 * When you are on the Move/Resize Window menu you can use the Advanced Features (default: Shift+U) hotkey to get a new window to move/resize.  
 
-* If your window doesn't show up on the Move/Resize dropdown menu, you can disable excluding system windows & untitled windows under advanced options.
+* If your window doesn't show up on the Move/Resize dropdown menu, you can try disabling the "Exclude system windows etc. from Move/Resize dropdown menu." option in the advanced options menu.  
+When this option is enabled, TSolidBackground doesn't list untitled windows and some other invisible system windows on the Move/Resize dropdown menu.
 
 * Always on top mode can be used for multiple windows at the same time.  
 Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  
@@ -72,6 +73,7 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 Added more Numeric UpDowns so we can all use our scroll wheels.  
 Added Minimize/Restore Window, Maximize Window and Close Window buttons to the Move/Resize menu.  
 Added various tooltips using the AddToolTip library.  
+Better VNR (Kagami) protection.
 
 * **Version 2.8.5**  
 
