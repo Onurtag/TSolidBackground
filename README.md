@@ -67,6 +67,12 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ## Changelog
 
+* **Version 2.8.6**  
+
+Added more Numeric UpDowns so we can all use our scroll wheels.  
+Added Minimize/Restore Window, Maximize Window and Close Window buttons to the Move/Resize menu.  
+Added various tooltips using the AddToolTip library.  
+
 * **Version 2.8.5**  
 
 Corrected a mistake.

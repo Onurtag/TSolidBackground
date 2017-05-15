@@ -1,5 +1,7 @@
 ﻿#SingleInstance Force
 #NoEnv
+SendMode Input
+;#Warn, All, StdOut
 
 /*
 TSolidBackground
@@ -13,7 +15,7 @@ It would be a waste of time and I don't care enough to fix them all so they will
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
-;TD ADD BUILT-IN README, maybe automate it?
+;TD: ADD BUILT-IN README, maybe automate it (put it in the ahk or maybe using Include Any File script?) <-- Probably unnecessary and useless.
 
 Arrs := Object()
 OnExit, Exited
@@ -384,38 +386,6 @@ DestroyTSolidBackground() {
     Return
 }
 
-GetMonitorIndexFromWindow(windowHandle) {           ;Pre-made function by Shinywong. Many thanks.
-    Global
-    monitorIndex := 1
-    VarSetCapacity(monitorInfo, 40)
-    NumPut(40, monitorInfo)
-    if (monitorHandle := DllCall("MonitorFromWindow", "uint", windowHandle, "uint", 0x2)) 
-        && DllCall("GetMonitorInfo", "uint", monitorHandle, "uint", &monitorInfo) 
-    {
-        monitorLeft   := NumGet(monitorInfo,  4, "Int")
-        monitorTop    := NumGet(monitorInfo,  8, "Int")
-        monitorRight  := NumGet(monitorInfo, 12, "Int")
-        monitorBottom := NumGet(monitorInfo, 16, "Int")
-        ;workLeft      := NumGet(monitorInfo, 20, "Int")
-        ;workTop       := NumGet(monitorInfo, 24, "Int")
-        ;workRight     := NumGet(monitorInfo, 28, "Int")
-        ;workBottom    := NumGet(monitorInfo, 32, "Int")
-        ;isPrimary     := NumGet(monitorInfo, 36, "Int") & 1
-        SysGet, monitorCount, MonitorCount
-        Loop, %monitorCount%
-        {
-            SysGet, tempMon, Monitor, %A_Index%
-            if ((monitorLeft == tempMonLeft) and (monitorTop == tempMonTop)
-                and (monitorRight == tempMonRight) and (monitorBottom == tempMonBottom))
-            {
-                monitorIndex := A_Index
-                break
-            }
-        }
-    }
-    Return
-}
-
 DrawHUD(hudtext, xyvalue, hudtextcolor := "c836DFF", hudtextsize := "s11", hudtimer := 1350) {
     Gui, hud: Destroy
     Gui, hud: +AlwaysOnTop -Caption +ToolWindow +Border
@@ -511,15 +481,18 @@ ShowOptions() {
     Gui, options: Font, norm Underline
     Gui, options: Add, Text, x219 y435, Create .ini for permanent options
     Gui, options: Font, s9 cDCDCCC norm
-    Gui, options: Add, Button, x384 y75 w16 h16 gResetcwh, R
-    Gui, options: Add, Button, x430 y120 w21 h16 gSaveCustom1, S1
-    Gui, options: Add, Button, x458 y120 w21 h16 gSaveCustom2, S2
-    Gui, options: Add, Button, x486 y120 w21 h16 gSaveCustom3, S3
-    Gui, options: Add, Button, x430 y141 w21 h16 gLoadCustom1, L1
-    Gui, options: Add, Button, x458 y141 w21 h16 gLoadCustom2, L2
-    Gui, options: Add, Button, x486 y141 w21 h16 gLoadCustom3, L3
-    Gui, options: Add, Button, x384 y205 w16 h16 gResetcolor, R
-    Gui, options: Add, Button, x311 y164 w68 h18 gSetnow, Set CWH
+    Gui, options: Add, Button, x384 y75 w15 h15 hwndhResetcwh gResetcwh, R
+    AddTooltip(hResetcwh, "Reset Custom Width and Height")
+    Gui, options: Add, Button, x430 y120 w21 h17 gSaveCustom1, S1
+    Gui, options: Add, Button, x457 y120 w21 h17 gSaveCustom2, S2
+    Gui, options: Add, Button, x484 y120 w21 h17 gSaveCustom3, S3
+    Gui, options: Add, Button, x430 y142 w21 h17 gLoadCustom1, L1
+    Gui, options: Add, Button, x457 y142 w21 h17 gLoadCustom2, L2
+    Gui, options: Add, Button, x484 y142 w21 h17 gLoadCustom3, L3
+    Gui, options: Add, Button, x384 y205 w15 h15 hwndhResetcolor gResetcolor, R
+    AddTooltip(hResetcolor, "Switch between Red and Blue")
+    Gui, options: Add, Button, x311 y164 w68 h18 hwndhSetCWH gSetnow, Set CWH
+    AddTooltip(hSetcwh, "Set Custom Width and Height")
     Gui, options: Add, Button, x311 y249 w68 h18 gSetcolor, Set Color
     Gui, options: Font, s10 cDCDCCC norm
     Gui, options: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
@@ -691,7 +664,7 @@ CheckUpdate(notify) {
         Gui, update: Font, s14 c836DFF, Segoe UI
         Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %Version%)
         Gui, update: Font, s10 cDCDCCC
-        Gui, update: Add, Text,, Click the link below if you want to download it again.
+        Gui, update: Add, Text,, Visit the link below if you want to download it again.
         Gui, update: Font, s11 c3257BF underline
         Gui, update: Add, Text, gGotoSite, https://github.com/Onurtag/TSolidBackground/releases/latest
         Gui, update: Font, s10 cBlack norm Bold
@@ -729,6 +702,7 @@ StartResizeGui:
     ShowResizer()
 Return
 
+;Might need a re-design soon.
 ShowResizer() {
     Global
     GetAllWindows()
@@ -811,9 +785,19 @@ ShowResizer() {
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vmove%
         Gui, resizer: Add, Edit, x167 y247 w40 h20 Number vVresize, %Vresize%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vresize%
-        Gui, resizer: Font, s9 cDCDCCC norm
-        Gui, resizer: Add, Button, x350 y147 w15 h15 gOrigxy, R
-        Gui, resizer: Add, Button, x55 y147 w15 h15 gOrigwh, R
+        Gui, resizer: Font, s13 cDCDCCC bold
+        Gui, resizer: Add, Button, x285 y96 w23 h21 hwndhMinWin gMinWin, ⎼⎼   ;Line
+        AddTooltip(hMinWin, "Minimize/Restore Window")
+        Gui, resizer: Add, Button, x311 y96 w23 h21 hwndhMaxWin gMaxWin, ◻    ;Square⬜ ◻
+        AddTooltip(hMaxWin, "Maximize Window")
+        Gui, resizer: Font, s10 norm
+        Gui, resizer: Add, Button, x337 y96 w23 h21 hwndhCloseWin gCloseWin, ❌    ;Cross(X)
+        AddTooltip(hCloseWin, "Close Window")
+        Gui, resizer: Font, s9
+        Gui, resizer: Add, Button, x350 y147 w15 h15 hwndhOrigxy gOrigxy, R
+        AddTooltip(hOrigxy, "Reset Window Position")
+        Gui, resizer: Add, Button, x55 y147 w15 h15 hwndhOrigwh gOrigwh, R
+        AddTooltip(hOrigwh, "Reset Window Size")
         Gui, resizer: Add, Button, x521 y189 w16 h16 gWup, U
         Gui, resizer: Add, Button, x521 y225 w16 h16 gWdown, D
         Gui, resizer: Add, Button, x503 y207 w16 h16 gWleft, L
@@ -1053,6 +1037,26 @@ Hminus:
     newthing := Hofwin-Vresize
     WinMove, ahk_id %TBResized%,,,,, %newthing%
     RefresherEdit()
+Return
+
+MinWin:
+    Gui, Submit, NoHide
+    WinGet, isWinNotMin, MinMax, ahk_id %TBResized%
+    if (isWinNotMin == -1) {
+        WinRestore, ahk_id %TBResized%
+    } else {
+        WinMinimize, ahk_id %TBResized%
+    }
+Return
+
+MaxWin:
+    Gui, Submit, NoHide
+    WinMaximize, ahk_id %TBResized%
+Return
+
+CloseWin:
+    Gui, Submit, NoHide
+    WinClose, ahk_id %TBResized%
 Return
 
 Origxy:
@@ -1446,13 +1450,13 @@ Return
 NumpadEnd::
     Click Left
     if (!preventSend)
-        Send, {Numpad1}
+        Send, {NumpadEnd}
 Return
 
 NumpadDown::
     Click Right
     if (!preventSend)
-        Send, {Numpad2}
+        Send, {NumpadDown}
 Return
 #If
 ;Mouse Mover End
@@ -1541,3 +1545,257 @@ Exited:
     WinShow, ahk_class Shell_TrayWnd
     WinShow, Start ahk_class Button
 ExitApp
+
+
+
+
+;---Pre-made functions & libraries---
+
+;GetMonitorIndexFromWindow() by Shinywong.
+;From https://autohotkey.com/board/topic/69464-how-to-determine-a-window-is-in-which-monitor/?p=440355
+GetMonitorIndexFromWindow(windowHandle) {
+    Global
+    monitorIndex := 1
+    VarSetCapacity(monitorInfo, 40)
+    NumPut(40, monitorInfo)
+    if (monitorHandle := DllCall("MonitorFromWindow", "uint", windowHandle, "uint", 0x2)) 
+        && DllCall("GetMonitorInfo", "uint", monitorHandle, "uint", &monitorInfo) 
+    {
+        monitorLeft   := NumGet(monitorInfo,  4, "Int")
+        monitorTop    := NumGet(monitorInfo,  8, "Int")
+        monitorRight  := NumGet(monitorInfo, 12, "Int")
+        monitorBottom := NumGet(monitorInfo, 16, "Int")
+        ;workLeft      := NumGet(monitorInfo, 20, "Int")
+        ;workTop       := NumGet(monitorInfo, 24, "Int")
+        ;workRight     := NumGet(monitorInfo, 28, "Int")
+        ;workBottom    := NumGet(monitorInfo, 32, "Int")
+        ;isPrimary     := NumGet(monitorInfo, 36, "Int") & 1
+        SysGet, monitorCount, MonitorCount
+        Loop, %monitorCount%
+        {
+            SysGet, tempMon, Monitor, %A_Index%
+            if ((monitorLeft == tempMonLeft) and (monitorTop == tempMonTop)
+                and (monitorRight == tempMonRight) and (monitorBottom == tempMonBottom))
+            {
+                monitorIndex := A_Index
+                break
+            }
+        }
+    }
+    Return
+}
+
+;AddTooltip by Various authors
+;From https://autohotkey.com/boards/viewtopic.php?&t=30079
+
+;------------------------------
+;
+; Function: AddTooltip v2.0
+;
+; Description:
+;
+;   Add/Update tooltips to GUI controls.
+;
+; Credit and History:
+;
+;   Original author: Superfraggle
+;   * Post: <http://www.autohotkey.com/board/topic/27670-add-tooltips-to-controls/>
+;
+;   Updated to support Unicode: art
+;   * Post: <http://www.autohotkey.com/board/topic/27670-add-tooltips-to-controls/page-2#entry431059>
+;
+;   Additional: jballi.
+;   Bug fixes.  Added support for x64.  Removed Modify parameter.  Added
+;   additional functionality, constants, and documentation.
+;
+;-------------------------------------------------------------------------------
+AddTooltip(p1,p2:="",p3="")
+    {
+    Static hTT
+
+          ;-- Misc. constants
+          ,CW_USEDEFAULT:=0x80000000
+          ,HWND_DESKTOP :=0
+
+          ;-- Tooltip delay time constants
+          ,TTDT_AUTOPOP:=2
+                ;-- Set the amount of time a tooltip window remains visible if
+                ;   the pointer is stationary within a tool's bounding
+                ;   rectangle.
+
+          ;-- Tooltip styles
+          ,TTS_ALWAYSTIP:=0x1
+                ;-- Indicates that the tooltip control appears when the cursor
+                ;   is on a tool, even if the tooltip control's owner window is
+                ;   inactive.  Without this style, the tooltip appears only when
+                ;   the tool's owner window is active.
+
+          ,TTS_NOPREFIX:=0x2
+                ;-- Prevents the system from stripping ampersand characters from
+                ;   a string or terminating a string at a tab character.
+                ;   Without this style, the system automatically strips
+                ;   ampersand characters and terminates a string at the first
+                ;   tab character.  This allows an application to use the same
+                ;   string as both a menu item and as text in a tooltip control.
+
+          ;-- TOOLINFO uFlags
+          ,TTF_IDISHWND:=0x1
+                ;-- Indicates that the uId member is the window handle to the
+                ;   tool.  If this flag is not set, uId is the identifier of the
+                ;   tool.
+
+          ,TTF_SUBCLASS:=0x10
+                ;-- Indicates that the tooltip control should subclass the
+                ;   window for the tool in order to intercept messages, such
+                ;   as WM_MOUSEMOVE.  If this flag is not used, use the
+                ;   TTM_RELAYEVENT message to forward messages to the tooltip
+                ;   control.  For a list of messages that a tooltip control
+                ;   processes, see TTM_RELAYEVENT.
+
+          ;-- Tooltip icons
+          ,TTI_NONE         :=0
+          ,TTI_INFO         :=1
+          ,TTI_WARNING      :=2
+          ,TTI_ERROR        :=3
+          ,TTI_INFO_LARGE   :=4
+          ,TTI_WARNING_LARGE:=5
+          ,TTI_ERROR_LARGE  :=6
+
+          ;-- Extended styles
+          ,WS_EX_TOPMOST:=0x8
+
+          ;-- Messages
+          ,TTM_ACTIVATE      :=0x401                    ;-- WM_USER + 1
+          ,TTM_ADDTOOLA      :=0x404                    ;-- WM_USER + 4
+          ,TTM_ADDTOOLW      :=0x432                    ;-- WM_USER + 50
+          ,TTM_DELTOOLA      :=0x405                    ;-- WM_USER + 5
+          ,TTM_DELTOOLW      :=0x433                    ;-- WM_USER + 51
+          ,TTM_GETTOOLINFOA  :=0x408                    ;-- WM_USER + 8
+          ,TTM_GETTOOLINFOW  :=0x435                    ;-- WM_USER + 53
+          ,TTM_SETDELAYTIME  :=0x403                    ;-- WM_USER + 3
+          ,TTM_SETMAXTIPWIDTH:=0x418                    ;-- WM_USER + 24
+          ,TTM_SETTITLEA     :=0x420                    ;-- WM_USER + 32
+          ,TTM_SETTITLEW     :=0x421                    ;-- WM_USER + 33
+          ,TTM_UPDATETIPTEXTA:=0x40C                    ;-- WM_USER + 12
+          ,TTM_UPDATETIPTEXTW:=0x439                    ;-- WM_USER + 57
+
+    ;-- Save/Set DetectHiddenWindows
+    l_DetectHiddenWindows:=A_DetectHiddenWindows
+    DetectHiddenWindows On
+
+    ;-- Tooltip control exists?
+    if not hTT
+        {
+        ;-- Create Tooltip window
+        hTT:=DllCall("CreateWindowEx"
+            ,"UInt",WS_EX_TOPMOST                       ;-- dwExStyle
+            ,"Str","TOOLTIPS_CLASS32"                   ;-- lpClassName
+            ,"Ptr",0                                    ;-- lpWindowName
+            ,"UInt",TTS_ALWAYSTIP|TTS_NOPREFIX          ;-- dwStyle
+            ,"UInt",CW_USEDEFAULT                       ;-- x
+            ,"UInt",CW_USEDEFAULT                       ;-- y
+            ,"UInt",CW_USEDEFAULT                       ;-- nWidth
+            ,"UInt",CW_USEDEFAULT                       ;-- nHeight
+            ,"Ptr",HWND_DESKTOP                         ;-- hWndParent
+            ,"Ptr",0                                    ;-- hMenu
+            ,"Ptr",0                                    ;-- hInstance
+            ,"Ptr",0                                    ;-- lpParam
+            ,"Ptr")                                     ;-- Return type
+
+        ;-- Disable visual style
+        ;   Note: Uncomment the following to disable the visual style, i.e.
+        ;   remove the window theme, from the tooltip control.  Since this
+        ;   function only uses one tooltip control, all tooltips created by this
+        ;   function will be affected.
+;;;;;        DllCall("uxtheme\SetWindowTheme","Ptr",hTT,"Ptr",0,"UIntP",0)
+
+        ;-- Set the maximum width for the tooltip window
+        ;   Note: This message makes multi-line tooltips possible
+        SendMessage TTM_SETMAXTIPWIDTH,0,A_ScreenWidth,,ahk_id %hTT%
+        }
+
+    ;-- Other commands
+    if p1 is not Integer
+        {
+        if (p1="Activate")
+            SendMessage TTM_ACTIVATE,True,0,,ahk_id %hTT%
+
+        if (p1="Deactivate")
+            SendMessage TTM_ACTIVATE,False,0,,ahk_id %hTT%
+
+        if (InStr(p1,"AutoPop")=1)  ;-- Starts with "AutoPop"
+            SendMessage TTM_SETDELAYTIME,TTDT_AUTOPOP,p2*1000,,ahk_id %hTT%
+        
+        if (p1="Title")
+            {
+            ;-- If needed, truncate the title
+            if (StrLen(p2)>99)
+                p2:=SubStr(p2,1,99)
+
+            ;-- Icon
+            if p3 is not Integer
+                p3:=TTI_NONE
+
+            ;-- Set title
+            SendMessage A_IsUnicode ? TTM_SETTITLEW:TTM_SETTITLEA,p3,&p2,,ahk_id %hTT%
+            }
+
+        ;-- Restore DetectHiddenWindows
+        DetectHiddenWindows %l_DetectHiddenWindows%
+    
+        ;-- Return the handle to the tooltip control
+        Return hTT
+        }
+
+    ;-- Create/Populate the TOOLINFO structure
+    uFlags:=TTF_IDISHWND|TTF_SUBCLASS
+    cbSize:=VarSetCapacity(TOOLINFO,(A_PtrSize=8) ? 64:44,0)
+    NumPut(cbSize,      TOOLINFO,0,"UInt")              ;-- cbSize
+    NumPut(uFlags,      TOOLINFO,4,"UInt")              ;-- uFlags
+    NumPut(HWND_DESKTOP,TOOLINFO,8,"Ptr")               ;-- hwnd
+    NumPut(p1,          TOOLINFO,(A_PtrSize=8) ? 16:12,"Ptr")
+        ;-- uId
+
+    ;-- Check to see if tool has already been registered for the control
+    SendMessage
+        ,A_IsUnicode ? TTM_GETTOOLINFOW:TTM_GETTOOLINFOA
+        ,0
+        ,&TOOLINFO
+        ,,ahk_id %hTT%
+
+    l_RegisteredTool:=ErrorLevel
+
+    ;-- Update the TOOLTIP structure
+    NumPut(&p2,TOOLINFO,(A_PtrSize=8) ? 48:36,"Ptr")
+        ;-- lpszText
+
+    ;-- Add, Update, or Delete tool
+    if l_RegisteredTool
+        {
+        if StrLen(p2)
+            SendMessage
+                ,A_IsUnicode ? TTM_UPDATETIPTEXTW:TTM_UPDATETIPTEXTA
+                ,0
+                ,&TOOLINFO
+                ,,ahk_id %hTT%
+         else
+            SendMessage
+                ,A_IsUnicode ? TTM_DELTOOLW:TTM_DELTOOLA
+                ,0
+                ,&TOOLINFO
+                ,,ahk_id %hTT%
+        }
+    else
+        if StrLen(p2)
+            SendMessage
+                ,A_IsUnicode ? TTM_ADDTOOLW:TTM_ADDTOOLA
+                ,0
+                ,&TOOLINFO
+                ,,ahk_id %hTT%
+
+    ;-- Restore DetectHiddenWindows
+    DetectHiddenWindows %l_DetectHiddenWindows%
+
+    ;-- Return the handle to the tooltip control
+    Return hTT
+    }
