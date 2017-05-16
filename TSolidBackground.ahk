@@ -17,9 +17,8 @@ If you have any good suggestions, feel free to contact me or open an issue.
 
 ;TD: ADD BUILT-IN README, maybe automate it (put it in the ahk or maybe using Include Any File script?) <-- Probably unnecessary and useless.
 
-Arrs := Object()
 OnExit, Exited
-Version := "v2.8.6"
+Version := "v2.8.7"
 IniVersion := "v1.0"
 bgcolor := 051523
 TSolidBackgroundKey := "+T"
@@ -46,11 +45,15 @@ MoveBy := 5
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
-excludedTitles := Object("Program Manager", "", "SCM", "","Windows Shell Experience Host", "", "TSolidBackground Move/Resize Window", "", "TSolidBackground Advanced Features", "")      ;You can add more titles to exclude them from the Move/Resize dropdown menu. Stick with the syntax (1 title, 1 blank).
+excludedTitles := Object("Program Manager", ""                          ;You can add more window titles to exclude them from the Move/Resize dropdown menu.
+                        ,"SCM", ""                                      ;Stick with the guide (1 title, 1 blank).
+                        ,"Windows Shell Experience Host", ""
+                        ,"TSolidBackground Move/Resize Window", ""
+                        ,"TSolidBackground Advanced Features", ""
+                        ,"TSolidBackground Splash Text", "")
 
-;-----EXPERIMENTAL-----
 SetWinDelay, 0
-SetControlDelay, 0      ;Probably useless.
+SetControlDelay, 0      ;Mostly useless.
 SetBatchLines, 2000
 
 Menu, Tray, Icon,,, 0
@@ -398,7 +401,7 @@ DrawHUD(hudtext, xyvalue, hudtextcolor := "c836DFF", hudtextsize := "s11", hudti
     Gui, hud: Color, 292929
     Gui, hud: Font, %hudtextsize% %hudtextcolor% Bold, Segoe UI
     Gui, hud: Add, Text,, %hudtext%
-    Gui, hud: Show, NoActivate %xyvalue%
+    Gui, hud: Show, NoActivate %xyvalue%, TSolidBackground Splash Text
     SetTimer, Deletehud, %hudtimer%
     Return
 }
@@ -913,7 +916,7 @@ GetAllWindows() {
                 DropDownAll .= LoopTitle . "`n"
             }
         } else {
-            if ((excludeSystemWindows) && (excludedTitles.HasKey(LoopTitle))) {        ;.HasKey(): Similar to .indexOf etc. 
+            if ((excludeSystemWindows) && (excludedTitles.HasKey(LoopTitle))) {        ;.HasKey(): Best alternative to .indexOf etc. 
                 WinIDAll.RemoveAt(currentIndex)
                 currentIndex--
                 thisWasRemoved := 1
@@ -1547,6 +1550,7 @@ Return
 
 WinStack(winid) {
     Global
+    Arrs := Object()
     if (!Arrs.hasKey(winid)) {
         Arrs[winid] := true
     }
