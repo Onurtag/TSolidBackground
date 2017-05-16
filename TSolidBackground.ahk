@@ -9,13 +9,14 @@ AIO Autohotkey script that can make any window pseudo-fullscreen using padding o
 https://github.com/Onurtag/TSolidBackground
 
 To anyone reading the code,
-This script contains many unoptimal globals and hacks.
-It would be a waste of time and I don't care enough to fix them all so they will stay like this until they bother me.
+This script contains many globals and hacks that are unoptimal which I can't really recommend.
+They all work well and it would be a waste of time (also I don't care enough too) so they will stay like this until they break or bother me.
 
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
-;TD: ADD BUILT-IN README, maybe automate it (put it in the ahk or maybe using Include Any File script?) <-- Probably unnecessary and useless.
+;TD: Add textbox (or even a new window) for custom excluded titles
+;TD: Add a change hotkeys menu.                    <-- We have the Guide.png and not all modifiers are supported so probably not.
 
 OnExit, Exited
 Version := "v2.8.7"
