@@ -57,7 +57,7 @@ After Hooking Main Window(or browser tab) to the Hooked window, the hooked windo
 
 
 --------------------  
-**Known Bugs:**  
+**Known Issues:**  
 
 * Hiding taskbar sometimes might not work right away on slow computers, try it again.  
 * Explorer.exe might crash and restart if you spam the hotkeys too much (Especially Show Hide taskbar key).  
