@@ -988,10 +988,10 @@ GetAllWindows() {
         VarSetCapacity(WinIDPseudoAll%A_Index%, 0)
     }
     WinIDAll := 0
+    WinIDAll := Object()
     DropDownAll := ""
     ;DetectHiddenWindows, On                    ;Detect hidden windows if needed.
     WinGet, WinIDPseudoAll, List
-    WinIDAll := Object()
     Loop, %WinIDPseudoAll%              ;Copy pseudo-array to the real array
     {
         WinIDAll.InsertAt(A_Index, WinIDPseudoAll%A_Index%)
