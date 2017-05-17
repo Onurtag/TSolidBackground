@@ -69,6 +69,12 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ## Changelog
 
+* **Version 2.8.7**  
+
+Added a menu to customize excluded titles.  
+Added a C (Copy Window Title) button to move/resize menu to help with above.  
+Added middle click to mouse mover.  
+
 * **Version 2.8.6**  
 
 Added more Numeric UpDowns so we can all use our scroll wheels.  
