@@ -15,8 +15,7 @@ They all work well and it would be a waste of time (also I don't care enough too
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
-;TD: Add textbox (or even a new window) for custom excluded titles
-;TD: Add a change hotkeys menu.                    <-- We have the Guide.png and not all modifiers are supported so probably not.
+;TD: Add a change hotkeys menu.              <-- We have the Quick Guide.png and not all modifiers are supported so probably not.
 
 OnExit, Exited
 Version := "v2.8.7"
@@ -46,12 +45,11 @@ MoveBy := 5
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
-excludedTitles := Object("Program Manager", ""                          ;You can add more window titles to exclude them from the Move/Resize dropdown menu.
-                        ,"SCM", ""                                      ;Stick with the guide (1 title, 1 blank).
-                        ,"Windows Shell Experience Host", ""
+excludedTitles := Object("TSolidBackground Advanced Features", ""    ;You can use the edit menu under advanced options to add more titles or remove these.
+                        ,"TSolidBackground Splash Text", ""
                         ,"TSolidBackground Move/Resize Window", ""
-                        ,"TSolidBackground Advanced Features", ""
-                        ,"TSolidBackground Splash Text", "")
+                        ,"Windows Shell Experience Host", ""
+                        ,"Program Manager", "")
 
 SetWinDelay, 0
 SetControlDelay, 0      ;Mostly useless.
@@ -100,6 +98,7 @@ IfExist, TSolidBackground.ini
     Readini(TitleOne, "Settings", "Hooker Main Window")
     Readini(TitleTwo, "Settings", "Hooker Hooked Window")
     Readini(Debug, "Settings", "Debug")
+    ReadTitlesFromIni()
     if (TSolidBackgroundKey != "+T") {
         if (TSolidBackgroundKey != "") {
             Hotkey, %TSolidBackgroundKey%, +T
@@ -492,6 +491,7 @@ ShowOptions() {
     Gui, options: Add, Text, x219 y435, Create .ini for permanent options
     Gui, options: Font, s9 cDCDCCC norm
     Gui, options: Add, Button, x384 y75 w15 h15 hwndhResetcwh gResetcwh, R
+    Gui, options: Add, Button, x540 y302 w50 h20 gShowExcluded, Edit
     AddTooltip(hResetcwh, "Reset Custom Width and Height")
     Gui, options: Add, Button, x430 y120 w21 h17 gSaveCustom1, S1
     Gui, options: Add, Button, x457 y120 w21 h17 gSaveCustom2, S2
@@ -507,7 +507,7 @@ ShowOptions() {
     Gui, options: Font, s10 cDCDCCC norm
     Gui, options: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     Gui, options: Add, Checkbox, x152 y280 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
-    Gui, options: Add, Checkbox, x152 y302 Checked%excludeSystemWindows% vexcludeSystemWindows gSetnow, Exclude system windows etc. from Move/Resize dropdown menu.
+    Gui, options: Add, Checkbox, x152 y302 Checked%excludeSystemWindows% vexcludeSystemWindows gSetnow, Exclude specific windows from Move/Resize dropdown menu.
     Gui, options: Add, Checkbox, x152 y324 Checked%startupWindow% vstartupWindow gSetnow, Show info window on startup
     Gui, options: Add, Checkbox, x152 y346 Checked%CheckForUpdates% vCheckForUpdates gSetnow, Check for updates on startup (Save to ini required)
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
@@ -526,6 +526,107 @@ Return
 
 OptionsGuiEscape:
     Gosub, BackGui
+Return
+
+ShowExcluded:
+    ShowExcludedTitles()    
+Return
+
+ShowExcludedTitles() {
+    Gui, titles: Destroy
+    Gui, titles: Default 
+    Gui, titles: +AlwaysOnTop
+    Gui, titles: Color, 292929
+    Gui, titles: Font, s12 cDCDCCC norm
+    Gui, titles: Add, ListView, x35 y15 r11 w435 NoSort NoSortHdr -ReadOnly Background292929 cDCDCCC, Window Title
+    Gui, titles: Font, s10 c836DFF
+    Gui, titles: Add, Button, x485 y98 w90 h24 gRemoveLV, Remove
+    Gui, titles: Add, Button, x485 y65 w90 h24 gAddLV, Add
+    Gui, titles: Font, Bold
+    Gui, titles: Add, Button, x175 y385 w250 h24, Close
+    Gui, titles: Font, s12
+    Gui, titles: Add, Button, x175 y325 w250 h44 gSaveTitles, Save to .ini
+    Gui, titles: Show, w600 h430, TSolidBackground Edit Excluded Titles
+    PopulateTitles()
+}
+
+PopulateTitles() {
+    Global
+    For titleKey, value in excludedTitles {
+        LV_Add("", titleKey)
+    }
+}
+
+SaveTitles:
+    SaveTitlesToIni()
+    ReadTitlesFromIni()
+Return
+
+SaveTitlesToIni() {
+    Global
+    rowsText := ""
+    rowCounter := LV_GetCount()
+    Loop {
+        If (rowCounter == 0) {
+            Break
+        }
+        LV_GetText(thisRow, rowCounter)
+        rowsArray := StrSplit(rowsText, "<|TSB|>")
+        alreadyExists := 0
+        Loop % rowsArray.MaxIndex()
+        {
+            thisOne := rowsArray[A_Index]
+            If (thisRow == thisOne) {
+                alreadyExists := 1
+            }
+        }
+        If (!alreadyExists) {
+            rowsText .= thisRow . "<|TSB|>"
+        }
+        rowCounter--
+    }
+    IfNotExist, TSolidBackground.ini 
+    {
+        CreateSaveini(1)
+    }
+    Writeini(rowsText, "Settings", "Excluded Titles")
+}
+
+ReadTitlesFromIni() {
+    Global
+    Readini(iniTitles, "Settings", "Excluded Titles")
+    If (iniTitles != "ERROR") {
+        excludedTitles := 0
+        excludedTitles := Object()
+        iniTitlesArray := StrSplit(iniTitles, "<|TSB|>")
+        Loop % iniTitlesArray.MaxIndex()
+        {
+            thisTitle := iniTitlesArray[A_Index]
+            If (thisTitle != "") {
+                excludedTitles[thisTitle] := ""
+            }
+        }
+    }
+}
+
+RemoveLV:
+    RowNumber := 0
+    Loop
+    {
+        RowNumber := LV_GetNext(RowNumber-1)
+        if not RowNumber
+            break
+        LV_Delete(RowNumber)
+    }
+Return
+
+AddLV:
+    LV_Add("", "Window Title")
+Return
+
+TitlesGuiEscape:
+TitlesButtonClose:
+    Gui, titles: Destroy
 Return
 
 Setnow:
@@ -747,8 +848,8 @@ ShowResizer() {
     Gui, resizer: Add, Button, x174 y515 w290 h24, Close
     Gui, resizer: Add, Button, x10 y10 w44 h24 gBackGui, Back
     Gui, resizer: Font, norm
-    Gui, resizer: Add, DropDownList, x70 y53 w450 Choose%DropDownCurrent% vDropDownCurrent gDropDownSelected AltSubmit, Select a Window (If it's not here, check Advanced Options)`n%DropDownAll%
-    Gui, resizer: Add, Button, x527 y55 w54 h21 gReloadDropDown, Reload
+    Gui, resizer: Add, DropDownList, x95 y53 w450 Choose%DropDownCurrent% vDropDownCurrent gDropDownSelected AltSubmit, Select a Window (If it's not here, check Advanced Options)`n%DropDownAll%
+    Gui, resizer: Add, Button, x551 y55 w54 h21 gReloadDropDown, Reload
     Gui, resizer: Add, Text, x500 y355, Tip: You can use `nyour advanced `nfeatures (%OptionsKey%) `nhotkey to select `na new window.
     if (!BlockResizer) {
         Gui, resizer: Add, Text, x75 y125, Current:
@@ -808,6 +909,8 @@ ShowResizer() {
         AddTooltip(hOrigxy, "Reset Window Position")
         Gui, resizer: Add, Button, x55 y147 w15 h15 hwndhOrigwh gOrigwh, R
         AddTooltip(hOrigwh, "Reset Window Size")
+        Gui, resizer: Add, Button, x73 y57 w16 h17 hwndhCopyTitle gCopyTitle, C
+        AddTooltip(hCopyTitle, "Copy Window Title")
         Gui, resizer: Add, Button, x521 y189 w16 h16 gWup, U
         Gui, resizer: Add, Button, x521 y225 w16 h16 gWdown, D
         Gui, resizer: Add, Button, x503 y207 w16 h16 gWleft, L
@@ -1172,6 +1275,11 @@ Savepos(posnr) {
 ReloadDropDown:
     ShowResizer()
 Return
+
+CopyTitle:
+    WinGetTitle, titleTBResized, ahk_id %TBResized%
+    Clipboard := titleTBResized
+Return
 ;Move/Resize End
 
 ;Hooker Start
@@ -1382,26 +1490,22 @@ MouseMover() {
     Gui, mmover: Font, s14 c836DFF Bold, Segoe UI
     Gui, mmover: Add, Text, x258 y15, Mouse Mover
     Gui, mmover: Font, s9 c836DFF norm Bold
-    Gui, mmover: Add, Edit, x305 y287 w40 h20 Number vMoveBy, %MoveBy%
+    Gui, mmover: Add, Edit, x305 y292 w40 h20 Number vMoveBy, %MoveBy%
     Gui, mmover: Add, UpDown, 0x80 Range1-90000, %MoveBy%
     Gui, mmover: Font, s9 cBlack norm
-    Gui, mmover: Add, Button, x355 y288 w34 h18 gSetnow, Set
+    Gui, mmover: Add, Button, x355 y293 w34 h18 gSetnow, Set
     Gui, mmover: Font, s10 Bold
     Gui, mmover: Add, Button, x174 y515 w290 h24, Close
     Gui, mmover: Add, Button, x10 y10 w44 h24 gmmoverGuiEscape, Back
     Gui, mmover: Font, s10 cDCDCCC norm
-    Gui, mmover: Add, Checkbox, x212 y317 Checked%preventSend% vpreventSend gSetnow, Also prevent hotkeys from working
-    Gui, mmover: Add, Text, x135 y235, (or [Numpad End])
-    Gui, mmover: Add, Text, x325 y235, (or [Numpad Down])
-    Gui, mmover: Add, Text, x245 y286, Move by:
+    Gui, mmover: Add, Checkbox, x210 y322 Checked%preventSend% vpreventSend gSetnow, Also prevent hotkeys from working
+    Gui, mmover: Add, Text, x245 y291, Move by:
     Gui, mmover: Font, s13
     Gui, mmover: Add, Text, x220 y147, When this window is open,
     Gui, mmover: Add, Text, x140 y177, Use arrow keys to move the mouse pixel by pixel.
-    Gui, mmover: Add, Text, x115 y207, Use [Numpad 1] for left click, [Numpad 2] for right click.
+    Gui, mmover: Add, Text, x132 y207, Press [Numpad 1] or [Numpad End] for left click `nPress [Numpad 2] or [Numpad Down] for right click `nPress [Numpad 3] or [Numpad PgDn] for middle click.
     Gui, mmover: Font, s10 c836DFF norm Underline
-    ;Gui, mmover: Add, Text, x219 y435, Create .ini for permanent options
     Gui, mmover: Font, s10 cDCDCCC norm
-    ;Gui, mmover: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
     if ((optX == "") || (optX == -32000)) {
         Gui, mmover: Show, w640 h560, TSolidBackground Mouse Mover
@@ -1466,6 +1570,12 @@ Numpad2::
         Send, {Numpad2}
 Return
 
+Numpad3::
+    Click Middle 
+    if (!preventSend)
+        Send, {Numpad3}
+Return
+
 NumpadEnd::
     Click Left
     if (!preventSend)
@@ -1476,6 +1586,12 @@ NumpadDown::
     Click Right
     if (!preventSend)
         Send, {NumpadDown}
+Return
+
+NumpadPgdn::
+    Click Middle
+    if (!preventSend)
+        Send, {NumpadPgdn}
 Return
 #If
 ;Mouse Mover End
