@@ -538,7 +538,7 @@ ShowExcludedTitles() {
     Gui, titles: +AlwaysOnTop
     Gui, titles: Color, 292929
     Gui, titles: Font, s12 cDCDCCC norm
-    Gui, titles: Add, ListView, x35 y15 r11 w435 NoSort NoSortHdr -ReadOnly Background292929 cDCDCCC, Window Title
+    Gui, titles: Add, ListView, x35 y15 r11 w435 NoSort NoSortHdr -ReadOnly Background292929 cDCDCCC, Window Title (Untitled windows will be blocked too.)
     Gui, titles: Font, s10 c836DFF
     Gui, titles: Add, Button, x485 y98 w90 h24 gRemoveLV, Remove
     Gui, titles: Add, Button, x485 y65 w90 h24 gAddLV, Add
@@ -915,11 +915,13 @@ ShowResizer() {
         Gui, resizer: Add, Button, x521 y225 w16 h16 gWdown, D
         Gui, resizer: Add, Button, x503 y207 w16 h16 gWleft, L
         Gui, resizer: Add, Button, x539 y207 w16 h16 gWright, R
-        Gui, resizer: Add, Button, x203 y362 w27 h21 gSavetemp1, T1
+        Gui, resizer: Add, Button, x203 y362 w27 h21 hwndhSavetemp1 gSavetemp1, T1
+        AddTooltip(hSavetemp1, "Temprorary values are lost when you quit TSolidBackground.")
         Gui, resizer: Add, Button, x203 y390 w27 h21 gLoadtemp1, T1
         Gui, resizer: Add, Button, x235 y362 w27 h21 gSavetemp2, T2
         Gui, resizer: Add, Button, x235 y390 w27 h21 gLoadtemp2, T2
-        Gui, resizer: Add, Button, x270 y362 w27 h21 gSave1, P1
+        Gui, resizer: Add, Button, x270 y362 w27 h21 hwndhSave1 gSave1, P1
+        AddTooltip(hSave1, "Permanent Saves the values to .ini")
         Gui, resizer: Add, Button, x270 y390 w27 h21 gLoad1, P1
         Gui, resizer: Add, Button, x302 y362 w27 h21 gSave2, P2
         Gui, resizer: Add, Button, x302 y390 w27 h21 gLoad2, P2
