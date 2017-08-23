@@ -55,6 +55,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 * Experimental window hooking currently works like this:  
 After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top when that tab/window is currently active. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.  
 
+* For now you can use [this script](https://pastebin.com/DdTkfjdM) to make a windows transparent or clickthrough.
 
 --------------------  
 **Known Issues:**  
