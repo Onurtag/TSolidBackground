@@ -8,13 +8,13 @@ and later added more features that are useful for me.
 
 **Default Hotkeys:** (All hotkeys and many more options can be changed in the .ini)  
 
-    TSolidBackground hotkey: +T (NOTE: [+] means Shift. Read the hotkey guide below if you want to customize it.)
-    Always On Top: +Y
-    Center window: +G
-    Show/Hide taskbar: +F
-    Advanced Options: +U
+    TSolidBackground hotkey: !T (! represents the Alt key on your keyboard. Read the hotkey guide below.)
+    Always On Top: !Y
+    Center window: !G
+    Show/Hide taskbar: !F
+    Advanced Options: !U
     Suspend all other hotkeys: F8
-    Default Color: 051523 (hex value without the #)
+    Default Color: 250000 (hex value without the #)
 
 **If you are planning to use TSolidBackground, you should also read 'Things to Know' below.**  
 
@@ -28,7 +28,7 @@ and later added more features that are useful for me.
 
 * If no hotkeys work on the active/selected window, run TSolidBackground as admin.  
 
-* TSolidBackground.ini file will be created when you create a .ini using the Advanced Options (default **Shift+U** key).  
+* TSolidBackground.ini file will be created when you create a .ini using the Advanced Options (default **Alt+U** key).  
 After creating the .ini file you can edit it using a text editor to change the hotkeys and many more options.  
 You can also quickly edit the .ini by using the "Edit TSolidBackground.ini" button in the tray menu.  
 **[QUICK HOTKEY EDITING GUIDE.png](https://github.com/Onurtag/TSolidBackground/raw/gh-pages/images/Hotkey%20Guide.png)**  
@@ -38,10 +38,10 @@ You can also quickly edit the .ini by using the "Edit TSolidBackground.ini" butt
 
 * You have to select the window (make it active) before using most hotkeys.  
 
-* You can change the background color using the Advanced Options menu in Advanced Features menu (default hotkey: Shift+U).  
-Change the color to a red hue if you want a softer experience (it seems red encourages sleep and blue does the opposite). Press that **[R]** button to switch between red and blue.  
+* You can change the background color using the Advanced Options menu in Advanced Features menu (default hotkey: Alt+U).  
+You can press the **[R]** button to switch between red and blue.  
 
-* When you are on the Move/Resize Window menu you can use the Advanced Features (default: Shift+U) hotkey to get a new window to move/resize.  
+* When you are on the Move/Resize Window menu you can use the Advanced Features (default: Alt+U) hotkey to get a new window to move/resize.  
 
 * If your window doesn't show up on the Move/Resize dropdown menu, you can try editing the excluded windows list using the **Edit** button in the advanced options menu.  
 When this option is enabled, TSolidBackground Move/Resize menu doesn't list all windows without titles and all windows that are listed in the above menu.  
@@ -163,8 +163,8 @@ Added a different icon for the "Suspended" state (Compiled .exe only).
 * **Version 2.5.0**  
 
 Changed UI fonts to Segoe UI.  
-Revamp of Advanced Features (default Shift+U hotkey)  
-Added Experimental Window hooking to advanced features (+U).  
+Revamp of Advanced Features (default Alt+U hotkey)  
+Added Experimental Window hooking to advanced features (!U).  
 *Window hooking currently works like this: After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.* 
 
 * **Version 2.4.4**  
@@ -179,21 +179,21 @@ Cleanup useless code
 
 * **Version 2.4.1:**  
 
-Can now save size + position in +U options menu.  
+Can now save size + position in !U options menu.  
 Added reset button for custom TSb.  
 
 
 * **Version 2.4.0:**  
 
 Finally got my hands on a second monitor and now everything works in multiple monitors.  
-Added an [O] button to +U for moving to original position.  
+Added an [O] button to !U for moving to original position.  
 Added U,D,L,R buttons to easily move windows.  
 
 * **Version 2.3.0:**  
 
-Removed old options, moved to (+U)  
+Removed old options, moved to (!U)  
 Added .ini option to disable startup window.  
-Seperated custom width and height, made new temprorary options in (+U).  
+Seperated custom width and height, made new temprorary options in (!U).  
 
 * **Version 2.2.2:**  
 
@@ -206,7 +206,7 @@ Removed useless stuff and added useful stuff.
 
 * **Version 2.2.0:**  
 
-Added features to Move/Resize (Shift+U)
+Added features to Move/Resize (Alt+U)
 
 
 * **Version 2.1.4:**  

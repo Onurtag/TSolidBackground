@@ -15,17 +15,16 @@ They all work well and it would be a waste of time (also I don't care enough too
 If you have any good suggestions, feel free to contact me or open an issue.
 */
 
-;TD: Add a change hotkeys menu.              <-- We have the Quick Guide.png and not all modifiers are supported so probably not.
 
 OnExit, Exited
-Version := "v2.8.7"
+Version := "v2.9.0"
 IniVersion := "v1.0"
-bgcolor := 051523
-TSolidBackgroundKey := "+T"
-OnTopKey := "+Y"
-CenterKey := "+G"
-TaskbarKey := "+F"
-OptionsKey := "+U"
+bgcolor := 250000
+TSolidBackgroundKey := "!T"
+OnTopKey := "!Y"
+CenterKey := "!G"
+TaskbarKey := "!F"
+OptionsKey := "!U"
 SuspendKey := "F8"
 Iniexists := "No"
 CustomWidthLeft := 0
@@ -41,7 +40,7 @@ TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
 Vmove := 5
 Vresize := 5
-MoveBy := 5
+MoveBy := 1
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
@@ -59,7 +58,6 @@ Menu, Tray, Icon,,, 0
 Menu, Tray, NoStandard
 Menu, Tray, Add, About TSolidBackground, Abouted
 Menu, Tray, Add, Advanced Features, Advanced
-Menu, Tray, Add, Make a Dummy Window, StartDummyWindow
 Menu, Tray, Add, Edit TSolidBackground.ini, Editini
 Menu, Tray, Add, Stop Window Hooker, StopHook
 Menu, Tray, Disable, Stop Window Hooker
@@ -99,35 +97,35 @@ IfExist, TSolidBackground.ini
     Readini(TitleTwo, "Settings", "Hooker Hooked Window")
     Readini(Debug, "Settings", "Debug")
     ReadTitlesFromIni()
-    if (TSolidBackgroundKey != "+T") {
+    if (TSolidBackgroundKey != "!T") {
         if (TSolidBackgroundKey != "") {
-            Hotkey, %TSolidBackgroundKey%, +T
+            Hotkey, %TSolidBackgroundKey%, !T
         }
-        Hotkey, +T, Off
+        Hotkey, !T, Off
     }
-    if (OnTopKey != "+Y") {
+    if (OnTopKey != "!Y") {
         if (OnTopKey != "") {
-            Hotkey, %OnTopKey%, +Y
+            Hotkey, %OnTopKey%, !Y
         }
-        Hotkey, +Y, Off
+        Hotkey, !Y, Off
     }
-    if (CenterKey != "+G") {
+    if (CenterKey != "!G") {
         if (CenterKey != "") {
-            Hotkey, %CenterKey%, +G
+            Hotkey, %CenterKey%, !G
         }
-        Hotkey, +G, Off
+        Hotkey, !G, Off
     }
-    if (TaskbarKey != "+F") {
+    if (TaskbarKey != "!F") {
         if (TaskbarKey != "") {
-            Hotkey, %TaskbarKey%, +F
+            Hotkey, %TaskbarKey%, !F
         }
-        Hotkey, +F, Off
+        Hotkey, !F, Off
     }
-    if (OptionsKey != "+U") {
+    if (OptionsKey != "!U") {
         if (OptionsKey != "") {
-            Hotkey, %OptionsKey%, +U
+            Hotkey, %OptionsKey%, !U
         }
-        Hotkey, +U, Off
+        Hotkey, !U, Off
     }
     if (SuspendKey != "F8") {
         if (SuspendKey != "") {
@@ -143,7 +141,7 @@ if (startupWindow) {
     Gui, start: Add, Text,, TSolidBackground %Version%
     Gui, start: Font, s8 c836DFF Bold
     Gui, start: Font, s10 cDCDCCC norm
-    Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [+] means [Shift]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you need to change the hotkeys, want to check for updates `nor just can't understand anything above visit the project page:
+    Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [!] means [Alt]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you need to change the hotkeys, want to check for updates `nor just can't understand anything above visit the project page:
     Gui, start: Font, s10 c3257BF underline
     Gui, start: Add, Text, x18 y303 gGotoSite, https://github.com/Onurtag/TSolidBackground
     Gui, start: Font, s10 cBlack norm Bold
@@ -156,7 +154,7 @@ if (CheckForUpdates) {
 }
 Return
 
-+Y::
+!Y::
     WinGet, currentWindow, ID, A
     WinGetTitle, currentTitle, A
     if (currentTitle == "Kagami") {
@@ -176,7 +174,7 @@ Return
     }
 Return
 
-+T::
+!T::
     if (Activewin == "") {
         Activewin := WinExist("A")
     }
@@ -192,7 +190,7 @@ Return
     }
 Return
 
-+G::
+!G::
     WinGetPos,,, WWWidth, HHHeight, A
     GetMonitorIndexFromWindow(WinExist("A"))
     mHeight := monitorBottom-monitorTop
@@ -200,7 +198,7 @@ Return
     WinMove, A,, (mWidth-WWWidth)/2+monitorLeft, (mHeight-HHHeight)/2+monitorTop-12        ;-12 For new Win10 borders and stuff.
 Return
 
-+F::
+!F::
     if (TBtoggle == "") {
         VarSetCapacity( APPBARDATA, 36, 0 )
         NumPut( 36, APPBARDATA, 0, "UInt" )
@@ -230,7 +228,7 @@ Return
     }
 Return
 
-+U::
+!U::
     if (WinExist("A") != TBResized) {
         TBResized := WinExist("A")
         WinGetTitle, titleTBResized, ahk_id %TBResized%
@@ -752,7 +750,7 @@ CheckUpdate(notify) {
         Gui, update: Destroy
         Gui, update: +AlwaysOnTop
         Gui, update: Color, 292929
-        Gui, update: Font, s14 c27A100
+        Gui, update: Font, s14 cBB002D
         Gui, update: Add, Text,, A TSolidBackground update is available.
         Gui, update: Font, s14 c836DFF, Segoe UI
         Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %Version%)
@@ -770,7 +768,7 @@ CheckUpdate(notify) {
         Gui, update: Destroy
         Gui, update: +AlwaysOnTop
         Gui, update: Color, 292929
-        Gui, update: Font, s14 cDCDCCC
+        Gui, update: Font, s14 c2EA319
         Gui, update: Add, Text,, `nYour TSolidBackground is up to date.
         Gui, update: Font, s14 c836DFF, Segoe UI
         Gui, update: Add, Text,, Latest version: %NewVersion%  (Current version: %Version%)
@@ -892,9 +890,9 @@ ShowResizer() {
         Gui, resizer: Add, Text, x218 y338, Quick save/load size and position
         Gui, resizer: Add, Text, x219 y435, Create .ini for permanent options
         Gui, resizer: Font, s9 c836DFF norm Bold
-        Gui, resizer: Add, Edit, x517 y249 w40 h20 Number vVmove, %Vmove%
+        Gui, resizer: Add, Edit, x517 y249 w50 h20 Number vVmove, %Vmove%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vmove%
-        Gui, resizer: Add, Edit, x167 y247 w40 h20 Number vVresize, %Vresize%
+        Gui, resizer: Add, Edit, x167 y247 w50 h20 Number vVresize, %Vresize%
         Gui, resizer: Add, UpDown, 0x80 Range1-90000, %Vresize%
         Gui, resizer: Font, s13 cDCDCCC norm
         Gui, resizer: Add, Button, x285 y96 w21 h19 hwndhMinWin gMinWin, ⎼⎼         ;Line
@@ -1424,9 +1422,9 @@ StartDummyWindow:
     Gui, Dummy: Add, Text, x129 y188, By: 
     Gui, Dummy: Add, Text, x55 y235, Center:
     Gui, Dummy: Font, s9 c836DFF norm Bold
-    Gui, Dummy: Add, Edit, x47 y188 w40 h20 Number vVmove, %Vmove%
+    Gui, Dummy: Add, Edit, x47 y188 w50 h20 Number vVmove, %Vmove%
     Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vmove%
-    Gui, Dummy: Add, Edit, x150 y188 w40 h20 Number vVresize, %Vresize%
+    Gui, Dummy: Add, Edit, x150 y188 w50 h20 Number vVresize, %Vresize%
     Gui, Dummy: Add, UpDown, 0x80 Range1-90000, %Vresize%
     Gui, Dummy: Font, s9 c836DFF norm
     Gui, Dummy: Add, Button, x51 y124 w16 h16 gWup, U
@@ -1492,7 +1490,7 @@ MouseMover() {
     Gui, mmover: Font, s14 c836DFF Bold, Segoe UI
     Gui, mmover: Add, Text, x258 y15, Mouse Mover
     Gui, mmover: Font, s9 c836DFF norm Bold
-    Gui, mmover: Add, Edit, x305 y292 w40 h20 Number vMoveBy, %MoveBy%
+    Gui, mmover: Add, Edit, x305 y292 w50 h20 Number vMoveBy, %MoveBy%
     Gui, mmover: Add, UpDown, 0x80 Range1-90000, %MoveBy%
     Gui, mmover: Font, s9 cBlack norm
     Gui, mmover: Add, Button, x355 y293 w34 h18 gSetnow, Set
@@ -1561,39 +1559,63 @@ Down::
 Return
 
 Numpad1::
-    Click Left
+    Click, Down
     if (!preventSend)
         Send, {Numpad1}
 Return
 
+Numpad1 Up::
+    Click, Up
+Return
+
 Numpad2::
-    Click Right
+    Click, Down, Right
     if (!preventSend)
         Send, {Numpad2}
 Return
 
+Numpad2 Up::
+    Click, Up, Right
+Return
+
 Numpad3::
-    Click Middle 
+    Click, Down, Middle
     if (!preventSend)
         Send, {Numpad3}
 Return
 
+Numpad3 Up::
+    Click, Up, Middle
+Return
+
 NumpadEnd::
-    Click Left
+    Click, Down
     if (!preventSend)
         Send, {NumpadEnd}
 Return
 
+NumpadEnd Up::
+    Click, Up
+Return
+
 NumpadDown::
-    Click Right
+    Click, Down, Right
     if (!preventSend)
         Send, {NumpadDown}
 Return
 
+NumpadDown Up::
+    Click, Up, Right
+Return
+
 NumpadPgdn::
-    Click Middle
+    Click, Down, Middle
     if (!preventSend)
         Send, {NumpadPgdn}
+Return
+
+NumpadPgdn Up::
+    Click, Up, Middle
 Return
 #If
 ;Mouse Mover End
@@ -1607,7 +1629,7 @@ Return
 CreateSaveini(showit) {
     Global
     if (bgcolor == "") {
-        bgcolor := 051523
+        bgcolor := 250000
     }
     if ((Iniexists == "No") && (CheckForUpdates == 0)) {
         MsgBox, 4100, TSolidBackground, Would you like to automatically check for updates on startup?
