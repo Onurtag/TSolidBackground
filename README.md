@@ -3,8 +3,7 @@
 TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders.  
 In a different saying, it tries to mimic fullscreen for any window without resizing it.  
 
-At first I made TSolidBackground to stop distracting myself when playing VNs and Eroge 
-and later added more features that are useful for me.  
+At first I made TSolidBackground to stop distracting myself when playing VNs and later added more features that were useful for me.  
 
 **Default Hotkeys:** (All hotkeys and many more options can be changed in the .ini)  
 
@@ -34,7 +33,7 @@ You can also quickly edit the .ini by using the "Edit TSolidBackground.ini" butt
 **[QUICK HOTKEY EDITING GUIDE.png](https://github.com/Onurtag/TSolidBackground/raw/gh-pages/images/Hotkey%20Guide.png)**  
 [Advanced hotkey Guide 1](https://autohotkey.com/docs/Hotkeys.htm), [Guide 2](https://www.autohotkey.com/docs/KeyList.htm)
 
-* If you want to disable a hotkey you can do it by leaving the related variable **empty** in the TSolidBackground.ini.  
+* If you want to disable a hotkey you can do it by leaving the related variable empty in the TSolidBackground.ini.  
 
 * You have to select the window (make it active) before using most hotkeys.  
 
@@ -55,7 +54,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 * Experimental window hooking currently works like this:  
 After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top when that tab/window is currently active. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.  
 
-* For now you can use [this script](https://pastebin.com/DdTkfjdM) to make a windows transparent or clickthrough.
+* You can use [this script](https://pastebin.com/DdTkfjdM) to make a windows transparent or clickthrough.
 
 --------------------  
 **Known Issues:**  
@@ -69,6 +68,11 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 
 --------------------  
 ## Changelog
+
+* **Version 2.9.0**  
+
+Changed default modifier to alt (! instead of +), changed default color to red (250000 instead of 051523).
+Fixed mouse mover bugs.
 
 * **Version 2.8.7**  
 
