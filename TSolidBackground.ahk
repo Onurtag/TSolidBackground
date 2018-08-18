@@ -13,11 +13,14 @@ This script contains many globals and hacks that are unoptimal which I can't rea
 They all work well and it would be a waste of time (also I don't care enough too) so they will stay like this until they break or bother me.
 
 If you have any good suggestions, feel free to contact me or open an issue.
+
+TD: Named presets for move/resize menu.
 */
 
 
 OnExit, Exited
-Version := "v2.9.0"
+Arrs := Object()
+Version := "v2.9.1"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -339,7 +342,7 @@ TSolidBackground() {
         }
     }
 
-    if ((WinStyle & 0x40000) == 0) {        ;Unresizable windows have smaller borders?
+    if ((WinStyle & 0x40000) == 0) {        ;Unresizable windows have smaller borders
         bg1FY -= 5
         bg2FX -= 5
         bg3SY += 5
@@ -826,8 +829,23 @@ ShowResizer() {
     Hnew := Hofwin
     Xnew := Xofwin
     Ynew := Yofwin
-    Hclient := Hofwin - 2*Border_Size2 - Caption_Size
-    Wclient := Wofwin - 2*Border_Size
+    if (Xofwin == -32000) {      ;We don't want bad original values for minimized windows.
+        Xorig := 200
+        Yorig := 200
+        Wnew := 1296
+        Hnew := 759
+        Xnew := 200
+        Ynew := 200
+    }
+    HclientDif := 2*Border_Size2 + Caption_Size
+    WclientDif := 2*Border_Size
+    WinGet, ResizedStyle, Style, ahk_id %TBResized%
+    if ((ResizedStyle & 0x40000) == 0) {        ;Unresizable windows have smaller borders
+        HclientDif := HclientDif - 10
+        WclientDif := WclientDif - 10
+    }
+    Hclient := Hofwin - HclientDif
+    Wclient := Wofwin - WclientDif
     Gui, resizer: +AlwaysOnTop +Delimiter`n
     Gui, resizer: Font, s14 c836DFF Bold, Segoe UI
     Gui, resizer: Add, Text, x77 y18, Selected Window:
@@ -847,7 +865,8 @@ ShowResizer() {
     Gui, resizer: Add, Button, x10 y10 w44 h24 gBackGui, Back
     Gui, resizer: Font, norm
     Gui, resizer: Add, DropDownList, x95 y53 w450 Choose%DropDownCurrent% vDropDownCurrent gDropDownSelected AltSubmit, Select a Window (If it's not here, check Advanced Options)`n%DropDownAll%
-    Gui, resizer: Add, Button, x551 y55 w54 h21 gReloadDropDown, Reload
+    Gui, resizer: Add, Button, x551 y55 w54 h21 hwndhReload gReloadDropDown, Reload
+    AddTooltip(hReload, "Reload the list of windows.")
     Gui, resizer: Add, Text, x500 y355, Tip: You can use `nyour advanced `nfeatures (%OptionsKey%) `nhotkey to select `na new window.
     if (!BlockResizer) {
         Gui, resizer: Add, Text, x75 y125, Current:
@@ -866,14 +885,16 @@ ShowResizer() {
         Gui, resizer: Add, Text, x90 y391, Load Saved Pos:
         Gui, resizer: Font, s9 cDCDCCC norm
         Gui, resizer: Font, s10 cb396ff norm
-        Wofwin := 00000            ;Fix for some tiny gui bug(?).
-        Hofwin := 00000
-        Xofwin := 00000
-        Yofwin := 00000
+        Wofwin := 000000            ;Fix for some tiny gui bug(?).
+        Hofwin := 000000
+        Xofwin := 000000
+        Yofwin := 000000
+        Wclient := 000000
+        Hclient := 000000
         Gui, resizer: Add, Text, x150 y125 vCurrentWH, W: %Wofwin%, H: %Hofwin%
         Gui, resizer: Add, Text, x426 y125 vCurrentXY, X: %Xofwin%, Y: %Yofwin%
         Gui, resizer: Font, s10 c836DFF norm
-        Gui, resizer: Add, Text, x150 y165, W: %Wclient%, H: %Hclient%
+        Gui, resizer: Add, Text, x150 y165 vCurrentClient, W: %Wclient%, H: %Hclient%
         Gui, resizer: Add, Text, x150 y145, W: %Worig%, H: %Horig%
         Gui, resizer: Add, Text, x426 y145, X: %Xorig%, Y: %Yorig%
         Gui, resizer: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
@@ -916,18 +937,23 @@ ShowResizer() {
         Gui, resizer: Add, Button, x203 y362 w27 h21 hwndhSavetemp1 gSavetemp1, T1
         AddTooltip(hSavetemp1, "Temprorary values are lost when you quit TSolidBackground.")
         Gui, resizer: Add, Button, x203 y390 w27 h21 gLoadtemp1, T1
-        Gui, resizer: Add, Button, x235 y362 w27 h21 gSavetemp2, T2
+        Gui, resizer: Add, Button, x235 y362 w27 h21 hwndhSavetemp2 gSavetemp2, T2
+        AddTooltip(hSavetemp2, "Temprorary values are lost when you quit TSolidBackground.")
         Gui, resizer: Add, Button, x235 y390 w27 h21 gLoadtemp2, T2
         Gui, resizer: Add, Button, x270 y362 w27 h21 hwndhSave1 gSave1, P1
-        AddTooltip(hSave1, "Permanent Saves the values to .ini")
+        AddTooltip(hSave1, "Permanently saves the window size/position to .ini")
         Gui, resizer: Add, Button, x270 y390 w27 h21 gLoad1, P1
-        Gui, resizer: Add, Button, x302 y362 w27 h21 gSave2, P2
+        Gui, resizer: Add, Button, x302 y362 w27 h21 hwndhSave2 gSave2, P2
+        AddTooltip(hSave2, "Permanently saves the window size/position to .ini")
         Gui, resizer: Add, Button, x302 y390 w27 h21 gLoad2, P2
-        Gui, resizer: Add, Button, x334 y362 w27 h21 gSave3, P3
+        Gui, resizer: Add, Button, x334 y362 w27 h21 hwndhSave3 gSave3, P3
+        AddTooltip(hSave3, "Permanently saves the window size/position to .ini")
         Gui, resizer: Add, Button, x334 y390 w27 h21 gLoad3, P3
-        Gui, resizer: Add, Button, x366 y362 w27 h21 gSave4, P4
+        Gui, resizer: Add, Button, x366 y362 w27 h21 hwndhSave4 gSave4, P4
+        AddTooltip(hSave4, "Permanently saves the window size/position to .ini")
         Gui, resizer: Add, Button, x366 y390 w27 h21 gLoad4, P4
-        Gui, resizer: Add, Button, x398 y362 w27 h21 gSave5, P5
+        Gui, resizer: Add, Button, x398 y362 w27 h21 hwndhSave5 gSave5, P5
+        AddTooltip(hSave5, "Permanently saves the window size/position to .ini")
         Gui, resizer: Add, Button, x398 y390 w27 h21 gLoad5, P5
         Gui, resizer: Add, Button, x231 y289 w52 h18 gResizenow, Resize
         Gui, resizer: Add, Button, x496 y289 w52 h18 gMovenow, Move
@@ -967,6 +993,9 @@ Refresher() {
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
     GuiControl, resizer:, CurrentWH, W: %Wofwin%, H: %Hofwin%
     GuiControl, resizer:, CurrentXY, X: %Xofwin%, Y: %Yofwin%
+    Hclient := Hofwin - HclientDif
+    Wclient := Wofwin - WclientDif
+    GuiControl, resizer:, CurrentClient, W: %Wclient%, H: %Hclient%
     SetTimer, Refresher, 100
     Return
 }
@@ -1052,10 +1081,6 @@ DropDownSelected:
             DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
             TBResized := WinIDAll[VarIndex]
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
-            if (Xorig == -32000) {      ;Minimized windows
-                Xorig := 200
-                Yorig := 200
-            }
         }
         ShowResizer()
     }
@@ -1691,7 +1716,6 @@ Return
 
 WinStack(winid) {
     Global
-    Arrs := Object()
     if (!Arrs.hasKey(winid)) {
         Arrs[winid] := true
     }
