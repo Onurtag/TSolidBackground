@@ -71,6 +71,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ## Changelog
 
+* **Version 2.9.1**  
+
+Handled some exceptions and fixed some tooltips.
+
 * **Version 2.9.0**  
 
 Changed default modifier to alt (! instead of +), changed default color to red (250000 instead of 051523).
