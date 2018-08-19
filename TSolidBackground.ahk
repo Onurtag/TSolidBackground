@@ -1386,29 +1386,33 @@ StopHook:
 Return
 
 ;TitleOne: Base Window, TitleTwo: Hooked Window
-Hooker() {    
+Hooker() {
     Global
-    WinGet, isNotMin, MinMax, %TitleTwo%
-    WinGet, WindowExStyle, ExStyle, %TitleTwo%
+    ;WinGet, OneisNotMin, MinMax, %TitleTwo%
+    WinGet, TwoisNotMin, MinMax, %TitleTwo%
+    WinGet, TwoWindowExStyle, ExStyle, %TitleTwo%
     ;CurrActiveID := WinExist("A")
     ;WinGetTitle, CurrActiveTitle, ahk_id %CurrActiveID%
     WinGetTitle, CurrActiveTitle, A
     if (CurrActiveTitle == TitleOne) {
-        if (isNotMin == -1) {
+        if (TwoisNotMin == -1) {
             WinRestore, %TitleTwo%
         }
-        if (WindowExStyle & 0x8) {
+        if (TwoWindowExStyle & 0x8) {
 
         } else {
             WinSet, AlwaysOnTop, on, %TitleTwo%
         }
     } else {
-        if ((WindowExStyle & 0x8) && (CurrActiveTitle != TitleTwo)) {
-            WinSet, AlwaysOnTop, off, %TitleTwo%
+        if ((TwoWindowExStyle & 0x8) && (CurrActiveTitle != TitleTwo)) {
+            if (protectVNR && (CurrActiveTitle != "Kagami")) {
+                WinSet, AlwaysOnTop, off, %TitleTwo%
+                WinMinimize, %TitleTwo%
+            }
         }
         IfWinNotExist, %TitleOne%
         {
-            if (isNotMin != -1) {
+            if (TwoisNotMin != -1) {
                 WinMinimize, %TitleTwo%
             }
         }
@@ -1416,7 +1420,9 @@ Hooker() {
     if (Hooking) {
         SetTimer, Hooker, 150
     } else {
-        WinSet, AlwaysOnTop, off, %TitleTwo%
+        if (TwoWindowExStyle & 0x8) {
+            WinSet, AlwaysOnTop, off, %TitleTwo%
+        }
     }
     Return
 }
