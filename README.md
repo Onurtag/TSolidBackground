@@ -45,8 +45,6 @@ You can press the **[R]** button to switch between red and blue.
 * If your window doesn't show up on the Move/Resize dropdown menu, you can try editing the excluded windows list using the **Edit** button in the advanced options menu.  
 When this option is enabled, TSolidBackground Move/Resize menu doesn't list all windows without titles and all windows that are listed in the above menu.  
 
-* The **Client** values on the Move/Resize menu are for windows that have a caption bar and have either resizable or unresizable borders.  
-
 * Always on top mode can be used for multiple windows at the same time.  
 Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  
 
@@ -70,6 +68,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 
 --------------------  
 ## Changelog
+
+* **Version 2.9.1**  
+
+Fixed all client size calculations.
 
 * **Version 2.9.1**  
 
@@ -274,3 +276,5 @@ From https://autohotkey.com/boards/viewtopic.php?&t=30079
 GetMonitorIndexFromWindow() by Shinywong.  
 From https://autohotkey.com/board/topic/69464-how-to-determine-a-window-is-in-which-monitor/?p=440355  
 
+GetWindowInfo by "just me"
+From https://autohotkey.com/board/topic/69254-func-api-getwindowinfo-ahk-l/

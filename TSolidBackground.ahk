@@ -20,7 +20,7 @@ TD: Named presets for move/resize menu.
 
 OnExit, Exited
 Arrs := Object()
-Version := "v2.9.1"
+Version := "v2.9.2"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -198,7 +198,7 @@ Return
     GetMonitorIndexFromWindow(WinExist("A"))
     mHeight := monitorBottom-monitorTop
     mWidth := monitorRight-monitorLeft
-    WinMove, A,, (mWidth-WWWidth)/2+monitorLeft, (mHeight-HHHeight)/2+monitorTop-12        ;-12 For new Win10 borders and stuff.
+    WinMove, A,, (mWidth-WWWidth)/2+monitorLeft, (mHeight-HHHeight)/2+monitorTop
 Return
 
 !F::
@@ -319,18 +319,23 @@ TSolidBackground() {
     GetMonitorIndexFromWindow(Activewin)
     mHeight := monitorBottom-monitorTop
     mWidth := monitorRight-monitorLeft
-    SysGet, Border_Size, 32
-    SysGet, Border_Size2, 33
-    SysGet, Caption_Size, 4
+
+    WI := 0
+    WI := Object()
+    WI := API_GetWindowInfo(Activewin)
+    Border_SizeW := WI.Client.Left - WI.Window.Left
+    Border_SizeH := WI.Window.Bottom - WI.Client.Bottom
+    Caption_Size := WI.Client.Top - WI.Window.Top - Border_SizeH
+    
     bg1FY := wY
     bg2FX := wX
     bg3SY := wY+HHeight
     bg4SX := wX+WWidth
 
-    bg1FY += Border_Size2+Caption_Size
-    bg2FX += Border_Size
-    bg3SY -= Border_Size2
-    bg4SX -= Border_Size
+    bg1FY += Border_SizeH+Caption_Size
+    bg2FX += Border_SizeW
+    bg3SY -= Border_SizeH
+    bg4SX -= Border_SizeW
     
     WinGet, WinExStyle, ExStyle, ahk_id %Activewin%
     WinGet, WinStyle, Style, ahk_id %Activewin%
@@ -340,13 +345,6 @@ TSolidBackground() {
             WinSet, AlwaysOnTop, off, ahk_id %Activewin%
             TrayTip, Window [%currTitle%], Always on top status: OFF
         }
-    }
-
-    if ((WinStyle & 0x40000) == 0) {        ;Unresizable windows have smaller borders
-        bg1FY -= 5
-        bg2FX -= 5
-        bg3SY += 5
-        bg4SX += 5
     }
 
     bg1FY -= %CustomHeightTop%
@@ -822,9 +820,15 @@ ShowResizer() {
     WinGetPos, resX, resY, resW, resH, TSolidBackground Move/Resize Window
     Gui, resizer: Destroy
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    SysGet, Border_Size, 32
-    SysGet, Border_Size2, 33
-    SysGet, Caption_Size, 4
+    ;SysGet, Border_SizeW, 32
+    ;SysGet, Border_SizeH, 33
+    ;SysGet, Caption_Size, 4
+    WI := 0
+    WI := Object()
+    WI := API_GetWindowInfo(TBResized)
+    Border_SizeW := WI.Client.Left - WI.Window.Left
+    Border_SizeH := WI.Window.Bottom - WI.Client.Bottom
+    Caption_Size := WI.Client.Top - WI.Window.Top - Border_SizeH
     Wnew := Wofwin
     Hnew := Hofwin
     Xnew := Xofwin
@@ -837,13 +841,9 @@ ShowResizer() {
         Xnew := 200
         Ynew := 200
     }
-    HclientDif := 2*Border_Size2 + Caption_Size
-    WclientDif := 2*Border_Size
+    HclientDif := 2*Border_SizeH + Caption_Size
+    WclientDif := 2*Border_SizeW
     WinGet, ResizedStyle, Style, ahk_id %TBResized%
-    if ((ResizedStyle & 0x40000) == 0) {        ;Unresizable windows have smaller borders
-        HclientDif := HclientDif - 10
-        WclientDif := WclientDif - 10
-    }
     Hclient := Hofwin - HclientDif
     Wclient := Wofwin - WclientDif
     Gui, resizer: +AlwaysOnTop +Delimiter`n
@@ -1405,17 +1405,19 @@ Hooker() {
         }
     } else {
         if ((TwoWindowExStyle & 0x8) && (CurrActiveTitle != TitleTwo)) {
-            if (protectVNR && (CurrActiveTitle != "Kagami")) {
+            if ((protectVNR && (CurrActiveTitle != "Kagami")) && (InStr(CurrActiveTitle, "TSolidBackground BG") == 0)) {
                 WinSet, AlwaysOnTop, off, %TitleTwo%
                 WinMinimize, %TitleTwo%
             }
         }
+        /*
         IfWinNotExist, %TitleOne%
         {
             if (TwoisNotMin != -1) {
                 WinMinimize, %TitleTwo%
             }
         }
+        */
     }
     if (Hooking) {
         SetTimer, Hooker, 150
@@ -1494,11 +1496,11 @@ Return
 
 SaveDummy:
     WinGetPos, DummyX, DummyY, DummyW, DummyH, A
-    SysGet, Border_Size, 32
-    SysGet, Border_Size2, 33
+    SysGet, Border_SizeW, 32
+    SysGet, Border_SizeH, 33
     SysGet, Caption_Size, 4
-    DummyH := DummyH - 2*Border_Size2 - Caption_Size
-    DummyW := DummyW - 2*Border_Size
+    DummyH := DummyH - 2*Border_SizeH - Caption_Size
+    DummyW := DummyW - 2*Border_SizeW
     IfNotExist, TSolidBackground.ini 
     {
         CreateSaveini(1)
@@ -1742,7 +1744,9 @@ ExitApp
 ;---Pre-made functions & libraries---
 
 ;GetMonitorIndexFromWindow() by Shinywong.
+;Used to get the width/height of the current monitor.
 ;From https://autohotkey.com/board/topic/69464-how-to-determine-a-window-is-in-which-monitor/?p=440355
+;-------------------------------------------------------------------------------
 GetMonitorIndexFromWindow(windowHandle) {
     Global
     monitorIndex := 1
@@ -1774,6 +1778,9 @@ GetMonitorIndexFromWindow(windowHandle) {
     }
     Return
 }
+
+;-------------------------------------------------------------------------------
+
 
 ;AddTooltip by Various authors
 ;From https://autohotkey.com/boards/viewtopic.php?&t=30079
@@ -1989,3 +1996,83 @@ AddTooltip(p1,p2:="",p3="")
     ;-- Return the handle to the tooltip control
     Return hTT
     }
+;-------------------------------------------------------------------------------
+
+
+
+;GetWindowInfo by "just me"
+;Used to calculate window client border sizes.
+;From https://autohotkey.com/board/topic/69254-func-api-getwindowinfo-ahk-l/
+
+; ================================================================================================================================
+; Function:         API_GetWindowInfo() 
+;                   Get an object containing the values of the WINDOWINFO structure from DllCall("GetWindowInfo")
+; AHK version:      L 1.1.00.00 (U 32)
+; Language:         English
+; Tested on:        Win XPSP3, Win VistaSP2 (32 Bit)
+; Version:          0.0.00.01/2011-07-17/just me
+; Parameters:       HWND        - HWND of a window or control
+; Return values:    On success  - Object containing structure's values (see Remarks)
+;                   On failure  - False,
+;                                 ErrorLevel = 1 -> Invalid HWND
+;                                 ErrorLevel = 2 -> DllCall("GetWindowInfo") caused an error
+; Remarks:          The returned object contains all keys defined in WINDOWINFO exept "Size".
+;                   The keys "Window" and "Client" contain objects with keynames defined in [5].
+;                   For more details see http://msdn.microsoft.com/en-us/library/ms633516%28VS.85%29.aspx and
+;                   http://msdn.microsoft.com/en-us/library/ms632610%28VS.85%29.aspx
+; ================================================================================================================================
+API_GetWindowInfo(HWND) {
+   ; [1] = Offset, [2] = Length, [3] = Occurrences, [4] = Type, [5] = Key array
+   Static WINDOWINFO := { Size: [0, 4, 1, "UInt", ""]
+                        , Window: [4, 4, 4, "Int", ["Left", "Top", "Right", "Bottom"]]
+                        , Client: [20, 4, 4, "Int", ["Left", "Top", "Right", "Bottom"]]
+                        , Styles: [36, 4, 1, "UInt", ""]
+                        , ExStyles: [40, 4, 1, "UInt", ""]
+                        , Status: [44, 4, 1, "UInt", ""]
+                        , XBorders: [48, 4, 1, "UInt", ""]
+                        , YBorders: [52, 4, 1, "UInt", ""]
+                        , Type: [56, 2, 1, "UShort", ""]
+                        , Version: [58, 2, 1, "UShort", ""] }
+   Static WI_Size := 0
+   If (WI_Size = 0) {
+      For Key, Value In WINDOWINFO
+         WI_Size += (Value[2] * Value[3])
+   }
+   If !DllCall("User32.dll\IsWindow", "Ptr", HWND) {
+      ErrorLevel := 1
+      Return False
+   }
+   struct_WI := ""
+   NumPut(VarSetCapacity(struct_WI, WI_Size, 0), struct_WI, 0, "UInt")
+   If !(DllCall("User32.dll\GetWindowInfo", "Ptr", HWND, "Ptr", &struct_WI)) {
+      ErrorLevel := 2
+      Return False
+   }
+   obj_WI := {}
+   For Key, Value In WINDOWINFO {
+      If (Key = "Size")
+         Continue
+      Offset := Value[1]
+      If (Value[3] > 1) { ; more than one occurrence
+         If IsObject(Value[5]) { ; use keys defined in Value[5] to store the values in
+            obj_ := {}
+            Loop, % Value[3] {
+               obj_.Insert(Value[5][A_Index], NumGet(struct_WI, Offset, Value[4]))
+               Offset += Value[2]
+            }
+            obj_WI[Key] := obj_
+         } Else { ; use simple array to store the values in
+            arr_ := []
+            Loop, % Value[3] {
+               arr_[A_Index] := NumGet(struct_WI, Offset, Value[4])
+               Offset += Value[2]
+            }
+            obj_WI[Key] := arr_
+         }
+      } Else { ; just one item
+         obj_WI[Key] := NumGet(struct_WI, Offset, Value[4])
+      }
+   }
+   Return obj_WI
+}
+; ================================================================================================================================
