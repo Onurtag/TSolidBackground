@@ -20,7 +20,7 @@ TD: Named presets for move/resize menu.
 
 OnExit, Exited
 Arrs := Object()
-Version := "v2.9.2"
+Version := "v2.9.3"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -441,12 +441,12 @@ Return
 
 BackGui:          ;Not planning to make the gui tabbed etc yet.
     WinGetPos, aX, aY, aW, aH, A
-    Gui, cheat: +ToolWindow +AlwaysOnTop
+    Gui, cheat: +AlwaysOnTop
     Gui, cheat: Color, 292929
-    Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground
+    Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Advanced Features
     Gui, Destroy
     ShowNewMenu(aX,aY)
-    SetTimer, KillCheat, 250
+    SetTimer, KillCheat, 50
 Return
 
 KillCheat:
@@ -820,9 +820,6 @@ ShowResizer() {
     WinGetPos, resX, resY, resW, resH, TSolidBackground Move/Resize Window
     Gui, resizer: Destroy
     WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
-    ;SysGet, Border_SizeW, 32
-    ;SysGet, Border_SizeH, 33
-    ;SysGet, Caption_Size, 4
     WI := 0
     WI := Object()
     WI := API_GetWindowInfo(TBResized)
@@ -1082,7 +1079,12 @@ DropDownSelected:
             TBResized := WinIDAll[VarIndex]
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
         }
+        WinGetPos, aX, aY, aW, aH, A
+        Gui, cheat: +AlwaysOnTop
+        Gui, cheat: Color, 292929
+        Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Move/Resize Window
         ShowResizer()
+        SetTimer, KillCheat, 50
     }
 Return
 
@@ -1298,7 +1300,12 @@ Savepos(posnr) {
 }
 
 ReloadDropDown:
+    WinGetPos, aX, aY, aW, aH, A
+    Gui, cheat: +AlwaysOnTop
+    Gui, cheat: Color, 292929
+    Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Move/Resize Window
     ShowResizer()
+    SetTimer, KillCheat, 50
 Return
 
 CopyTitle:
@@ -1405,7 +1412,7 @@ Hooker() {
         }
     } else {
         if ((TwoWindowExStyle & 0x8) && (CurrActiveTitle != TitleTwo)) {
-            if ((protectVNR && (CurrActiveTitle != "Kagami")) && (InStr(CurrActiveTitle, "TSolidBackground BG") == 0)) {
+            if ((protectVNR && (CurrActiveTitle != "Kagami")) && (InStr(CurrActiveTitle, "TSolidBackground BG") == 0) && (CurrActiveTitle != "")) {
                 WinSet, AlwaysOnTop, off, %TitleTwo%
                 WinMinimize, %TitleTwo%
             }
@@ -2001,7 +2008,7 @@ AddTooltip(p1,p2:="",p3="")
 
 
 ;GetWindowInfo by "just me"
-;Used to calculate window client border sizes.
+;Used to calculate window border sizes per window.
 ;From https://autohotkey.com/board/topic/69254-func-api-getwindowinfo-ahk-l/
 
 ; ================================================================================================================================

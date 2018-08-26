@@ -69,7 +69,11 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ## Changelog
 
-* **Version 2.9.1**  
+* **Version 2.9.3**  
+
+Gui optimizations.
+
+* **Version 2.9.2**  
 
 Fixed all client size calculations.
 
