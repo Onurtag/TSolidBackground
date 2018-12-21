@@ -69,6 +69,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ## Changelog
 
+* **Version 2.9.4**  
+
+Test fix for higher dpi scaling settings.
+
 * **Version 2.9.3**  
 
 Gui optimizations.
