@@ -72,6 +72,8 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 * **Version 2.9.4**  
 
 Test fix for higher dpi scaling settings.
+Fix for file encoding problems.
+Fixed that 1 pixel that was visible on top.
 
 * **Version 2.9.3**  
 
