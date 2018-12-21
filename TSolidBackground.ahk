@@ -15,12 +15,14 @@ They all work well and it would be a waste of time (also I don't care enough too
 If you have any good suggestions, feel free to contact me or open an issue.
 
 TD: Named presets for move/resize menu.
-*/
 
+TEMP HACKS: [CHECK1]
+
+*/
 
 OnExit, Exited
 Arrs := Object()
-Version := "v2.9.3"
+Version := "v2.9.4"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -39,7 +41,7 @@ protectVNR := 1
 preventSend := 1
 excludeSystemWindows := 1
 Hooking := 0
-TitleOne := "Main Window Title"
+TitleOne := "Main Window Title (Partial)"
 TitleTwo := "Hooked Window Title"
 Vmove := 5
 Vresize := 5
@@ -55,7 +57,7 @@ excludedTitles := Object("TSolidBackground Advanced Features", ""    ;You can us
 
 SetWinDelay, 0
 SetControlDelay, 0      ;Mostly useless.
-SetBatchLines, 2000
+SetBatchLines, 10000
 
 Menu, Tray, Icon,,, 0
 Menu, Tray, NoStandard
@@ -144,7 +146,7 @@ if (startupWindow) {
     Gui, start: Add, Text,, TSolidBackground %Version%
     Gui, start: Font, s8 c836DFF Bold
     Gui, start: Font, s10 cDCDCCC norm
-    Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [!] means [Alt]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you need to change the hotkeys, want to check for updates `nor just can't understand anything above visit the project page:
+    Gui, start: Add, Text, x18 y42, Current Hotkeys and Options: `n------------------------`nTSolidBackground: %TSolidBackgroundKey% `nAlways On Top: %OnTopKey% `nShow Hide Taskbar: %TaskbarKey% `nCenter Window: %CenterKey% `nAdvanced Features: %OptionsKey% `nSuspend other hotkeys: %SuspendKey%`nTSolidBackground.ini file exists: %Iniexists%`n------------------------ `nOn AutoHotkey [!] means [Alt]. `nIf no hotkeys work on selected window, run TSolidBackground as admin.`n`nIf you have any problems, want to change the hotkeys, want to check for updates `nor just can't understand anything above visit the project page:
     Gui, start: Font, s10 c3257BF underline
     Gui, start: Add, Text, x18 y303 gGotoSite, https://github.com/Onurtag/TSolidBackground
     Gui, start: Font, s10 cBlack norm Bold
@@ -327,6 +329,10 @@ TSolidBackground() {
     Border_SizeH := WI.Window.Bottom - WI.Client.Bottom
     Caption_Size := WI.Client.Top - WI.Window.Top - Border_SizeH
     
+    if (Caption_Size < -7) {   ;[CHECK1] Some bug with the top of the window (1pixel border stays visible on top)
+        Caption_Size++
+    }
+
     bg1FY := wY
     bg2FX := wX
     bg3SY := wY+HHeight
@@ -358,13 +364,13 @@ TSolidBackground() {
     bg4W := monitorRight-bg4SX
     
     Gui, +Disabled -Caption +ToolWindow
-    Gui, bg1: +AlwaysOnTop -Caption +ToolWindow
+    Gui, bg1: +AlwaysOnTop -Caption +ToolWindow -DPIScale
     Gui, bg1: Color, %bgcolor%
-    Gui, bg2: +AlwaysOnTop -Caption +ToolWindow
+    Gui, bg2: +AlwaysOnTop -Caption +ToolWindow -DPIScale
     Gui, bg2: Color, %bgcolor%
-    Gui, bg3: +AlwaysOnTop -Caption +ToolWindow
+    Gui, bg3: +AlwaysOnTop -Caption +ToolWindow -DPIScale
     Gui, bg3: Color, %bgcolor%
-    Gui, bg4: +AlwaysOnTop -Caption +ToolWindow
+    Gui, bg4: +AlwaysOnTop -Caption +ToolWindow -DPIScale
     Gui, bg4: Color, %bgcolor%
     WinSet, Top,, ahk_id %Activewin%
     if (wX < 0) {
@@ -741,6 +747,16 @@ Return
 
 CheckUpdate(notify) {
     Global
+    
+    ;----- TEMP HACK. Checking for updates while the hooker is on crashes the application and deletes the exe.
+    if (Hooking == 1) {
+        Hooking := 0
+        SetTimer, Hooker, Off
+        Menu, Tray, Disable, Stop Window Hooker
+        DrawHUD("Window hooker was disabled.", "", "c836DFF", "s11", "1350")
+    }
+    ;-----
+
     Checking := 1
     updater := ComObjCreate("WinHttp.WinHttpRequest.5.1")
     updater.Open("GET", "https://github.com/Onurtag/TSolidBackground/releases/latest", true)
@@ -1381,6 +1397,7 @@ GetactiveTwo:
 Return
 
 StartHook:
+    Gui, Submit, NoHide
     Hooking := 1
     Gui, hook: Destroy
     Hooker()
@@ -1401,7 +1418,7 @@ Hooker() {
     ;CurrActiveID := WinExist("A")
     ;WinGetTitle, CurrActiveTitle, ahk_id %CurrActiveID%
     WinGetTitle, CurrActiveTitle, A
-    if (CurrActiveTitle == TitleOne) {
+    if (InStr(CurrActiveTitle, TitleOne) > 0) {
         if (TwoisNotMin == -1) {
             WinRestore, %TitleTwo%
         }

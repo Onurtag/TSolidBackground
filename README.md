@@ -1,9 +1,9 @@
 # **TSolidBackground**  
 
-TSolidBackground allows you to immerse in a window completely by creating a solid background and hiding window borders.  
+TSolidBackground allows you to immerse in a window completely by creating a solid overlay over the window borders and around the window.  
 In a different saying, it tries to mimic fullscreen for any window without resizing it.  
 
-At first I made TSolidBackground to stop distracting myself when playing VNs and later added more features that were useful for me.  
+At first, I made TSolidBackground to prevent myself from getting distracted while playing VNs and later added more features that were useful for me.  
 
 **Default Hotkeys:** (All hotkeys and many more options can be changed in the .ini)  
 
