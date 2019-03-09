@@ -75,9 +75,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
-* **Version 2.9.5**  
+* **Version 2.9.6**  
 
-✔ Small gui improvements.  
+✔ Small gui fixes.  
+✔ Fixed the encoding problem of the updater.  
 
 * **Version 2.9.4**  
 

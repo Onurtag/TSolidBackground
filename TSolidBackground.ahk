@@ -31,7 +31,7 @@ TEMP HACKS:
 */
 
 OnExit, Exited
-Version := "v2.9.5"
+Version := "v2.9.6"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -816,11 +816,13 @@ Return
 AutoUpdateNow(NewVersion) {
     DrawHUD("TSolidBackground will now update and restart.`nJust hold on a second...", "", "c27A100", "s13", "120000")
     UrlDownloadToFile, https://github.com/Onurtag/TSolidBackground/releases/download/%NewVersion%/TSolidBackground.exe, TSolidBackground_NEWVER.exe
+    FileEncoding,       ;Batch files don't work on UTF-16
     FileDelete, TSolidBackgroundUpdater.bat
     FileAppend, del TSolidBackground.exe`n, TSolidBackgroundUpdater.bat
     FileAppend, ren TSolidBackground_NEWVER.exe TSolidBackground.exe`n, TSolidBackgroundUpdater.bat
     FileAppend, start TSolidBackground.exe`n, TSolidBackgroundUpdater.bat
     FileAppend, del TSolidBackgroundUpdater.bat`n, TSolidBackgroundUpdater.bat
+    FileEncoding, UTF-16
     Run, TSolidBackgroundUpdater.bat,, Hide
     ExitApp
 }
