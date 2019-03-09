@@ -5,7 +5,7 @@ In a different saying, it tries to mimic fullscreen for any window without resiz
 
 At first, I made TSolidBackground to prevent myself from getting distracted while playing VNs and later added more features that were useful for me.  
 
-**Default Hotkeys:** (All hotkeys and many more options can be changed in the .ini)  
+**Default Hotkeys:** *(All hotkeys and many more options can be changed in the .ini)*  
 
     TSolidBackground hotkey: !T (! represents the Alt key on your keyboard. Read the hotkey guide below.)
     Always On Top: !Y
@@ -15,7 +15,7 @@ At first, I made TSolidBackground to prevent myself from getting distracted whil
     Suspend all other hotkeys: F8
     Default Color: 250000 (hex value without the #)
 
-**If you are planning to use TSolidBackground, you should also read 'Things to Know' below.**  
+**✔ If you are planning to use TSolidBackground, you should also read 'Things to Know' below.**  
 
 ### [Webm Preview](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)  
 ### [Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
@@ -69,11 +69,21 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 --------------------  
 ## Changelog
 
+>**Legend:**  
+>🔁 Change  
+>✔ Fix  
+>➕ Addition  
+>❌ Removal  
+
+* **Version 2.9.5**  
+
+✔ Small gui improvements.  
+
 * **Version 2.9.4**  
 
-Test fix for higher dpi scaling settings.  
-Fix for file encoding problems.  
-Fixed that 1 pixel that was visible on top.  
+✔ Test fix for higher dpi scaling settings.  
+✔ Fix for file encoding problems.  
+✔ Fixed that 1 pixel that was visible on top.  
 
 * **Version 2.9.3**  
 

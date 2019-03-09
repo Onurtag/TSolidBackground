@@ -10,7 +10,7 @@ FileEncoding, UTF-16      ;UCS-2 Little Endian BOM
 
 /*
 TSolidBackground
-AIO Autohotkey script that can make any window pseudo-fullscreen using padding over window borders and background. It can also move/resize windows and make them always on top.
+An AIO Autohotkey script that can make any window pseudo-fullscreen using padding over window borders and background. It can also move/resize windows and make them always on top.
 https://github.com/Onurtag/TSolidBackground
 
 To anyone reading the code,
@@ -19,14 +19,19 @@ They all work well and it would be a waste of time (also I don't care enough too
 
 If you have any good suggestions, feel free to contact me or open an issue.
 
-TD: Named presets for move/resize menu.
-TEMP HACKS: [CHECK1]
+TD: 
+-Fix tab orderings or FULLY REMAKE the gui (Maybe with a tool or a template) https://www.autohotkey.com/boards/viewtopic.php?f=6&t=3851
+-group parts of the ui to make them more clear, or use something like tabs tabs ^^^Related
+-Add named presets for move/resize menu.
+-Rename advanced options to settings
+
+TEMP HACKS: 
+-[CHECK1]
 
 */
 
 OnExit, Exited
-Arrs := Object()
-Version := "v2.9.4"
+Version := "v2.9.5"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -53,6 +58,7 @@ MoveBy := 1
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
+Arrs := Object()
 excludedTitles := Object("TSolidBackground Advanced Features", ""    ;You can use the edit menu under advanced options to add more titles or remove these.
                         ,"TSolidBackground Splash Text", ""
                         ,"TSolidBackground Move/Resize Window", ""
@@ -276,6 +282,7 @@ ShowNewMenu(nmX, nmY) {
     } else {
         Gui, newmenu: Show, w640 h560 x%nmX% y%nmY%, TSolidBackground Advanced Features
     }
+    SetTimer, KillCheat, 30
 }
 
 ~F8::
@@ -363,7 +370,6 @@ TSolidBackground() {
     bg3H := monitorBottom-bg3SY
     bg4W := monitorRight-bg4SX
     
-    Gui, +Disabled -Caption +ToolWindow
     Gui, bg1: +AlwaysOnTop -Caption +ToolWindow -DPIScale
     Gui, bg1: Color, %bgcolor%
     Gui, bg2: +AlwaysOnTop -Caption +ToolWindow -DPIScale
@@ -447,12 +453,11 @@ Return
 
 BackGui:          ;Not planning to make the gui tabbed etc yet.
     WinGetPos, aX, aY, aW, aH, A
-    Gui, cheat: +AlwaysOnTop
     Gui, cheat: Color, 292929
     Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Advanced Features
     Gui, Destroy
     ShowNewMenu(aX,aY)
-    SetTimer, KillCheat, 50
+    ;SetTimer, KillCheat, 30
 Return
 
 KillCheat:
@@ -985,6 +990,7 @@ ShowResizer() {
     } else {
         Gui, resizer: Show, w640 h560, TSolidBackground Move/Resize Window
     }
+    SetTimer, KillCheat, 30
     Gui, newmenu: Destroy
     Refresher()
     Return
@@ -1096,11 +1102,10 @@ DropDownSelected:
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
         }
         WinGetPos, aX, aY, aW, aH, A
-        Gui, cheat: +AlwaysOnTop
         Gui, cheat: Color, 292929
         Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Move/Resize Window
         ShowResizer()
-        SetTimer, KillCheat, 50
+        ;SetTimer, KillCheat, 30
     }
 Return
 
@@ -1317,11 +1322,10 @@ Savepos(posnr) {
 
 ReloadDropDown:
     WinGetPos, aX, aY, aW, aH, A
-    Gui, cheat: +AlwaysOnTop
     Gui, cheat: Color, 292929
     Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Move/Resize Window
     ShowResizer()
-    SetTimer, KillCheat, 50
+    ;SetTimer, KillCheat, 30
 Return
 
 CopyTitle:
@@ -1555,7 +1559,8 @@ MouseMover() {
     Gui, mmover: Add, Button, x174 y515 w290 h24, Close
     Gui, mmover: Add, Button, x10 y10 w44 h24 gmmoverGuiEscape, Back
     Gui, mmover: Font, s10 cDCDCCC norm
-    Gui, mmover: Add, Checkbox, x210 y322 Checked%preventSend% vpreventSend gSetnow, Also prevent hotkeys from working
+    Gui, mmover: Add, Checkbox, x210 y322 Checked%preventSend% hwndhPreventSending vpreventSend gSetnow, Also prevent hotkeys from working
+    AddTooltip(hPreventSending, "Prevents Left Arrow from moving left etc.")
     Gui, mmover: Add, Text, x245 y291, Move by:
     Gui, mmover: Font, s13
     Gui, mmover: Add, Text, x220 y147, When this window is open,
