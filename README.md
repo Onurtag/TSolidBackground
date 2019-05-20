@@ -20,7 +20,7 @@ At first, I made TSolidBackground to prevent myself from getting distracted whil
 ### [Webm Preview](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)  
 ### [Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
 
-*Compiled using latest Ahk2Exe. The exe is not compressed so you can check the source code easily.  
+*Compiled using the latest Ahk2Exe. The file is not compressed so you can check the source code easily.  
 
 --------------------  
 ## Things To Know  

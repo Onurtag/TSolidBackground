@@ -1570,7 +1570,7 @@ MouseMover() {
     AddTooltip(hPreventSending, "Prevents Left Arrow from moving left etc.")
     Gui, mmover: Add, Text, x245 y291, Move by:
     Gui, mmover: Font, s13
-    Gui, mmover: Add, Text, x220 y147, When this window is open,
+    Gui, mmover: Add, Text, x220 y147, While this window is open,
     Gui, mmover: Add, Text, x140 y177, Use arrow keys to move the mouse pixel by pixel.
     Gui, mmover: Add, Text, x132 y207, Press [Numpad 1] or [Numpad End] for left click `nPress [Numpad 2] or [Numpad Down] for right click `nPress [Numpad 3] or [Numpad PgDn] for middle click.
     Gui, mmover: Font, s10 c836DFF norm Underline
