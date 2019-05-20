@@ -4,7 +4,7 @@ SendMode Input
 SetBatchLines, 10000
 SetWinDelay, 0
 SetControlDelay, 0        ;Mostly useless.
-FileEncoding, UTF-16      ;UCS-2 Little Endian BOM
+FileEncoding, UTF-16      ;Use UCS-2 Little Endian BOM for the ini, but not for the .bat file.
 
 ;#Warn, All, StdOut
 
@@ -22,8 +22,9 @@ If you have any good suggestions, feel free to contact me or open an issue.
 TD: 
 -Fix tab orderings or FULLY REMAKE the gui (Maybe with a tool or a template) https://www.autohotkey.com/boards/viewtopic.php?f=6&t=3851
 -group parts of the ui to make them more clear, or use something like tabs tabs ^^^Related
--Add named presets for move/resize menu.
 -Rename advanced options to settings
+-stacking traytip or remove it maybe
+-Add named presets for move/resize menu. Maybe for the custom tsb sizes as well. Auto or manual. 
 
 TEMP HACKS: 
 -[CHECK1]
@@ -31,7 +32,7 @@ TEMP HACKS:
 */
 
 OnExit, Exited
-Version := "v2.9.6"
+Version := "v2.9.7"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -194,6 +195,10 @@ Return
         if (WinExist("A") != Activewin) {
             DrawHUD("Got a new window for TSolidBackground.", "", "c836DFF", "s11", "1350")
             Activewin := WinExist("A")
+        }
+        WinGetTitle, Activewintitle, ahk_id %Activewin%
+        if (Hooking && (Activewintitle == TitleOne)) {
+            Activewin := WinExist(TitleTwo)
         }
         TSolidBackground()
     } else {
@@ -754,7 +759,7 @@ CheckUpdate(notify) {
     Global
     
     ;----- TEMP HACK. Checking for updates while the hooker is on crashes the application and deletes the exe.
-    if (Hooking == 1) {
+    if (Hooking) {
         Hooking := 0
         SetTimer, Hooker, Off
         Menu, Tray, Disable, Stop Window Hooker
@@ -1358,7 +1363,7 @@ ShowHooker() {
     Gui, hook: Add, Edit, x234 y151 w170 h20 vTitleTwo, %TitleTwo%
     Gui, hook: Add, Button, x421 y109 h23 gGetactiveOne, Get last active window
     Gui, hook: Add, Button, x421 y149 h23 gGetactiveTwo, Get last active window
-    if (Hooking == 0) {
+    if (!Hooking) {
         Gui, hook: Add, Button, x237 y192 w164 h66 gStartHook, Start Hook
     } else {
         Gui, hook: Add, Button, x237 y192 w164 h66 gStopHook, Stop Hook

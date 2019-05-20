@@ -71,9 +71,13 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 
 >**Legend:**  
 >🔁 Change  
->✔ Fix  
+>✔ Fix/Improvement  
 >➕ Addition  
 >❌ Removal  
+
+* **Version 2.9.7**  
+
+✔ Small window hooker improvements.  
 
 * **Version 2.9.6**  
 
