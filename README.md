@@ -15,7 +15,7 @@ At first, I made TSolidBackground to prevent myself from getting distracted whil
     Suspend all other hotkeys: F8
     Default Color: 250000 (hex value without the #)
 
-**✔ If you are planning to use TSolidBackground, you should also read 'Things to Know' below.**  
+**✅ If you are planning to use TSolidBackground, you should also read 'Things to Know' below.**  
 
 ### [Webm Preview](https://raw.githubusercontent.com/Onurtag/TSolidBackground/gh-pages/Preview/TSolidBackground%20Preview.webm)  
 ### [Get latest relese*](https://github.com/Onurtag/TSolidBackground/releases)  
@@ -71,24 +71,29 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 
 >**Legend:**  
 >🔁 Change  
->✔ Fix/Improvement  
+>✅ Fix/Improvement  
 >➕ Addition  
 >❌ Removal  
 
+* **Version 2.9.8**  
+
+➕ Added a "TSB this window" button into the Move/Resize menu.  
+❌ Disabled the "Got a new window to move/resize" and "Got a new window for tsolidbackground" popups  
+
 * **Version 2.9.7**  
 
-✔ Small window hooker improvements.  
+✅ Small window hooker improvements.  
 
 * **Version 2.9.6**  
 
-✔ Small gui fixes.  
-✔ Fixed the encoding problem of the updater.  
+✅ Small gui fixes.  
+✅ Fixed the encoding problem of the updater.  
 
 * **Version 2.9.4**  
 
-✔ Test fix for higher dpi scaling settings.  
-✔ Fix for file encoding problems.  
-✔ Fixed that 1 pixel that was visible on top.  
+✅ Test fix for higher dpi scaling settings.  
+✅ Fix for file encoding problems.  
+✅ Fixed that 1 pixel that was visible on top.  
 
 * **Version 2.9.3**  
 

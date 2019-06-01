@@ -20,19 +20,20 @@ They all work well and it would be a waste of time (also I don't care enough too
 If you have any good suggestions, feel free to contact me or open an issue.
 
 TD: 
--Fix tab orderings or FULLY REMAKE the gui (Maybe with a tool or a template) https://www.autohotkey.com/boards/viewtopic.php?f=6&t=3851
--group parts of the ui to make them more clear, or use something like tabs tabs ^^^Related
--Rename advanced options to settings
--stacking traytip or remove it maybe
--Add named presets for move/resize menu. Maybe for the custom tsb sizes as well. Auto or manual. 
+-Fix GUI tab orderings or FULLY REMAKE the gui (Maybe with a tool or a template) https://www.autohotkey.com/boards/viewtopic.php?f=6&t=3851  
+-group parts of the ui to make them more clear, or use something like tabs tabs ^^^Related  
+-Rename advanced options to settings  
+-stacking traytip or remove it maybe. Notifications are kind of useless. Traytip is visible over all windows so it has that advantage.  
+-Add named presets for move/resize menu. Maybe for the custom tsb sizes as well.  
+-"Minimized" instead of -32000 x and y  
 
-TEMP HACKS: 
--[CHECK1]
+TEMP HACKS:   
+-[CHECK1]  
 
 */
 
 OnExit, Exited
-Version := "v2.9.7"
+Version := "v2.9.8"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -187,23 +188,7 @@ Return
 Return
 
 !T::
-    if (Activewin == "") {
-        Activewin := WinExist("A")
-    }
-    Toggle := !Toggle
-    if (Toggle == "1") {
-        if (WinExist("A") != Activewin) {
-            DrawHUD("Got a new window for TSolidBackground.", "", "c836DFF", "s11", "1350")
-            Activewin := WinExist("A")
-        }
-        WinGetTitle, Activewintitle, ahk_id %Activewin%
-        if (Hooking && (Activewintitle == TitleOne)) {
-            Activewin := WinExist(TitleTwo)
-        }
-        TSolidBackground()
-    } else {
-        DestroyTSolidBackground()
-    }
+    RunTSB()
 Return
 
 !G::
@@ -251,7 +236,7 @@ Return
         if ((protectVNR) && (titleTBResized == "Kagami")) {
             TBResized := ""
         } else {
-            DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
+            ;DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
         }
     }
@@ -326,6 +311,32 @@ Abouted:
     Gui, about: Add, Button, x118 y136 w64 h36, Ok
     Gui, about: Show, w300 h192, About TSolidBackground
 Return
+
+RunTSB(windowtoTSB := "") {
+    Global
+    if (Activewin == "") {
+        Activewin := WinExist("A")
+    }
+    Toggle := !Toggle
+    if (Toggle == "1") {
+        old_Activewin := Activewin
+        if (windowtoTSB == "") {
+            Activewin := WinExist("A")
+            WinGetTitle, Activewintitle, ahk_id %Activewin%
+            if (Hooking && (Activewintitle == TitleOne)) {
+                Activewin := WinExist(TitleTwo)
+            }
+        } else {
+            Activewin := windowtoTSB
+        }
+        if (old_Activewin != Activewin) {
+            ;DrawHUD("Got a new window for TSolidBackground.", "", "c836DFF", "s11", "1350")
+        }
+        TSolidBackground()
+    } else {
+        DestroyTSolidBackground()
+    }
+}
 
 TSolidBackground() {
     Global
@@ -948,6 +959,8 @@ ShowResizer() {
         Gui, resizer: Font, s9.5
         Gui, resizer: Add, Button, x337 y96 w21 h19 hwndhCloseWin gCloseWin, ❌      ;Cross ❌
         AddTooltip(hCloseWin, "Close Window")
+        Gui, resizer: Add, Button, x285 y120 w33 h21 hwndhTSBWin gTSBWin, TSB
+        AddTooltip(hTSBWin, "Toggle TSolidBackground on This Window")
         Gui, resizer: Font, s9
         Gui, resizer: Add, Button, x350 y147 w15 h15 hwndhOrigxy gOrigxy, R
         AddTooltip(hOrigxy, "Reset Window Position")
@@ -1104,7 +1117,7 @@ DropDownSelected:
     VarIndex := DropDownCurrent - 1
     if (VarIndex != 0) {
         if (TBResized != WinIDAll[VarIndex]) {
-            DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
+            ;DrawHUD("Got a new window to move/resize.", "y160", "c836DFF", "s11", "1350")
             TBResized := WinIDAll[VarIndex]
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
         }
@@ -1228,6 +1241,11 @@ MaxWin:
     } else {
         WinMaximize, ahk_id %TBResized%
     }
+Return
+
+TSBWin:
+    Gui, Submit, NoHide
+    RunTSB(TBResized)
 Return
 
 CloseWin:
