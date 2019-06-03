@@ -26,6 +26,7 @@ At first, I made TSolidBackground to prevent myself from getting distracted whil
 ## Things To Know  
 
 * If no hotkeys work on the active/selected window, run TSolidBackground as admin.  
+If they still don't work try enabling Keyboard Hook on the Advanced Options menu.  
 
 * TSolidBackground.ini file will be created when you create a .ini using the Advanced Options (default **Alt+U** key).  
 After creating the .ini file you can edit it using a text editor to change the hotkeys and many more options.  
@@ -74,6 +75,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >✅ Fix/Improvement  
 >➕ Addition  
 >❌ Removal  
+
+* **Version 2.9.9**  
+
+➕ Added an option to enable Keyboard Hook for when the hotkeys don't work on a window.  
 
 * **Version 2.9.8**  
 

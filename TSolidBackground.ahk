@@ -26,6 +26,7 @@ TD:
 -stacking traytip or remove it maybe. Notifications are kind of useless. Traytip is visible over all windows so it has that advantage.  
 -Add named presets for move/resize menu. Maybe for the custom tsb sizes as well.  
 -"Minimized" instead of -32000 x and y  
+-hotkeys should be manually added to start labels instead.
 
 TEMP HACKS:   
 -[CHECK1]  
@@ -33,7 +34,7 @@ TEMP HACKS:
 */
 
 OnExit, Exited
-Version := "v2.9.8"
+Version := "v2.9.9"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -60,6 +61,7 @@ MoveBy := 1
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
+useKeyboardHook := 0
 Arrs := Object()
 excludedTitles := Object("TSolidBackground Advanced Features", ""    ;You can use the edit menu under advanced options to add more titles or remove these.
                         ,"TSolidBackground Splash Text", ""
@@ -106,6 +108,7 @@ IfExist, TSolidBackground.ini
     Readini(startupWindow, "Settings", "Enable Startup Window")
     Readini(excludeSystemWindows, "Settings", "Exclude system windows from dropdown")
     Readini(CheckForUpdates, "Settings", "Check for Updates on Startup")
+    Readini(useKeyboardHook, "Settings", "Use Keyboard Hook")
     Readini(TitleOne, "Settings", "Hooker Main Window")
     Readini(TitleTwo, "Settings", "Hooker Hooked Window")
     Readini(Debug, "Settings", "Debug")
@@ -145,6 +148,14 @@ IfExist, TSolidBackground.ini
             Hotkey, %SuspendKey%, F8
         }
         Hotkey, F8, Off
+    }
+    If (useKeyboardHook == 1) {
+        Hotkey, $%TSolidBackgroundKey%
+        Hotkey, $%OnTopKey%
+        Hotkey, $%CenterKey%
+        Hotkey, $%TaskbarKey%
+        Hotkey, $%OptionsKey%
+        Hotkey, $%SuspendKey%
     }
 }
 
@@ -535,7 +546,8 @@ ShowOptions() {
     Gui, options: Add, Checkbox, x152 y280 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
     Gui, options: Add, Checkbox, x152 y302 Checked%excludeSystemWindows% vexcludeSystemWindows gSetnow, Exclude specific windows from Move/Resize dropdown menu.
     Gui, options: Add, Checkbox, x152 y324 Checked%startupWindow% vstartupWindow gSetnow, Show info window on startup
-    Gui, options: Add, Checkbox, x152 y346 Checked%CheckForUpdates% vCheckForUpdates gSetnow, Check for updates on startup (Save to ini required)
+    Gui, options: Add, Checkbox, x152 y346 Checked%CheckForUpdates% vCheckForUpdates gSetSaveini, Check for updates on startup (Save to ini required)
+    Gui, options: Add, Checkbox, x152 y368 Checked%useKeyboardHook% vuseKeyboardHook gSetKBhook, Use Keyboard Hook to force hotkeys to work. (Save to ini && restart required.)
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
     if ((optX == "") || (optX == -32000)) {
         Gui, options: Show, w640 h560, TSolidBackground Advanced Options
@@ -657,6 +669,21 @@ Return
 
 Setnow:
     Gui, Submit, NoHide
+Return
+
+SetKBhook:
+    Gui, Submit, NoHide
+    CreateSaveini(1)
+    MsgBox, 4097, TSolidBackground, Restarting TSolidBackground to apply the setting.
+    IfMsgBox, OK 
+    {
+        Reload
+    }
+Return
+
+SetSaveini:
+    Gui, Submit, NoHide
+    CreateSaveini(1)
 Return
 
 Resetcwh:
@@ -1245,7 +1272,9 @@ Return
 
 TSBWin:
     Gui, Submit, NoHide
-    RunTSB(TBResized)
+    if (TBResized) {
+        RunTSB(TBResized)  
+    }
 Return
 
 CloseWin:
@@ -1721,7 +1750,9 @@ CreateSaveini(showit) {
     if ((Iniexists == "No") && (CheckForUpdates == 0)) {
         MsgBox, 4100, TSolidBackground, Would you like to automatically check for updates on startup?
         IfMsgBox, Yes
+        {
             CheckForUpdates := 1
+        }
     }
     ;Try to keep the ini in order.
     IfNotExist, TSolidBackground.ini
@@ -1755,6 +1786,7 @@ CreateSaveini(showit) {
     Writeini(startupWindow, "Settings", "Enable Startup Window")
     Writeini(excludeSystemWindows, "Settings", "Exclude system windows from dropdown")
     Writeini(CheckForUpdates, "Settings", "Check for Updates on Startup")
+    Writeini(useKeyboardHook, "Settings", "Use Keyboard Hook")
     Writeini(TitleOne, "Settings", "Hooker Main Window")
     Writeini(TitleTwo, "Settings", "Hooker Hooked Window")
     Writeini(Debug, "Settings", "Debug")
