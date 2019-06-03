@@ -38,16 +38,16 @@ You can also quickly edit the .ini by using the "Edit TSolidBackground.ini" butt
 
 * You have to select the window (make it active) before using most hotkeys.  
 
-* You can change the background color using the Advanced Options menu in Advanced Features menu (default hotkey: Alt+U).  
+* You can change the background color using the Advanced Options menu in the Advanced Features menu (default hotkey: Alt+U).  
 You can press the **[R]** button to switch between red and blue.  
 
-* When you are on the Move/Resize Window menu you can use the Advanced Features (default: Alt+U) hotkey to get a new window to move/resize.  
+* When you are on the Move/Resize Window menu, you can use the Advanced Features (default: Alt+U) hotkey to get a new window to move/resize.  
 
-* If your window doesn't show up on the Move/Resize dropdown menu, you can try editing the excluded windows list using the **Edit** button in the advanced options menu.  
-When this option is enabled, TSolidBackground Move/Resize menu doesn't list all windows without titles and all windows that are listed in the above menu.  
+* If your window doesn't show up on the Move/Resize dropdown menu, you can try editing the excluded windows list using the **Edit** button in the Advanced Options menu.  
+When this option is enabled, the TSolidBackground Move/Resize menu dropdown will not list all the windows that don't have a title in addition to all the windows that are listed in the above menu.  
 
 * Always on top mode can be used for multiple windows at the same time.  
-Exiting or reloading using the notification icon (right click - exit) will fix your windows if you left them in always on top mode.  
+Exiting or reloading in any way like using the notification icon menu (right click - exit) will fix your windows if you left them in the always on top mode.  
 
 * Using the TSolidBackground function will disable always on top if the selected window is always on top.  
 You can use the always on top hotkey afterwards if you really want the window on top.  
@@ -55,7 +55,7 @@ You can use the always on top hotkey afterwards if you really want the window on
 * Experimental window hooking currently works like this:  
 After Hooking Main Window(or browser tab) to the Hooked window, the hooked window will stay always on top when that tab/window is currently active. When you change tabs/go to a different window it will minimize and when you go back it will be on top again. You can also stop the window hooker using the tray icon menu.  
 
-* You can use [this script](https://pastebin.com/DdTkfjdM) to make a windows transparent or clickthrough.
+* You can use [this script](https://pastebin.com/DdTkfjdM) to make a window transparent or clickthrough.  
 
 --------------------  
 **Known Issues:**  

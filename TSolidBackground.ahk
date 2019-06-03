@@ -150,16 +150,22 @@ IfExist, TSolidBackground.ini
         Hotkey, F8, Off
     }
     If (useKeyboardHook == 1) {
-        Hotkey, $%TSolidBackgroundKey%
-        Hotkey, $%OnTopKey%
-        Hotkey, $%CenterKey%
-        Hotkey, $%TaskbarKey%
-        Hotkey, $%OptionsKey%
-        Hotkey, $%SuspendKey%
+        if (TSolidBackgroundKey != "")
+            Hotkey, $%TSolidBackgroundKey%
+        if (OnTopKey != "!Y")
+            Hotkey, $%OnTopKey%
+        if (CenterKey != "")
+            Hotkey, $%CenterKey%
+        if (TaskbarKey != "")
+            Hotkey, $%TaskbarKey%
+        if (OptionsKey != "")
+            Hotkey, $%OptionsKey%
+        if (SuspendKey != "")
+            Hotkey, $%SuspendKey%
     }
 }
 
-if (startupWindow) {
+if (startupWindow == 1) {
     Gui, start: Color, 292929
     Gui, start: Font, s14 c836DFF Bold, Segoe UI
     Gui, start: Add, Text,, TSolidBackground %Version%
@@ -173,7 +179,7 @@ if (startupWindow) {
     Gui, start: Show, w550 h393, TSolidBackground Startup
 }
 
-if (CheckForUpdates) {
+if (CheckForUpdates == 1) {
     CheckUpdate(0)
 }
 Return
@@ -1102,7 +1108,7 @@ GetAllWindows() {
         WinGetTitle, LoopTitle, ahk_id %currentID%
         ;StringReplace, LoopTitle, LoopTitle,`n,,All            ;If window titles had new lines.
         if (!LoopTitle) {
-            if (excludeSystemWindows) {
+            if (excludeSystemWindows == 1) {
                 WinIDAll.RemoveAt(currentIndex)
                 currentIndex--
                 thisWasRemoved := 1
@@ -1115,7 +1121,7 @@ GetAllWindows() {
                 DropDownAll .= LoopTitle . "`n"
             }
         } else {
-            if ((excludeSystemWindows) && (excludedTitles.HasKey(LoopTitle))) {        ;.HasKey(): Best alternative to .indexOf etc. 
+            if ((excludeSystemWindows == 1) && (excludedTitles.HasKey(LoopTitle))) {        ;.HasKey(): Best alternative to .indexOf etc. 
                 WinIDAll.RemoveAt(currentIndex)
                 currentIndex--
                 thisWasRemoved := 1
@@ -1747,7 +1753,7 @@ CreateSaveini(showit) {
     if (bgcolor == "") {
         bgcolor := 250000
     }
-    if ((Iniexists == "No") && (CheckForUpdates == 0)) {
+    if ((Iniexists == "No") && (CheckForUpdates != 1)) {
         MsgBox, 4100, TSolidBackground, Would you like to automatically check for updates on startup?
         IfMsgBox, Yes
         {
