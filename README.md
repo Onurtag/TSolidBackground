@@ -1,3 +1,4 @@
+
 # **TSolidBackground**  
 
 TSolidBackground allows you to immerse in a window completely by creating a solid overlay over the window borders and around the window.  
@@ -76,6 +77,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
+* **Version 2.9.10**  
+
+➕ Added an option to disable partial window title hooking on the Window Hooker menu.  
+
 * **Version 2.9.9**  
 
 ➕ Added an option to enable Keyboard Hook for when the hotkeys don't work on a window.  
@@ -96,9 +101,9 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 
 * **Version 2.9.4**  
 
-✅ Test fix for higher dpi scaling settings.  
-✅ Fix for file encoding problems.  
-✅ Fixed that 1 pixel that was visible on top.  
+✅ Fix for higher dpi scaling settings.  
+✅ Bug fix for file encoding problems.  
+✅ Fixed a 1 pixel border which was visible on the top while using TSolidBackground.  
 
 * **Version 2.9.3**  
 

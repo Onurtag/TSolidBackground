@@ -24,17 +24,22 @@ TD:
 -group parts of the ui to make them more clear, or use something like tabs tabs ^^^Related  
 -Rename advanced options to settings  
 -stacking traytip or remove it maybe. Notifications are kind of useless. Traytip is visible over all windows so it has that advantage.  
--Add named presets for move/resize menu. Maybe for the custom tsb sizes as well.  
+-Add named presets for move/resize menu. Maybe for the custom tsb sizes as well. Can save window title as well and show it as a tooltip maybe.
 -"Minimized" instead of -32000 x and y  
 -hotkeys should be manually added to start labels instead.
+-fix ini long variable names with or without spaces. Long variables might be fine but no spaces?
+-default autosave everything possible to ini option, disable "saved" popups except for the first time
+-tooltips for permanent/temprorary positions
+-ini autosave+autobackup(s)
 
 TEMP HACKS:   
--[CHECK1]  
+[CHECK1]  
+[CHECK2]  
 
 */
 
 OnExit, Exited
-Version := "v2.9.9"
+Version := "v2.9.10"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -51,9 +56,10 @@ CustomHeightBottom := 0
 startupWindow := 1
 protectVNR := 1
 preventSend := 1
+hookPartialTitle := 1
 excludeSystemWindows := 1
 Hooking := 0
-TitleOne := "Main Window Title (Partial)"
+TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
 Vmove := 5
 Vresize := 5
@@ -111,6 +117,7 @@ IfExist, TSolidBackground.ini
     Readini(useKeyboardHook, "Settings", "Use Keyboard Hook")
     Readini(TitleOne, "Settings", "Hooker Main Window")
     Readini(TitleTwo, "Settings", "Hooker Hooked Window")
+    Readini(hookPartialTitle, "Settings", "Hook Partial Main Window Title")
     Readini(Debug, "Settings", "Debug")
     ReadTitlesFromIni()
     if (TSolidBackgroundKey != "!T") {
@@ -323,7 +330,7 @@ Abouted:
     Gui, about: Font, s10 cDCDCCC
     Gui, about: Add, Text,, For readme, updates and more `ncheck out the project page:
     Gui, about: Font, s10 c3257BF underline
-    Gui, about: Add, Text, x18 y100 gGotoSite, https://onurtag.github.io/TSolidBackground/
+    Gui, about: Add, Text, x18 y100 gGotoSite, https://github.com/Onurtag/TSolidBackground/
     Gui, about: Font, s10 cBlack norm Bold
     Gui, about: Add, Button, x118 y136 w64 h36, Ok
     Gui, about: Show, w300 h192, About TSolidBackground
@@ -553,7 +560,7 @@ ShowOptions() {
     Gui, options: Add, Checkbox, x152 y302 Checked%excludeSystemWindows% vexcludeSystemWindows gSetnow, Exclude specific windows from Move/Resize dropdown menu.
     Gui, options: Add, Checkbox, x152 y324 Checked%startupWindow% vstartupWindow gSetnow, Show info window on startup
     Gui, options: Add, Checkbox, x152 y346 Checked%CheckForUpdates% vCheckForUpdates gSetSaveini, Check for updates on startup (Save to ini required)
-    Gui, options: Add, Checkbox, x152 y368 Checked%useKeyboardHook% vuseKeyboardHook gSetKBhook, Use Keyboard Hook to force hotkeys to work. (Save to ini && restart required.)
+    Gui, options: Add, Checkbox, x152 y368 Checked%useKeyboardHook% vuseKeyboardHook gSetKBhook, Use Keyboard Hook to force hotkeys to work (Save to ini required)
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
     if ((optX == "") || (optX == -32000)) {
         Gui, options: Show, w640 h560, TSolidBackground Advanced Options
@@ -680,10 +687,25 @@ Return
 SetKBhook:
     Gui, Submit, NoHide
     CreateSaveini(1)
-    MsgBox, 4097, TSolidBackground, Restarting TSolidBackground to apply the setting.
-    IfMsgBox, OK 
-    {
-        Reload
+    If (useKeyboardHook == 1) {
+        if (TSolidBackgroundKey != "")
+            Hotkey, $%TSolidBackgroundKey%
+        if (OnTopKey != "!Y")
+            Hotkey, $%OnTopKey%
+        if (CenterKey != "")
+            Hotkey, $%CenterKey%
+        if (TaskbarKey != "")
+            Hotkey, $%TaskbarKey%
+        if (OptionsKey != "")
+            Hotkey, $%OptionsKey%
+        if (SuspendKey != "")
+            Hotkey, $%SuspendKey%
+    } else {
+        MsgBox, 4097, TSolidBackground, Restarting TSolidBackground to disable the hooks.
+        IfMsgBox, OK 
+        {
+            Reload
+        }
     }
 Return
 
@@ -802,7 +824,7 @@ Return
 CheckUpdate(notify) {
     Global
     
-    ;----- TEMP HACK. Checking for updates while the hooker is on crashes the application and deletes the exe.
+    ;----- [CHECK2] TEMP HACK. Checking for updates while the hooker is on crashes the application and deletes the exe!?
     if (Hooking) {
         Hooking := 0
         SetTimer, Hooker, Off
@@ -1409,6 +1431,7 @@ ShowHooker() {
     Gui, hook: Add, Text, x112 y112, Main Window:  
     Gui, hook: Add, Text, x112 y152, Hooked Window:  
     Gui, hook: Add, Text, x60 y47 , Window Hooker currently only works for minimizing/switching tabs on browsers.`nFor now it can't make them move together. The .ini file will save the window titles too.
+    Gui, hook: Add, Checkbox, x112 y280 Checked%hookPartialTitle% vhookPartialTitle gSetnow, `nHook anything that contains the Main Window Title `n(off: Hook only if titles are completely same)
     Gui, hook: Font, s10
     Gui, hook: Add, Text, x500 y355, Tip: You can `nalso stop the `nwindow hooker `nusing the `ntray menu.
     Gui, hook: Font, s10 cBlack norm
@@ -1482,7 +1505,12 @@ Hooker() {
     ;CurrActiveID := WinExist("A")
     ;WinGetTitle, CurrActiveTitle, ahk_id %CurrActiveID%
     WinGetTitle, CurrActiveTitle, A
-    if (InStr(CurrActiveTitle, TitleOne) > 0) {
+    if (hookPartialTitle) {
+        checkTitleOne := InStr(CurrActiveTitle, TitleOne)
+    } else {
+        checkTitleOne := (CurrActiveTitle == TitleOne)
+    }
+    if (checkTitleOne > 0) {
         if (TwoisNotMin == -1) {
             WinRestore, %TitleTwo%
         }
@@ -1795,6 +1823,7 @@ CreateSaveini(showit) {
     Writeini(useKeyboardHook, "Settings", "Use Keyboard Hook")
     Writeini(TitleOne, "Settings", "Hooker Main Window")
     Writeini(TitleTwo, "Settings", "Hooker Hooked Window")
+    Writeini(hookPartialTitle, "Settings", "Hook Partial Main Window Title")
     Writeini(Debug, "Settings", "Debug")
     if (showit) {
         DrawHUD("TSolidBackground.ini file was created/saved.", "y160", "c836DFF", "s11", "1350")
