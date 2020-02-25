@@ -77,6 +77,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
+* **Version 2.9.11**  
+
+➕ Added three hotkeys to Move/Resize a specific window quickly. You will have to choose and enable the hotkeys manually in the .ini. 
+
 * **Version 2.9.10**  
 
 ➕ Added an option to disable partial window title hooking on the Window Hooker menu.  

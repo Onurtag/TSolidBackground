@@ -31,6 +31,9 @@ TD:
 -default autosave everything possible to ini option, disable "saved" popups except for the first time
 -tooltips for permanent/temprorary positions
 -ini autosave+autobackup(s)
+-seperate ini categories for hooker etc
+-dont use hotkeys as a label, enable them manually. (like the MoveKey s)
+-loop while loading ini and check for errors maybe
 
 TEMP HACKS:   
 [CHECK1]  
@@ -39,7 +42,7 @@ TEMP HACKS:
 */
 
 OnExit, Exited
-Version := "v2.9.10"
+Version := "v2.9.11"
 IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
@@ -49,6 +52,9 @@ TaskbarKey := "!F"
 OptionsKey := "!U"
 SuspendKey := "F8"
 Iniexists := "No"
+MoveKey1 := ""
+MoveKey2 := ""
+MoveKey3 := ""
 CustomWidthLeft := 0
 CustomWidthRight := 0
 CustomHeightTop := 0
@@ -106,6 +112,9 @@ IfExist, TSolidBackground.ini
     Readini(TaskbarKey, "Hotkeys", "Show Hide Taskbar Key")
     Readini(OptionsKey, "Hotkeys", "Advanced Features Key")
     Readini(SuspendKey, "Hotkeys", "Suspend Hotkeys Key")
+    Readini(MoveKey1, "Hotkeys", "Move Key 1")
+    Readini(MoveKey2, "Hotkeys", "Move Key 2")
+    Readini(MoveKey3, "Hotkeys", "Move Key 3")
     Readini(bgcolor, "Settings", "Background Color")
     Readini(CustomWidthLeft, "Settings", "Custom Width Left")
     Readini(CustomWidthRight, "Settings", "Custom Width Right")
@@ -120,6 +129,7 @@ IfExist, TSolidBackground.ini
     Readini(hookPartialTitle, "Settings", "Hook Partial Main Window Title")
     Readini(Debug, "Settings", "Debug")
     ReadTitlesFromIni()
+
     if (TSolidBackgroundKey != "!T") {
         if (TSolidBackgroundKey != "") {
             Hotkey, %TSolidBackgroundKey%, !T
@@ -156,6 +166,32 @@ IfExist, TSolidBackground.ini
         }
         Hotkey, F8, Off
     }
+
+
+    if (MoveKey1 == "ERROR") {
+        MoveKey1 := ""
+    }
+    if (MoveKey2 == "ERROR") {
+        MoveKey2 := ""
+    }
+    if (MoveKey3 == "ERROR") {
+        MoveKey3 := ""
+    }
+    
+    if (MoveKey1 != "") {
+        Hotkey, %MoveKey1%, LoadHotkey1
+    }
+
+    if (MoveKey2 != "") {
+        Hotkey, %MoveKey2%, LoadHotkey2
+    }
+
+    if (MoveKey3 != "") {
+        Hotkey, %MoveKey3%, LoadHotkey3
+    }
+
+
+
     If (useKeyboardHook == 1) {
         if (TSolidBackgroundKey != "")
             Hotkey, $%TSolidBackgroundKey%
@@ -958,7 +994,7 @@ ShowResizer() {
     Gui, resizer: Add, DropDownList, x95 y53 w450 Choose%DropDownCurrent% vDropDownCurrent gDropDownSelected AltSubmit, Select a Window (If it's not here, check Advanced Options)`n%DropDownAll%
     Gui, resizer: Add, Button, x551 y55 w54 h21 hwndhReload gReloadDropDown, Reload
     AddTooltip(hReload, "Reload the list of windows.")
-    Gui, resizer: Add, Text, x500 y355, Tip: You can use `nyour advanced `nfeatures (%OptionsKey%) `nhotkey to select `na new window.
+    Gui, resizer: Add, Text, x520 y445, Tip: You can use `nyour advanced `nfeatures (%OptionsKey%) `nhotkey to select `na new window.
     if (!BlockResizer) {
         Gui, resizer: Add, Text, x75 y125, Current:
         Gui, resizer: Add, Text, x75 y145, Original:
@@ -972,8 +1008,8 @@ ShowResizer() {
         Gui, resizer: Add, Text, x370 y206, Center:
         Gui, resizer: Add, Text, x497 y248, By:
         Gui, resizer: Add, Text, x147 y248, By:
-        Gui, resizer: Add, Text, x90 y363, Temp/Perm Save:
-        Gui, resizer: Add, Text, x90 y391, Load Saved Pos:
+        Gui, resizer: Add, Text, x40 y363, Temp/Perm Save:
+        Gui, resizer: Add, Text, x40 y391, Load Saved Pos:
         Gui, resizer: Font, s9 cDCDCCC norm
         Gui, resizer: Font, s10 cb396ff norm
         Wofwin := 000000            ;Fix for some tiny gui bug(?).
@@ -999,7 +1035,8 @@ ShowResizer() {
         Gui, resizer: Add, Edit, x424 y301 w64 h20 vYnew, %Ynew%
         Gui, resizer: Add, UpDown, 0x80 Range-90000-90000, %Ynew%
         Gui, resizer: Font, norm Underline
-        Gui, resizer: Add, Text, x218 y338, Quick save/load size and position
+        Gui, resizer: Add, Text, x168 y338, Quick save/load size and position
+        Gui, resizer: Add, Text, x428 y338, Save for the Move Hotkeys`n(Read the Tooltip)
         Gui, resizer: Add, Text, x219 y435, Create .ini for permanent options
         Gui, resizer: Font, s9 c836DFF norm Bold
         Gui, resizer: Add, Edit, x517 y249 w50 h20 Number vVmove, %Vmove%
@@ -1027,27 +1064,35 @@ ShowResizer() {
         Gui, resizer: Add, Button, x521 y225 w16 h16 gWdown, D
         Gui, resizer: Add, Button, x503 y207 w16 h16 gWleft, L
         Gui, resizer: Add, Button, x539 y207 w16 h16 gWright, R
-        Gui, resizer: Add, Button, x203 y362 w27 h21 hwndhSavetemp1 gSavetemp1, T1
+        Gui, resizer: Add, Button, x153 y362 w27 h21 hwndhSavetemp1 gSavetemp1, T1
         AddTooltip(hSavetemp1, "Temprorary values are lost when you quit TSolidBackground.")
-        Gui, resizer: Add, Button, x203 y390 w27 h21 gLoadtemp1, T1
-        Gui, resizer: Add, Button, x235 y362 w27 h21 hwndhSavetemp2 gSavetemp2, T2
+        Gui, resizer: Add, Button, x153 y390 w27 h21 gLoadtemp1, T1
+        Gui, resizer: Add, Button, x185 y362 w27 h21 hwndhSavetemp2 gSavetemp2, T2
         AddTooltip(hSavetemp2, "Temprorary values are lost when you quit TSolidBackground.")
-        Gui, resizer: Add, Button, x235 y390 w27 h21 gLoadtemp2, T2
-        Gui, resizer: Add, Button, x270 y362 w27 h21 hwndhSave1 gSave1, P1
+        Gui, resizer: Add, Button, x185 y390 w27 h21 gLoadtemp2, T2
+        Gui, resizer: Add, Button, x220 y362 w27 h21 hwndhSave1 gSave1, P1
         AddTooltip(hSave1, "Permanently saves the window size/position to .ini")
-        Gui, resizer: Add, Button, x270 y390 w27 h21 gLoad1, P1
-        Gui, resizer: Add, Button, x302 y362 w27 h21 hwndhSave2 gSave2, P2
+        Gui, resizer: Add, Button, x220 y390 w27 h21 gLoad1, P1
+        Gui, resizer: Add, Button, x252 y362 w27 h21 hwndhSave2 gSave2, P2
         AddTooltip(hSave2, "Permanently saves the window size/position to .ini")
-        Gui, resizer: Add, Button, x302 y390 w27 h21 gLoad2, P2
-        Gui, resizer: Add, Button, x334 y362 w27 h21 hwndhSave3 gSave3, P3
+        Gui, resizer: Add, Button, x252 y390 w27 h21 gLoad2, P2
+        Gui, resizer: Add, Button, x284 y362 w27 h21 hwndhSave3 gSave3, P3
         AddTooltip(hSave3, "Permanently saves the window size/position to .ini")
-        Gui, resizer: Add, Button, x334 y390 w27 h21 gLoad3, P3
-        Gui, resizer: Add, Button, x366 y362 w27 h21 hwndhSave4 gSave4, P4
+        Gui, resizer: Add, Button, x284 y390 w27 h21 gLoad3, P3
+        Gui, resizer: Add, Button, x316 y362 w27 h21 hwndhSave4 gSave4, P4
         AddTooltip(hSave4, "Permanently saves the window size/position to .ini")
-        Gui, resizer: Add, Button, x366 y390 w27 h21 gLoad4, P4
-        Gui, resizer: Add, Button, x398 y362 w27 h21 hwndhSave5 gSave5, P5
+        Gui, resizer: Add, Button, x316 y390 w27 h21 gLoad4, P4
+        Gui, resizer: Add, Button, x348 y362 w27 h21 hwndhSave5 gSave5, P5
         AddTooltip(hSave5, "Permanently saves the window size/position to .ini")
-        Gui, resizer: Add, Button, x398 y390 w27 h21 gLoad5, P5
+        Gui, resizer: Add, Button, x348 y390 w27 h21 gLoad5, P5
+
+        Gui, resizer: Add, Button, x460 y380 w27 h21 hwndhSaveHotkey1 gSaveHotkey1, P1
+        AddTooltip(hSaveHotkey1, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Read the guide on the website.")
+        Gui, resizer: Add, Button, x492 y380 w27 h21 hwndhSaveHotkey2 gSaveHotkey2, P2
+        AddTooltip(hSaveHotkey2, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Read the guide on the website.")
+        Gui, resizer: Add, Button, x524 y380 w27 h21 hwndhSaveHotkey3 gSaveHotkey3, P3
+        AddTooltip(hSaveHotkey3, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Read the guide on the website.")
+
         Gui, resizer: Add, Button, x231 y289 w52 h18 gResizenow, Resize
         Gui, resizer: Add, Button, x496 y289 w52 h18 gMovenow, Move
         Gui, resizer: Add, Button, x424 y196 w64 h18 gHcenter, H-Center
@@ -1401,6 +1446,64 @@ Savepos(posnr) {
     Writeini(Hofwin, "Saved Position " . posnr, "H")
     Return
 }
+
+
+SaveHotkey1:
+    SaveHotkeypos(1)
+Return
+
+SaveHotkey2:
+    SaveHotkeypos(2)
+Return
+
+SaveHotkey3:
+    SaveHotkeypos(3)
+Return
+
+LoadHotkey1:
+    LoadHotkeypos(1)
+Return
+
+LoadHotkey2:
+    LoadHotkeypos(2)
+Return
+
+LoadHotkey3:
+    LoadHotkeypos(3)
+Return
+
+SaveHotkeypos(posnr) {
+    Global
+    IfNotExist, TSolidBackground.ini 
+    {
+        CreateSaveini(1)
+    }
+    WinGetTitle, titleTBResized, ahk_id %TBResized%
+    WinGetPos, Xofwin, Yofwin, Wofwin, Hofwin, ahk_id %TBResized%
+    Writeini(Xofwin, "Hotkey Position " . posnr, "X")
+    Writeini(Yofwin, "Hotkey Position " . posnr, "Y")
+    Writeini(Wofwin, "Hotkey Position " . posnr, "W")
+    Writeini(Hofwin, "Hotkey Position " . posnr, "H")
+    Writeini(titleTBResized, "Hotkey Position " . posnr, "Title")
+    CreateSaveini(0)
+    Return
+}
+
+LoadHotkeypos(posnr) {
+    Global
+    Readini(PermX, "Hotkey Position " . posnr, "X")
+    Readini(PermY, "Hotkey Position " . posnr, "Y")
+    Readini(PermW, "Hotkey Position " . posnr, "W")
+    Readini(PermH, "Hotkey Position " . posnr, "H")
+    Readini(titleTBResized, "Hotkey Position " . posnr, "Title")
+    if (PermX == "ERROR") {
+        DrawHUD("Saved hotkey position or .ini file doesn't exist.", "y160", "cE60000", "s11", "5000")
+    } else {
+        WinMove, %titleTBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
+    }
+    Return
+}
+
 
 ReloadDropDown:
     WinGetPos, aX, aY, aW, aH, A
@@ -1811,6 +1914,9 @@ CreateSaveini(showit) {
     Writeini(TaskbarKey, "Hotkeys", "Show Hide Taskbar Key")
     Writeini(OptionsKey, "Hotkeys", "Advanced Features Key")
     Writeini(SuspendKey, "Hotkeys", "Suspend Hotkeys Key")
+    Writeini(MoveKey1, "Hotkeys", "Move Key 1")
+    Writeini(MoveKey2, "Hotkeys", "Move Key 2")
+    Writeini(MoveKey3, "Hotkeys", "Move Key 3")
     Writeini(IniVersion, "Settings", "Ini Version")
     Writeini(bgcolor, "Settings", "Background Color")
     Writeini(CustomWidthLeft, "Settings", "Custom Width Left")
