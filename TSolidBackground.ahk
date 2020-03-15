@@ -6,6 +6,9 @@ SetWinDelay, 0
 SetControlDelay, 0        ;Mostly useless.
 FileEncoding, UTF-16      ;Use UCS-2 Little Endian BOM for the ini, but not for the .bat file.
 
+Version := "v2.9.12"
+IniVersion := "v1.0"
+
 ;#Warn, All, StdOut
 
 /*
@@ -42,8 +45,6 @@ TEMP HACKS:
 */
 
 OnExit, Exited
-Version := "v2.9.11"
-IniVersion := "v1.0"
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
 OnTopKey := "!Y"
@@ -206,6 +207,9 @@ IfExist, TSolidBackground.ini
         if (SuspendKey != "")
             Hotkey, $%SuspendKey%
     }
+
+    ;Re-save the ini to write the new ini options? Might break things in the future.
+    CreateSaveini(0)
 }
 
 if (startupWindow == 1) {
@@ -383,8 +387,15 @@ RunTSB(windowtoTSB := "") {
         if (windowtoTSB == "") {
             Activewin := WinExist("A")
             WinGetTitle, Activewintitle, ahk_id %Activewin%
-            if (Hooking && (Activewintitle == TitleOne)) {
-                Activewin := WinExist(TitleTwo)
+            if (Hooking) {
+                if (hookPartialTitle) {
+                    checkTitleOne := InStr(Activewintitle, TitleOne)
+                } else {
+                    checkTitleOne := (Activewintitle == TitleOne)
+                }
+                if (checkTitleOne > 0) {
+                    Activewin := WinExist(TitleTwo)
+                }
             }
         } else {
             Activewin := windowtoTSB
@@ -1087,11 +1098,11 @@ ShowResizer() {
         Gui, resizer: Add, Button, x348 y390 w27 h21 gLoad5, P5
 
         Gui, resizer: Add, Button, x460 y380 w27 h21 hwndhSaveHotkey1 gSaveHotkey1, P1
-        AddTooltip(hSaveHotkey1, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Read the guide on the website.")
+        AddTooltip(hSaveHotkey1, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Check out the project page to learn how to do that.")
         Gui, resizer: Add, Button, x492 y380 w27 h21 hwndhSaveHotkey2 gSaveHotkey2, P2
-        AddTooltip(hSaveHotkey2, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Read the guide on the website.")
+        AddTooltip(hSaveHotkey2, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Check out the project page to learn how to do that.")
         Gui, resizer: Add, Button, x524 y380 w27 h21 hwndhSaveHotkey3 gSaveHotkey3, P3
-        AddTooltip(hSaveHotkey3, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Read the guide on the website.")
+        AddTooltip(hSaveHotkey3, "Permanently save the window size/position to .ini for the hotkey.`nThe Window Title (look above) is saved as well so it will only work on the saved window.`nYou will have to choose and enable the hotkeys manually in the .ini. Check out the project page to learn how to do that.")
 
         Gui, resizer: Add, Button, x231 y289 w52 h18 gResizenow, Resize
         Gui, resizer: Add, Button, x496 y289 w52 h18 gMovenow, Move
@@ -1485,7 +1496,6 @@ SaveHotkeypos(posnr) {
     Writeini(Wofwin, "Hotkey Position " . posnr, "W")
     Writeini(Hofwin, "Hotkey Position " . posnr, "H")
     Writeini(titleTBResized, "Hotkey Position " . posnr, "Title")
-    CreateSaveini(0)
     Return
 }
 
@@ -1936,7 +1946,7 @@ CreateSaveini(showit) {
     }
     Return
 }
-
+;Use functions instead of the default syntax to save/load the ini values. Definitely useless.
 Writeini(value, section, key) {
     IniWrite, %value%, TSolidBackground.ini, %section%, %key%
 }
