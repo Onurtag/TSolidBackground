@@ -6,7 +6,7 @@ SetWinDelay, 0
 SetControlDelay, 0        ;Mostly useless.
 FileEncoding, UTF-16      ;Use UCS-2 Little Endian BOM for the ini, but not for the .bat file.
 
-Version := "v2.9.12"
+Version := "v2.9.13"
 IniVersion := "v1.0"
 
 ;#Warn, All, StdOut
@@ -22,7 +22,7 @@ They all work well and it would be a waste of time (also I don't care enough too
 
 If you have any good suggestions, feel free to contact me or open an issue.
 
-TD: 
+TODO:
 -Fix GUI tab orderings or FULLY REMAKE the gui (Maybe with a tool or a template) https://www.autohotkey.com/boards/viewtopic.php?f=6&t=3851  
 -group parts of the ui to make them more clear, or use something like tabs tabs ^^^Related  
 -Rename advanced options to settings  
@@ -37,6 +37,12 @@ TD:
 -seperate ini categories for hooker etc
 -dont use hotkeys as a label, enable them manually. (like the MoveKey s)
 -loop while loading ini and check for errors maybe
+-add scale + button that enlarges/shrinks the window
+
+----
+---- RCHK new exit code
+----
+
 
 TEMP HACKS:   
 [CHECK1]  
@@ -44,7 +50,7 @@ TEMP HACKS:
 
 */
 
-OnExit, Exited
+OnExit("Exiting")
 bgcolor := 250000
 TSolidBackgroundKey := "!T"
 OnTopKey := "!Y"
@@ -1967,16 +1973,20 @@ WinStack(winid) {
     }
 }
 
-Exited:
+Exited:    
+    ExitApp
+Return
+
+Exiting(ExitReason, ExitCode) {
+    Global
     for currentWindow, b in Arrs
     {
         WinSet, AlwaysOnTop, off, ahk_id %currentWindow%
     }
     WinShow, ahk_class Shell_TrayWnd
     WinShow, Start ahk_class Button
-ExitApp
-
-
+    ExitApp
+}
 
 
 ;---Pre-made functions & libraries---

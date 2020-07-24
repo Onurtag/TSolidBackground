@@ -77,6 +77,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
+* **Version 2.9.12**  
+
+✅ Updated the Exit code
+
 * **Version 2.9.11**  
 
 ➕ Added three hotkeys to Move/Resize a specific window quickly. You will have to choose and enable the hotkeys manually in the .ini. 
@@ -111,7 +115,7 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 
 * **Version 2.9.3**  
 
-Gui optimizations.
+✅ Gui optimizations.
 
 * **Version 2.9.2**  
 
