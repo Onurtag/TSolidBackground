@@ -68,7 +68,6 @@ CustomHeightTop := 0
 CustomHeightBottom := 0
 startupWindow := 1
 protectVNR := 1
-preventSend := 1
 hookPartialTitle := 1
 excludeSystemWindows := 1
 Hooking := 0
@@ -76,7 +75,8 @@ TitleOne := "Main Window Title"
 TitleTwo := "Hooked Window Title"
 Vmove := 5
 Vresize := 5
-MoveBy := 1
+MoveBy := 2
+preventSend := 1
 Debug := 0
 Checking := 0
 CheckForUpdates := 0
@@ -134,6 +134,7 @@ IfExist, TSolidBackground.ini
     Readini(TitleOne, "Settings", "Hooker Main Window")
     Readini(TitleTwo, "Settings", "Hooker Hooked Window")
     Readini(hookPartialTitle, "Settings", "Hook Partial Main Window Title")
+    Readini(MoveBy, "Settings", "Mouse Mover Move By")
     Readini(Debug, "Settings", "Debug")
     ReadTitlesFromIni()
 
@@ -1758,22 +1759,24 @@ MouseMover() {
     Gui, mmover: Font, s14 c836DFF Bold, Segoe UI
     Gui, mmover: Add, Text, x258 y15, Mouse Mover
     Gui, mmover: Font, s9 c836DFF norm Bold
-    Gui, mmover: Add, Edit, x305 y292 w50 h20 Number vMoveBy, %MoveBy%
+    Gui, mmover: Add, Edit, x305 y312 w50 h20 Number vMoveBy, %MoveBy%
     Gui, mmover: Add, UpDown, 0x80 Range1-90000, %MoveBy%
     Gui, mmover: Font, s9 cBlack norm
-    Gui, mmover: Add, Button, x355 y293 w34 h18 gSetnow, Set
+    Gui, mmover: Add, Button, x355 y313 w34 h18 gSetnow, Set
     Gui, mmover: Font, s10 Bold
     Gui, mmover: Add, Button, x174 y515 w290 h24, Close
     Gui, mmover: Add, Button, x10 y10 w44 h24 gmmoverGuiEscape, Back
     Gui, mmover: Font, s10 cDCDCCC norm
-    Gui, mmover: Add, Checkbox, x210 y322 Checked%preventSend% hwndhPreventSending vpreventSend gSetnow, Also prevent hotkeys from working
+    Gui, mmover: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
+    Gui, mmover: Add, Checkbox, x230 y342 Checked%preventSend% hwndhPreventSending vpreventSend gSetnow, Also prevent hotkeys from working
     AddTooltip(hPreventSending, "Prevents Left Arrow from moving left etc.")
-    Gui, mmover: Add, Text, x245 y291, Move by:
+    Gui, mmover: Add, Text, x245 y311, Move by:
     Gui, mmover: Font, s13
     Gui, mmover: Add, Text, x220 y147, While this window is open,
-    Gui, mmover: Add, Text, x140 y177, Use arrow keys to move the mouse pixel by pixel.
-    Gui, mmover: Add, Text, x132 y207, Press [Numpad 1] or [Numpad End] for left click `nPress [Numpad 2] or [Numpad Down] for right click `nPress [Numpad 3] or [Numpad PgDn] for middle click.
+    Gui, mmover: Add, Text, x132 y177,   Use arrow keys to move the mouse pixel by pixel.`nHold Shift to move at half speed, Hold Ctrl for triple speed.
+    Gui, mmover: Add, Text, x132 y227, Press [Numpad 1] or [Numpad End] for left click `nPress [Numpad 2] or [Numpad Down] for right click `nPress [Numpad 3] or [Numpad PgDn] for middle click.
     Gui, mmover: Font, s10 c836DFF norm Underline
+    Gui, mmover: Add, Text, x219 y435, Create .ini for permanent options
     Gui, mmover: Font, s10 cDCDCCC norm
     WinGetPos, optX, optY, optW, optH, TSolidBackground Advanced Features
     if ((optX == "") || (optX == -32000)) {
@@ -1802,27 +1805,46 @@ mmoverGuiEscape:
     Gosub, BackGui
 Return
 
+
+
+getMouseSpeed() {
+    Global
+    ;Shift is half speed, ctrl is triple
+    if GetKeyState("Shift") {
+        return MoveBy / 2
+    } else if GetKeyState("Ctrl") {
+        return MoveBy * 3
+    } else {
+        return MoveBy
+    }
+}
+
 #If mouseMoving
-Left::
-    MouseMove, -%MoveBy%, 0,, R
+
+*Left::
+    MovingBy := getMouseSpeed()
+    MouseMove, -%MovingBy%, 0,, R
     if (!preventSend)
         Send, {Left} 
 Return
 
-Right::
-    MouseMove, %MoveBy%, 0,, R
+*Right::
+    MovingBy := getMouseSpeed()
+    MouseMove, %MovingBy%, 0,, R
     if (!preventSend)
         Send, {Right}
 Return
 
-Up::
-    MouseMove, 0, -%MoveBy%,, R
+*Up::
+    MovingBy := getMouseSpeed()
+    MouseMove, 0, -%MovingBy%,, R
     if (!preventSend)
         Send, {Up}
 Return
 
-Down::
-    MouseMove, 0, %MoveBy%,, R
+*Down::
+    MovingBy := getMouseSpeed()
+    MouseMove, 0, %MovingBy%,, R
     if (!preventSend)
         Send, {Down}
 Return
@@ -1946,6 +1968,7 @@ CreateSaveini(showit) {
     Writeini(TitleOne, "Settings", "Hooker Main Window")
     Writeini(TitleTwo, "Settings", "Hooker Hooked Window")
     Writeini(hookPartialTitle, "Settings", "Hook Partial Main Window Title")
+    Writeini(MoveBy, "Settings", "Mouse Mover Move By")
     Writeini(Debug, "Settings", "Debug")
     if (showit) {
         DrawHUD("TSolidBackground.ini file was created/saved.", "y160", "c836DFF", "s11", "1350")

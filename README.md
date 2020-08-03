@@ -77,9 +77,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
-* **Version 2.9.12**  
+* **Version 2.9.13**  
 
-✅ Updated the Exit code
+➕ Added Ctrl/Shift speed modifiers to MouseMover  
+✅ Updated the Exit code  
 
 * **Version 2.9.11**  
 
