@@ -6,7 +6,7 @@ SetWinDelay, 0
 SetControlDelay, 0        ;Mostly useless.
 FileEncoding, UTF-16      ;Use UCS-2 Little Endian BOM for the ini, but not for the .bat file.
 
-Version := "v2.9.13"
+Version := "v2.9.14"
 IniVersion := "v1.0"
 
 ;#Warn, All, StdOut
@@ -23,10 +23,9 @@ They all work well and it would be a waste of time (also I don't care enough too
 If you have any good suggestions, feel free to contact me or open an issue.
 
 TODO:
--Fix GUI tab orderings or FULLY REMAKE the gui (Maybe with a tool or a template) https://www.autohotkey.com/boards/viewtopic.php?f=6&t=3851  
+-Fix GUI tab orderings or FULLY REMAKE the gui (Maybe with a tool or a template) https://www.autohotkey.com/boards/viewtopic.php?f=6&t=3851  https://github.com/G33kDude/Neutron.ahk/
 -group parts of the ui to make them more clear, or use something like tabs tabs ^^^Related  
 -Rename advanced options to settings  
--stacking traytip or remove it maybe. Notifications are kind of useless. Traytip is visible over all windows so it has that advantage.  
 -Add named presets for move/resize menu. Maybe for the custom tsb sizes as well. Can save window title as well and show it as a tooltip maybe.
 -"Minimized" instead of -32000 x and y  
 -hotkeys should be manually added to start labels instead.
@@ -38,10 +37,6 @@ TODO:
 -dont use hotkeys as a label, enable them manually. (like the MoveKey s)
 -loop while loading ini and check for errors maybe
 -add scale + button that enlarges/shrinks the window
-
-----
----- RCHK new exit code
-----
 
 
 TEMP HACKS:   
@@ -82,11 +77,19 @@ Checking := 0
 CheckForUpdates := 0
 useKeyboardHook := 0
 Arrs := Object()
-excludedTitles := Object("TSolidBackground Advanced Features", ""    ;You can use the edit menu under advanced options to add more titles or remove these.
+;These titles are excluded from move/resize menu
+;You don't have to edit this line. 
+;Just use the edit menu under advanced options to add more titles or remove these.
+excludedTitles := Object("TSolidBackground Advanced Features", ""
                         ,"TSolidBackground Splash Text", ""
+                        ,"Stacked Pleasant Notification", ""
                         ,"TSolidBackground Move/Resize Window", ""
                         ,"Windows Shell Experience Host", ""
                         ,"Program Manager", "")
+
+;Window containing this string does not minimize the hooked window (only for the Window Hooker)
+;(similar to the main window or the alt+tab menu)
+excludedFromHooker := "Clipboard Inserter"
 
 Menu, Tray, Icon,,, 0
 Menu, Tray, NoStandard
@@ -106,12 +109,15 @@ IfExist, TSolidBackground.ini
     Readini(WrittenIniVersion, "Settings", "Ini Version")
     if ((WrittenIniVersion == "ERROR") || (WrittenIniVersion != IniVersion)) {
         if (WrittenIniVersion == "ERROR") {
-            DrawHUD("Your TSolidBackground.ini is likely corrupt.`nIt was automatically renamed and replaced with a new one.", "y160", "cE60000", "s11", "10000")
+            new StackedPleasantNotify("TSolidBackground", "Your TSolidBackground.ini is likely corrupt.`nIt was automatically renamed and recreated.", "", 400, "auto", "b r", 15000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
         } else if (WrittenIniVersion != IniVersion) {
-            DrawHUD("Your TSolidBackground.ini needs to be updated.`nIt was automatically renamed and replaced with a new one.", "y160", "cE60000", "s11", "10000")
+            new StackedPleasantNotify("TSolidBackground", "Your TSolidBackground.ini needs to be updated.`nIt was automatically renamed and recreated.", "", 400, "auto", "b r", 15000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
         }
         FileMove, TSolidBackground.ini, TSolidBackground_OLD_%A_DD%-%A_MM%-%A_YYYY%.ini
         CreateSaveini(0)
+        new StackedPleasantNotify("TSolidBackground", "Restarting TSolidBackground in 10 seconds...", "", 400, "auto", "b r", 15000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
+        Sleep, 15000
+        Reload
     }
     Readini(TSolidBackgroundKey, "Hotkeys", "TSolidBackground Key")
     Readini(OnTopKey, "Hotkeys", "On Top Key")
@@ -243,7 +249,7 @@ Return
     WinGetTitle, currentTitle, A
     if (currentTitle == "Kagami") {
         if (protectVNR) {
-            TrayTip, Window [%currentTitle%] is protected., Check advanced options to disable it.
+            new StackedPleasantNotify("TSolidBackground", "Window [" . currentTitle . "] is protected.", "Check advanced options to disable it.", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
             Return
         }
     }
@@ -251,10 +257,10 @@ Return
     WinGet, WindowExStyle, ExStyle, ahk_id %currentWindow%
     if (WindowExStyle & 0x8) { 
         WinSet, AlwaysOnTop, off, ahk_id %currentWindow%
-        TrayTip, Window [%currentTitle%], Always on top status: OFF
+        new StackedPleasantNotify("TSolidBackground", "Window [" . currentTitle . "]", "Always on top status: OFF", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
     } else {
         WinSet, AlwaysOnTop, on, ahk_id %currentWindow%
-        TrayTip, Window [%currentTitle%], Always on top status: ON
+        new StackedPleasantNotify("TSolidBackground", "Window [" . currentTitle . "]", "Always on top status: ON", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
     }
 Return
 
@@ -349,10 +355,10 @@ ShowNewMenu(nmX, nmY) {
 ~F8::
     Suspend
     if (A_IsSuspended) {
-        Traytip, TSolidBackground, Suspended all other hotkeys. `nTo enable hotkeys press %SuspendKey%.
+        new StackedPleasantNotify("TSolidBackground", "Suspended all other hotkeys.", "To enable hotkeys press " . SuspendKey . ".", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
         Menu, Tray, Tip, TSolidBackground Suspended
     } else {
-        Traytip, TSolidBackground, Enabled all hotkeys.
+        new StackedPleasantNotify("TSolidBackground", "Enabled all hotkeys.", "", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
         Menu, Tray, Tip, TSolidBackground
     }
 Return
@@ -361,12 +367,12 @@ Advanced:
     ShowNewMenu("","")
 Return
 
-;Debug Vars
+;Debug Vars with F10 if debug is enabled
+#If Debug
 ~F10::
-    if (Debug) {
-        ListVars
-    }
+    ListVars
 Return
+#If
 
 Abouted:
     Gui, about: +AlwaysOnTop
@@ -407,9 +413,11 @@ RunTSB(windowtoTSB := "") {
         } else {
             Activewin := windowtoTSB
         }
+        /* 
         if (old_Activewin != Activewin) {
-            ;DrawHUD("Got a new window for TSolidBackground.", "", "c836DFF", "s11", "1350")
+            DrawHUD("Got a new window for TSolidBackground.", "", "c836DFF", "s11", "1350")
         }
+        */
         TSolidBackground()
     } else {
         DestroyTSolidBackground()
@@ -450,7 +458,7 @@ TSolidBackground() {
         WinGetTitle, currTitle, ahk_id %Activewin%
         if (currTitle != "Kagami") {    ;VNR fix
             WinSet, AlwaysOnTop, off, ahk_id %Activewin%
-            TrayTip, Window [%currTitle%], Always on top status: OFF
+            new StackedPleasantNotify("TSolidBackground", "Window [" . currTitle . "]", "Always on top status: OFF", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
         }
     }
 
@@ -500,6 +508,8 @@ DestroyTSolidBackground() {
     Return
 }
 
+;Draws splash text (currently using StackedPleasantNotify instead)
+/* 
 DrawHUD(hudtext, xyvalue, hudtextcolor := "c836DFF", hudtextsize := "s11", hudtimer := 1350) {
     Gui, hud: Destroy
     Gui, hud: +AlwaysOnTop -Caption +ToolWindow +Border
@@ -510,6 +520,7 @@ DrawHUD(hudtext, xyvalue, hudtextcolor := "c836DFF", hudtextsize := "s11", hudti
     SetTimer, Deletehud, %hudtimer%
     Return
 }
+*/
 
 Deletehud:
     SetTimer, Deletehud, off
@@ -611,7 +622,7 @@ ShowOptions() {
     Gui, options: Font, s10 cDCDCCC norm
     Gui, options: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     Gui, options: Add, Checkbox, x152 y280 Checked%protectVNR% vprotectVNR gSetnow, Protect VNR ("Kagami" titled window)
-    Gui, options: Add, Checkbox, x152 y302 Checked%excludeSystemWindows% vexcludeSystemWindows gSetnow, Exclude specific windows from Move/Resize dropdown menu.
+    Gui, options: Add, Checkbox, x152 y302 Checked%excludeSystemWindows% vexcludeSystemWindows gSetnow, Exclude specified windows from the Move/Resize dropdown.
     Gui, options: Add, Checkbox, x152 y324 Checked%startupWindow% vstartupWindow gSetnow, Show info window on startup
     Gui, options: Add, Checkbox, x152 y346 Checked%CheckForUpdates% vCheckForUpdates gSetSaveini, Check for updates on startup (Save to ini required)
     Gui, options: Add, Checkbox, x152 y368 Checked%useKeyboardHook% vuseKeyboardHook gSetKBhook, Use Keyboard Hook to force hotkeys to work (Save to ini required)
@@ -841,7 +852,7 @@ LoadCustom(thenr) {
     Readini(PermHT, "Custom TSB Sizes " . thenr, "Custom Height Top")
     Readini(PermHB, "Custom TSB Sizes " . thenr, "Custom Height Bottom")
     if (PermWL == "ERROR") {
-        DrawHUD("Requested save or .ini file doesn't exist.", "y160", "cE60000", "s11", "5000")
+        new StackedPleasantNotify("TSolidBackground", "Requested save or the .ini file does not exist.", "", 400, "auto", "b r", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
     } else {
         CustomWidthLeft := PermWL
         CustomWidthRight := PermWR
@@ -865,7 +876,7 @@ Editini:
             Run, notepad %A_ScriptDir%\TSolidBackground.ini,,UseErrorLevel
         }
     } else {
-        DrawHUD("You must first create an ini in the advanced features menu before editing it.", "y160", "cE60000", "s11", "5000")
+        new StackedPleasantNotify("TSolidBackground", "You must first create an ini in the Advanced Features menu before being able to edit it.", "", 400, "auto", "b r", 8000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
     }
 Return
 
@@ -878,12 +889,12 @@ Return
 CheckUpdate(notify) {
     Global
     
-    ;----- [CHECK2] TEMP HACK. Checking for updates while the hooker is on crashes the application and deletes the exe!?
+    ;----- [CHECK2] TEMP HACK. Checking for updates while the hooker is on crashes the application and deletes the exe!? Probably an av false-positive.
     if (Hooking) {
         Hooking := 0
         SetTimer, Hooker, Off
         Menu, Tray, Disable, Stop Window Hooker
-        DrawHUD("Window hooker was disabled.", "", "c836DFF", "s11", "1350")
+        new StackedPleasantNotify("TSolidBackground", "Window hooker was disabled.", "", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
     }
     ;-----
 
@@ -939,7 +950,7 @@ RunAutoUpdateNow:
 Return
 
 AutoUpdateNow(NewVersion) {
-    DrawHUD("TSolidBackground will now update and restart.`nJust hold on a second...", "", "c27A100", "s13", "120000")
+    new StackedPleasantNotify("TSolidBackground", "TSolidBackground will now update and restart.`nJust hold on a second...", "", 400, "auto", "b r", 120000, "0x292929", "0x836DFF", "0x27A100", "0xDCDCCC wBold")
     UrlDownloadToFile, https://github.com/Onurtag/TSolidBackground/releases/download/%NewVersion%/TSolidBackground.exe, TSolidBackground_NEWVER.exe
     FileEncoding,       ;Batch files don't work on UTF-16
     FileDelete, TSolidBackgroundUpdater.bat
@@ -1444,7 +1455,7 @@ Loadpos(posnr) {
     Readini(PermW, "Saved Position " . posnr, "W")
     Readini(PermH, "Saved Position " . posnr, "H")
     if (PermX == "ERROR") {
-        DrawHUD("Saved position or .ini file doesn't exist.", "y160", "cE60000", "s11", "5000")
+        new StackedPleasantNotify("TSolidBackground", "Saved position or .ini file doesn't exist.", "", 400, "auto", "b r", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
     } else {
         WinMove, ahk_id %TBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
     }
@@ -1514,7 +1525,7 @@ LoadHotkeypos(posnr) {
     Readini(PermH, "Hotkey Position " . posnr, "H")
     Readini(titleTBResized, "Hotkey Position " . posnr, "Title")
     if (PermX == "ERROR") {
-        DrawHUD("Saved hotkey position or .ini file doesn't exist.", "y160", "cE60000", "s11", "5000")
+        new StackedPleasantNotify("TSolidBackground", "Saved hotkey position or .ini file doesn't exist.", "", 400, "auto", "b r", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
     } else {
         WinMove, %titleTBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
     }
@@ -1641,7 +1652,17 @@ Hooker() {
         }
     } else {
         if ((TwoWindowExStyle & 0x8) && (CurrActiveTitle != TitleTwo)) {
-            if ((protectVNR && (CurrActiveTitle != "Kagami")) && (InStr(CurrActiveTitle, "TSolidBackground BG") == 0) && (CurrActiveTitle != "")) {
+                ;Check if the title is empty
+            if ((CurrActiveTitle != "")
+                ;Check for VNR
+                && (protectVNR && (CurrActiveTitle != "Kagami"))
+                ;Check for the four hidden TSolidBackground windows
+                && (InStr(CurrActiveTitle, "TSolidBackground BG") == 0)
+                ;Check for the alt+tab menu
+                && (InStr(CurrActiveTitle, "Task Switching") == 0)
+                ;Check for the custom title. (Can be improved if necessary)
+                && (InStr(CurrActiveTitle, excludedFromHooker) == 0))
+            {
                 WinSet, AlwaysOnTop, off, %TitleTwo%
                 WinMinimize, %TitleTwo%
             }
@@ -1971,7 +1992,7 @@ CreateSaveini(showit) {
     Writeini(MoveBy, "Settings", "Mouse Mover Move By")
     Writeini(Debug, "Settings", "Debug")
     if (showit) {
-        DrawHUD("TSolidBackground.ini file was created/saved.", "y160", "c836DFF", "s11", "1350")
+        new StackedPleasantNotify("TSolidBackground", "TSolidBackground.ini file was created/saved.", "", 400, "auto", "b r", 3000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
     }
     Return
 }
@@ -2056,7 +2077,7 @@ GetMonitorIndexFromWindow(windowHandle) {
 ;AddTooltip by Various authors
 ;From https://autohotkey.com/boards/viewtopic.php?&t=30079
 
-;------------------------------
+;-------------------------------------------------------------------------------
 ;
 ; Function: AddTooltip v2.0
 ;
@@ -2347,3 +2368,242 @@ API_GetWindowInfo(HWND) {
    Return obj_WI
 }
 ; ================================================================================================================================
+
+;StackedPleasantNotify by Onurtag
+;Used to create stacking notifications
+;Original PleasantNotify function by Soft, and mod by evilC: https://www.autohotkey.com/boards/viewtopic.php?f=6&t=6056#p35696
+
+; ================================================================================================================================
+;
+; StackedPleasantNotify v1.0 by Onurtag
+;
+; Original PleasantNotify function by Soft, and mod by evilC: https://www.autohotkey.com/boards/viewtopic.php?f=6&t=6056#p35696
+;
+; Modifications: 
+; - Added auto height detection. Explanation is below. To enable; set the height parameter (5th parameter) to "auto" 
+;      - For the message (second parameter): Detects if the text will take 1 or 2 lines.
+;	   - For the highlight text (third parameter): If this parameter is empty (set to ""), reduces height.
+; - Added StackedPleasantNotify function and global pn_stackedNotifications object (enables notification stacking) 
+; - Allow text color and style(wBold/wRegular) specification for the text color parameters. 
+; - Personal styling: faster fade in/out, brought back window corners, Added highlight text line, modified fonts etc.
+; - Removed obsolete methods (manual binding etc.)
+;
+; Usage examples: 
+; new StackedPleasantNotify("StackedPleasantNotify", "Short text that only needs a single line." , "Highlight Text1" , 300, "auto", "b r", 3000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+; new StackedPleasantNotify("StackedPleasantNotify2", "Long text that needs two lines. Long text that needs two lines. " , "Highlight Text2" , 300, "auto", "b r", 3000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+; new StackedPleasantNotify("StackedPleasantNotify2", "Message without highlight text.", "", 300, "auto", "b r", 3000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+; new StackedPleasantNotify("StackedPleasantNotify3 not bold", "Message with static height. BOLD." , "Highlight Text3. This is NOT BOLD." , 300, 90, "b r", 3000, "0x292929", "0x836DFF wRegular", "0xb8b8ac wBold", "0xDCDCCC wRegular")
+;
+; ================================================================================================================================
+
+Class StackedPleasantNotify {
+
+    __New(title, message, messageLight, pnW=700, pnH=300, position="b r", time=10, bgColor="0xF2F2F0", titleColor="0x07D82F", textColor="Black", textStyleLight="0x505050") {
+        Critical
+        lastfound := WinExist()
+
+        ;Create global stack object if it doesn't exist
+        global pn_stackedNotifications
+        if (!pn_stackedNotifications) {
+            pn_stackedNotifications := Object()
+            pn_stackedNotifications["LastOffset"] := 0
+            notifCount := 0
+        } else {
+            ;Minus 1 for CurrentHeight
+            notifCount := pn_stackedNotifications.Count() - 1
+        }
+
+        offsetY := 0
+        ;Set notification offset for stacking
+        if (notifCount >= 1) {
+            ;pnH is notification height. Plus 2 pixel space between notifications (+20 because of realH below).
+            ;offsetY := notifCount * (pnH + 22)
+            For Key, Value in pn_stackedNotifications {
+                valueHeight := Value.height
+                if (Key != "LastOffset") {
+                    offsetY += valueHeight + 22
+                }
+            }
+            if (offsetY > pn_stackedNotifications["LastOffset"]) {
+                pn_stackedNotifications["LastOffset"] := offsetY
+            } else {
+                ;"LastOffset" is only used here, but it might not be used at all (anymore).
+                offsetY := pn_stackedNotifications["LastOffset"] 
+            }
+        }
+        this.offsetY := offsetY
+
+        ;Automatic height and message line count detection
+        if (pnH == "auto") {
+            detectHeight := True
+        } else {
+            detectHeight := False
+        }
+
+        messagelineCount := 1
+        messageLen := StrLen(message)
+        ;6.50 pixels per character (average), +10 for various gui margins
+        messagePixelWidth := (messageLen * 6.50) + 10
+        ;If its smaller than width, detect message as single line.
+        if (messagePixelWidth < pnW) {
+            messagelineCount := 1
+            if (detectHeight) {
+                pnH := 68
+            }
+        } else {
+            messagelineCount := 2
+            if (detectHeight) {
+                pnH := 90
+            ;Dont increase the number of lines if the specified static height is less than 80 pixels
+            } else if (pnH < 80) {
+                messagelineCount := 1
+            }
+        }
+        ;If the highlight message is empty and the height is automatic, reduce window height.
+        if ((messageLight == "") && (detectHeight)) {
+            pnH -= 20
+        }
+
+        this.destroyed := False
+        this.notifTitle := title
+        this.timerFN := ObjBindMethod(this, "TimerExpired")
+        this.okclickFN := ObjBindMethod(this, "OKClicked")
+        this.realHeight := pnH + 20
+
+        Gui, New, % "HwndPN_hwnd"
+        this.PN_hwnd := PN_hwnd
+        Gui, % PN_hwnd ": Default"
+        Gui, % PN_hwnd ": +AlwaysOnTop +ToolWindow -SysMenu -Caption +LastFound"
+        ;WinSet, ExStyle, +0x20
+        WinSet, Transparent, 0
+        Gui, % PN_hwnd ": Color", %bgColor%
+        Gui, % PN_hwnd ": Font", wBold s14 c%titleColor%, Segoe UI
+        Gui, % PN_hwnd ": Add", Text, % " x" 14 " y" 8 " w" pnW-10 " hwndTitleHwnd", % title
+        this.TitleHwnd := TitleHwnd
+        Gui, % PN_hwnd ": Font", wRegular s12 c%textColor%
+        Gui, % PN_hwnd ": Add", Text, % " x" 14 " y" 34 " w" pnW-10 " h" pnH-10 " hwndMessageHwnd", % message
+        Gui, % PN_hwnd ": Font", wRegular s12 c%textStyleLight%
+        Gui, % PN_hwnd ": Add", Text, % " x" 14 " y" 34 + (messagelineCount * 22) " w" pnW-10 " h" pnH-10, % messageLight
+        if (time = "P"){
+            Gui, % PN_hwnd ": Add", Button, % " x" pnW - 80 " y" pnH - 50 " w50 h40 ", OK
+            ; When OK is clicked, call this instance of the class
+            okclickFN := this.okclickFN
+            GuiControl +g, OK, %okclickFN%
+        }
+        this.MessageHwnd := MessageHwnd
+        RealW := pnW + 20
+        RealH := pnH + 20
+        Gui, % PN_hwnd ": Show", W%RealW% H%RealH% NoActivate, Stacked Pleasant Notification
+        this.WinMove(PN_hwnd, position, offsetY)
+
+        ;Add to pn_stackedNotifications object
+        thispnhwnd := this.PN_Hwnd
+        if (!pn_stackedNotifications.hasKey(thispnhwnd)) {
+            pn_stackedNotifications[thispnhwnd] := {height:pnH, count:notifCount}
+        }
+
+        ;Gui, % PN_Hwnd ": +Parent" A_ScriptHwnd
+        ;Enable Window region (corner smoothing) below
+        /* 
+        if A_ScreenDPI = 96
+            WinSet, Region,0-0 w%pnW% h%pnH% R40-40,%A_ScriptName% 
+        */
+
+        /* For Screen text size 125%
+        if A_ScreenDPI = 120
+            WinSet, Region, 0-0 w800 h230 R40-40, %A_ScriptName%
+        */
+        Critical Off
+        this.winfade("ahk_id " PN_hwnd,230,34)
+        if (time != "P")
+        {
+            timerFN := this.timerFN
+            SetTimer % timerFN, % -time
+        }
+        
+        if (WinExist(lastfound)){
+            Gui, % lastfound ":Default"
+        }
+    }
+    
+    __Delete(){
+        if (!this.destroyed)
+            this.Destroy()
+    }
+    
+    TimerExpired(){
+        this.Destroy()
+    }
+    
+    OKClicked(){
+        this.Destroy()
+    }
+    
+    Destroy(){
+        global pn_stackedNotifications
+        if (this.destroyed) {
+            return
+        }
+        this.destroyed := True
+        this.winfade("ahk_id " this.PN_hwnd,0,17)
+        Gui, % this.PN_Hwnd ": Destroy"
+        ;Remove from stackedNotifications object
+        thispnhwnd := this.PN_Hwnd
+        if (pn_stackedNotifications.hasKey(thispnhwnd)) {
+            pn_stackedNotifications.Delete(thispnhwnd)
+            if (pn_stackedNotifications.Count() == 1) {
+                pn_stackedNotifications["LastOffset"] := 0
+            } else {
+                For Key, Value in pn_stackedNotifications {
+                    valueCount := Value.count
+                    if (Key != "LastOffset") {
+                        WinGetPos, stackCurrX, stackCurrY,,, ahk_id %Key%
+                        SysGet, MonVar, MonitorWorkArea
+                        ;Move notifications above this one downwards.
+                        if (this.offsetY < (MonVarBottom - stackCurrY)) {
+                            ;-2 is for the spaces between the notifications. Although this isn't enough. It should be -2 * stack level and stack level should be reduced by 1.
+                            WinMove, ahk_id %Key%,, stackCurrX, stackCurrY + this.realHeight + 2
+                        }
+                    }
+                }
+                pn_stackedNotifications["LastOffset"] -= this.realHeight - 2
+            }
+        }
+    }
+
+    WinMove(hwnd,position,offsetY=0) {
+       SysGet, Mon, MonitorWorkArea
+       WinGetPos,ix,iy,w,h, ahk_id %hwnd%
+       x := InStr(position,"l") ? MonLeft : InStr(position,"hc") ?  (MonRight-w)/2 : InStr(position,"r") ? MonRight - w : ix
+       y := InStr(position,"t") ? MonTop : InStr(position,"vc") ?  (MonBottom-h)/2 : InStr(position,"b") ? MonBottom - h : iy
+       WinMove, ahk_id %hwnd%,,x,y-offsetY
+    }
+
+    winfade(w:="",t:=128,i:=1,d:=10) {
+        w:=(w="")?("ahk_id " WinActive("A")):w
+        t:=(t>255)?255:(t<0)?0:t
+        WinGet,s,Transparent,%w%
+        s:=(s="")?255:s ;prevent trans unset bug
+        WinSet,Transparent,%s%,%w%
+        i:=(s<t)?abs(i):-1*abs(i)
+        while(k:=(i<0)?(s>t):(s<t)&&WinExist(w)) {
+            WinGet,s,Transparent,%w%
+            s+=i
+            WinSet,Transparent,%s%,%w%
+            sleep %d%
+        }
+    }
+
+    /* 
+    ;These do not work with the mod and are not necessary.
+    pn_mod_title(title) {
+        global pn_title
+        GuiControl, Notify: Text,pn_title, % title
+    }
+
+    pn_mod_msg(message) {
+        global pn_msg
+        GuiControl, Notify: Text,pn_msg, % message
+    }
+    */
+}

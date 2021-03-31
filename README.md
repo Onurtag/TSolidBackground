@@ -77,6 +77,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
+* **Version 2.9.14**  
+
+✅ Switch notification popups with a better looking one  
+
 * **Version 2.9.13**  
 
 ➕ Added Ctrl/Shift speed modifiers to MouseMover  
