@@ -6,7 +6,7 @@ SetWinDelay, 0
 SetControlDelay, 0        ;Mostly useless.
 FileEncoding, UTF-16      ;Use UCS-2 Little Endian BOM for the ini, but not for the .bat file.
 
-Version := "v2.9.14"
+Version := "v2.9.15"
 IniVersion := "v1.0"
 
 ;#Warn, All, StdOut
@@ -109,13 +109,13 @@ IfExist, TSolidBackground.ini
     Readini(WrittenIniVersion, "Settings", "Ini Version")
     if ((WrittenIniVersion == "ERROR") || (WrittenIniVersion != IniVersion)) {
         if (WrittenIniVersion == "ERROR") {
-            new StackingPleasantNotify("TSolidBackground", "Your TSolidBackground.ini is likely corrupt.`nIt was automatically renamed and recreated.", "", 400, "auto", "b r", 15000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
+            new StackingPleasantNotify("TSolidBackground", "Your TSolidBackground.ini is likely corrupt.`nIt was automatically renamed and recreated.", "", 400, "auto", 15000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
         } else if (WrittenIniVersion != IniVersion) {
-            new StackingPleasantNotify("TSolidBackground", "Your TSolidBackground.ini needs to be updated.`nIt was automatically renamed and recreated.", "", 400, "auto", "b r", 15000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
+            new StackingPleasantNotify("TSolidBackground", "Your TSolidBackground.ini needs to be updated.`nIt was automatically renamed and recreated.", "", 400, "auto", 15000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
         }
         FileMove, TSolidBackground.ini, TSolidBackground_OLD_%A_DD%-%A_MM%-%A_YYYY%.ini
         CreateSaveini(0)
-        new StackingPleasantNotify("TSolidBackground", "Restarting TSolidBackground in 10 seconds...", "", 400, "auto", "b r", 15000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Restarting TSolidBackground in 10 seconds...", "", 400, "auto", 15000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
         Sleep, 15000
         Reload
     }
@@ -249,7 +249,7 @@ Return
     WinGetTitle, currentTitle, A
     if (currentTitle == "Kagami") {
         if (protectVNR) {
-            new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "] is protected.", "Check advanced options to disable it.", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+            new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "] is protected.", "Check advanced options to disable it.", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
             Return
         }
     }
@@ -257,10 +257,10 @@ Return
     WinGet, WindowExStyle, ExStyle, ahk_id %currentWindow%
     if (WindowExStyle & 0x8) { 
         WinSet, AlwaysOnTop, off, ahk_id %currentWindow%
-        new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "]", "Always on top status: OFF", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "]", "Always on top status: OFF", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
     } else {
         WinSet, AlwaysOnTop, on, ahk_id %currentWindow%
-        new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "]", "Always on top status: ON", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "]", "Always on top status: ON", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
     }
 Return
 
@@ -355,10 +355,10 @@ ShowNewMenu(nmX, nmY) {
 ~F8::
     Suspend
     if (A_IsSuspended) {
-        new StackingPleasantNotify("TSolidBackground", "Suspended all other hotkeys.", "To enable hotkeys press " . SuspendKey . ".", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Suspended all other hotkeys.", "To enable hotkeys press " . SuspendKey . ".", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
         Menu, Tray, Tip, TSolidBackground Suspended
     } else {
-        new StackingPleasantNotify("TSolidBackground", "Enabled all hotkeys.", "", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Enabled all hotkeys.", "", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
         Menu, Tray, Tip, TSolidBackground
     }
 Return
@@ -458,7 +458,7 @@ TSolidBackground() {
         WinGetTitle, currTitle, ahk_id %Activewin%
         if (currTitle != "Kagami") {    ;VNR fix
             WinSet, AlwaysOnTop, off, ahk_id %Activewin%
-            new StackingPleasantNotify("TSolidBackground", "Window [" . currTitle . "]", "Always on top status: OFF", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+            new StackingPleasantNotify("TSolidBackground", "Window [" . currTitle . "]", "Always on top status: OFF", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
         }
     }
 
@@ -852,7 +852,7 @@ LoadCustom(thenr) {
     Readini(PermHT, "Custom TSB Sizes " . thenr, "Custom Height Top")
     Readini(PermHB, "Custom TSB Sizes " . thenr, "Custom Height Bottom")
     if (PermWL == "ERROR") {
-        new StackingPleasantNotify("TSolidBackground", "Requested save or the .ini file does not exist.", "", 400, "auto", "b r", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Requested save or the .ini file does not exist.", "", 400, "auto", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
     } else {
         CustomWidthLeft := PermWL
         CustomWidthRight := PermWR
@@ -876,7 +876,7 @@ Editini:
             Run, notepad %A_ScriptDir%\TSolidBackground.ini,,UseErrorLevel
         }
     } else {
-        new StackingPleasantNotify("TSolidBackground", "You must first create an ini in the Advanced Features menu before being able to edit it.", "", 400, "auto", "b r", 8000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "You must first create an ini in the Advanced Features menu before being able to edit it.", "", 400, "auto", 8000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
     }
 Return
 
@@ -894,7 +894,7 @@ CheckUpdate(notify) {
         Hooking := 0
         SetTimer, Hooker, Off
         Menu, Tray, Disable, Stop Window Hooker
-        new StackingPleasantNotify("TSolidBackground", "Window hooker was disabled.", "", 400, "auto", "b r", 5000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Window hooker was disabled.", "", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
     }
     ;-----
 
@@ -950,7 +950,7 @@ RunAutoUpdateNow:
 Return
 
 AutoUpdateNow(NewVersion) {
-    new StackingPleasantNotify("TSolidBackground", "TSolidBackground will now update and restart.`nJust hold on a second...", "", 400, "auto", "b r", 120000, "0x292929", "0x836DFF", "0x27A100", "0xDCDCCC wBold")
+    new StackingPleasantNotify("TSolidBackground", "TSolidBackground will now update and restart.`nJust hold on a second...", "", 400, "auto", 120000, "0x292929", "0x836DFF", "0x27A100", "0xDCDCCC wBold")
     UrlDownloadToFile, https://github.com/Onurtag/TSolidBackground/releases/download/%NewVersion%/TSolidBackground.exe, TSolidBackground_NEWVER.exe
     FileEncoding,       ;Batch files don't work on UTF-16
     FileDelete, TSolidBackgroundUpdater.bat
@@ -1455,7 +1455,7 @@ Loadpos(posnr) {
     Readini(PermW, "Saved Position " . posnr, "W")
     Readini(PermH, "Saved Position " . posnr, "H")
     if (PermX == "ERROR") {
-        new StackingPleasantNotify("TSolidBackground", "Saved position or .ini file doesn't exist.", "", 400, "auto", "b r", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Saved position or .ini file doesn't exist.", "", 400, "auto", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
     } else {
         WinMove, ahk_id %TBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
     }
@@ -1525,7 +1525,7 @@ LoadHotkeypos(posnr) {
     Readini(PermH, "Hotkey Position " . posnr, "H")
     Readini(titleTBResized, "Hotkey Position " . posnr, "Title")
     if (PermX == "ERROR") {
-        new StackingPleasantNotify("TSolidBackground", "Saved hotkey position or .ini file doesn't exist.", "", 400, "auto", "b r", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "Saved hotkey position or .ini file doesn't exist.", "", 400, "auto", 7000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
     } else {
         WinMove, %titleTBResized%,, %PermX%, %PermY%, %PermW%, %PermH%
     }
@@ -1992,7 +1992,7 @@ CreateSaveini(showit) {
     Writeini(MoveBy, "Settings", "Mouse Mover Move By")
     Writeini(Debug, "Settings", "Debug")
     if (showit) {
-        new StackingPleasantNotify("TSolidBackground", "TSolidBackground.ini file was created/saved.", "", 400, "auto", "b r", 3000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
+        new StackingPleasantNotify("TSolidBackground", "TSolidBackground.ini file was created/saved.", "", 400, "auto", 3000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
     }
     Return
 }
@@ -2382,57 +2382,38 @@ API_GetWindowInfo(HWND) {
 ; Modifications: 
 ; - Added auto height detection. Explanation is below. To enable; set the height parameter (5th parameter) to "auto" 
 ;      - For the message (second parameter): Detects if the text will take 1 or 2 lines.
-;	   - For the highlight text (third parameter): If this parameter is empty (set to ""), reduces height.
+;	   - For the Second text (third parameter): If this parameter is empty (set to ""), reduces height.
+;      - If you modify the notification window (font size etc.) this functionality might break.
 ; - Added StackingPleasantNotify function and global pn_stackedNotifications object (enables notification stacking) 
 ; - Allow text color and style(wBold/wRegular) specification for the text color parameters. 
 ; - Added click to dismiss
-; - Personal styling: faster fade in/out, brought back window corners, Added highlight text line, modified fonts etc.
+; - Personal styling: faster fade in/out, brought back window corners, Added Second text line, modified fonts etc.
 ; - Removed obsolete methods (manual binding etc.)
 ;
 ; Usage examples: 
-; new StackingPleasantNotify("StackingPleasantNotify", "Short text that only needs a single line." , "Highlight Text1" , 300, "auto", "b r", 3000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
-; new StackingPleasantNotify("StackingPleasantNotify2", "Long text that needs two lines. Long text that needs two lines. " , "Highlight Text2" , 300, "auto", "b r", 3000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
-; new StackingPleasantNotify("StackingPleasantNotify2", "Message without highlight text.", "", 300, "auto", "b r", 3000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
-; new StackingPleasantNotify("StackingPleasantNotify3 not bold", "Message with static height. BOLD." , "Highlight Text3. This is NOT BOLD." , 300, 90, "b r", 3000, "0x292929", "0x836DFF wRegular", "0xb8b8ac wBold", "0xDCDCCC wRegular")
+; new StackingPleasantNotify("StackingPleasantNotify", "Short text that only needs a single line." , "Second Text1" , 300, "auto", 2000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+; new StackingPleasantNotify("StackingPleasantNotify2", "Long text that needs two lines. Long text that needs two lines. " , "Second Text2" , 300, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+; new StackingPleasantNotify("StackingPleasantNotify3", "Message without Second text.", "", 300, "auto", 3000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
+; new StackingPleasantNotify("StackingPleasantNotify4 not bold", "Message with static height. BOLD." , "Second Text3. This is NOT BOLD." , 300, 90, 7000, "0x292929", "0x836DFF wRegular", "0xb8b8ac wBold", "0xDCDCCC wRegular")
 ;
 ; ================================================================================================================================
 
 Class StackingPleasantNotify {
 
-    __New(title, message, messageLight, pnW=700, pnH=300, position="b r", time=10, bgColor="0xF2F2F0", titleColor="0x07D82F", textColor="Black", textStyleLight="0x505050") {
+    __New(title, message, messageSecond, pnW=700, pnH=300, time=10, bgColor="0xF2F2F0", titleColor="0x07D82F", textColor="Black", textStyleLight="0x505050") {
         Critical
         lastfound := WinExist()
+        
+        SysGet, Mon, MonitorWorkArea
 
         ;Create global stack object if it doesn't exist
         global pn_stackedNotifications
         if (!pn_stackedNotifications) {
             pn_stackedNotifications := Object()
-            pn_stackedNotifications["LastOffset"] := 0
             notifCount := 0
         } else {
-            ;Minus 1 for CurrentHeight
-            notifCount := pn_stackedNotifications.Count() - 1
+            notifCount := pn_stackedNotifications.Count()
         }
-
-        offsetY := 0
-        ;Set notification offset for stacking
-        if (notifCount >= 1) {
-            ;pnH is notification height. Plus 2 pixel space between notifications (+20 because of realH below).
-            ;offsetY := notifCount * (pnH + 22)
-            For Key, Value in pn_stackedNotifications {
-                valueHeight := Value.height
-                if (Key != "LastOffset") {
-                    offsetY += valueHeight + 22
-                }
-            }
-            if (offsetY > pn_stackedNotifications["LastOffset"]) {
-                pn_stackedNotifications["LastOffset"] := offsetY
-            } else {
-                ;"LastOffset" is only used here, but it might not be used at all (anymore).
-                offsetY := pn_stackedNotifications["LastOffset"] 
-            }
-        }
-        this.offsetY := offsetY
 
         ;Automatic height and message line count detection
         if (pnH == "auto") {
@@ -2455,15 +2436,29 @@ Class StackingPleasantNotify {
             messagelineCount := 2
             if (detectHeight) {
                 pnH := 90
-            ;Dont increase the number of lines if the specified static height is less than 80 pixels
+                ;Dont increase the number of lines if the specified static height is less than 80 pixels
             } else if (pnH < 80) {
                 messagelineCount := 1
             }
         }
-        ;If the highlight message is empty and the height is automatic, reduce window height.
-        if ((messageLight == "") && (detectHeight)) {
+        ;If the Second message is empty and the height is automatic, reduce window height.
+        if ((messageSecond == "") && (detectHeight)) {
             pnH -= 20
         }
+
+        offsetY := 0
+        ;Set notification offset for stacking
+        if (notifCount >= 1) {
+            For Key, Value in pn_stackedNotifications {
+                currlastY := Value.lastY
+                if ((MonBottom - currlastY) > offsetY) {
+                    offsetY := MonBottom - currlastY
+                }
+            }
+            ;Plus 2 pixel space between notifications
+            offsetY += 2
+        }
+        this.offsetY := offsetY
 
         this.destroyed := False
         this.notifTitle := title
@@ -2481,31 +2476,34 @@ Class StackingPleasantNotify {
         Gui, % PN_hwnd ": Color", %bgColor%
         Gui, % PN_hwnd ": Font", wBold s14 c%titleColor%, Segoe UI
         Gui, % PN_hwnd ": Add", Text, % " x" 14 " y" 8 " w" pnW-10 " hwndTitleHwnd", % title
-        this.TitleHwnd := TitleHwnd
+        ;This was used to modify the title
+        ;this.TitleHwnd := TitleHwnd
         Gui, % PN_hwnd ": Font", wRegular s12 c%textColor%
         Gui, % PN_hwnd ": Add", Text, % " x" 14 " y" 34 " w" pnW-10 " h" pnH-10 " hwndMessageHwnd", % message
+        ;This was used to modify the message
+        ;this.MessageHwnd := MessageHwnd
         Gui, % PN_hwnd ": Font", wRegular s12 c%textStyleLight%
-        Gui, % PN_hwnd ": Add", Text, % " x" 14 " y" 34 + (messagelineCount * 22) " w" pnW-10 " h" pnH-10, % messageLight
+        Gui, % PN_hwnd ": Add", Text, % " x" 14 " y" 34 + (messagelineCount * 22) " w" pnW-10 " h" pnH-10, % messageSecond
         if (time = "P"){
             Gui, % PN_hwnd ": Add", Button, % " x" pnW - 80 " y" pnH - 50 " w50 h40 ", OK
             ; When OK is clicked, call this instance of the class
             GuiControl +g, OK, %okclickBoundFN%
         }
-        this.MessageHwnd := MessageHwnd
+
         RealW := pnW + 20
         RealH := pnH + 20
-        
+
         ;Make it dismissable with a click (using an invisible text control)
-        Gui, Add, Text, x0 y0 W%RealW% H%RealH% hwndGuiFullBG BackgroundTrans hwndInvisibleText,        
+        Gui, Add, Text, x0 y0 W%RealW% H%RealH% hwndGuiFullBG BackgroundTrans hwndInvisibleText, 
         GuiControl +g, %InvisibleText%, %guiclickBoundFN%
 
         Gui, % PN_hwnd ": Show", W%RealW% H%RealH% NoActivate, Stacked Pleasant Notification
-        this.WinMove(PN_hwnd, position, offsetY)
+        this.WinMove(PN_hwnd, "b r", offsetY)
 
         ;Add to pn_stackedNotifications object
-        thispnhwnd := this.PN_Hwnd
-        if (!pn_stackedNotifications.hasKey(thispnhwnd)) {
-            pn_stackedNotifications[thispnhwnd] := {height:pnH, count:notifCount}
+        thisWinHwnd := this.PN_Hwnd
+        if (!pn_stackedNotifications.hasKey(thisWinHwnd)) {
+            pn_stackedNotifications[thisWinHwnd] := {hwnd:PN_hwnd, lastY:MonBottom-RealH-offsetY, count:notifCount}
         }
 
         ;Gui, % PN_Hwnd ": +Parent" A_ScriptHwnd
@@ -2520,72 +2518,86 @@ Class StackingPleasantNotify {
             WinSet, Region, 0-0 w800 h230 R40-40, %A_ScriptName%
         */
         Critical Off
-        this.winfade("ahk_id " PN_hwnd,230,34)
+        this.winfade("ahk_id " PN_hwnd,240,60)
         if (time != "P")
         {
             SetTimer % timerBoundFN, % -time
         }
-        
+
         if (WinExist(lastfound)){
             Gui, % lastfound ":Default"
         }
     }
-    
+
     __Delete(){
         if (!this.destroyed)
             this.Destroy()
     }
-    
+
     TimerExpired(){
         this.Destroy()
     }
-    
+
     OKClicked(){
         this.Destroy()
     }
-    
+
     GUIClicked(){
-        this.Destroy()
+        this.Destroy(1)
     }
 
-    Destroy(){
+    Destroy(instantly=0){
+        oldDelay := A_WinDelay
+        SetWinDelay, 0
         global pn_stackedNotifications
         if (this.destroyed) {
             return
         }
+        
+        fadeSteps := 20
+        if (instantly == 1) {
+            fadeSteps := 255
+        }
         this.destroyed := True
-        this.winfade("ahk_id " this.PN_hwnd,0,17)
-        Gui, % this.PN_Hwnd ": Destroy"
+
+        thisWinHwnd := this.PN_Hwnd
+        ;Get the window's position before destroying it
+        WinGetPos, thisCurrX, thisCurrY,,, ahk_id %thisWinHwnd%
+        this.winfade("ahk_id " thisWinHwnd,0,fadeSteps)
+        Gui, % thisWinHwnd ": Destroy"
+
         ;Remove from stackedNotifications object
-        thispnhwnd := this.PN_Hwnd
-        if (pn_stackedNotifications.hasKey(thispnhwnd)) {
-            pn_stackedNotifications.Delete(thispnhwnd)
-            if (pn_stackedNotifications.Count() == 1) {
-                pn_stackedNotifications["LastOffset"] := 0
-            } else {
-                For Key, Value in pn_stackedNotifications {
-                    valueCount := Value.count
-                    if (Key != "LastOffset") {
-                        WinGetPos, stackCurrX, stackCurrY,,, ahk_id %Key%
-                        SysGet, MonVar, MonitorWorkArea
-                        ;Move notifications above this one downwards.
-                        if (this.offsetY < (MonVarBottom - stackCurrY)) {
-                            ;-2 is for the spaces between the notifications. Although this isn't enough. It should be -2 * stack level and stack level should be reduced by 1.
-                            WinMove, ahk_id %Key%,, stackCurrX, stackCurrY + this.realHeight + 2
-                        }
-                    }
+        if (pn_stackedNotifications.hasKey(thisWinHwnd)) {
+            pn_stackedNotifications.Delete(thisWinHwnd)
+
+        }
+        ;If we have any other notifications, move them down.
+        if (pn_stackedNotifications.Count() > 0) {
+            ;Sort the notifications so we can move them in correct order.
+            sortedNotifications := ObjectSort(pn_stackedNotifications, "lastY",,True)
+            For Key, Value in sortedNotifications {
+                ;valueCount := Value.count
+                thisHwnd := Value.hwnd
+                WinGetPos, stackCurrX, stackCurrY,,, ahk_id %thisHwnd%
+                SysGet, MonVar, MonitorWorkArea
+                ;Move notifications above this one down.
+                if (thisCurrY > stackCurrY) {
+                    ;2 is for the spaces between the notifications.
+                    newY := stackCurrY + this.realHeight + 2
+                    WinMove, ahk_id %thisHwnd%,, stackCurrX, newY
+                    pn_stackedNotifications[thisHwnd].lastY := newY
                 }
-                pn_stackedNotifications["LastOffset"] -= this.realHeight - 2
             }
         }
+        SetWinDelay, %oldDelay%
     }
 
     WinMove(hwnd,position,offsetY=0) {
-       SysGet, Mon, MonitorWorkArea
-       WinGetPos,ix,iy,w,h, ahk_id %hwnd%
-       x := InStr(position,"l") ? MonLeft : InStr(position,"hc") ?  (MonRight-w)/2 : InStr(position,"r") ? MonRight - w : ix
-       y := InStr(position,"t") ? MonTop : InStr(position,"vc") ?  (MonBottom-h)/2 : InStr(position,"b") ? MonBottom - h : iy
-       WinMove, ahk_id %hwnd%,,x,y-offsetY
+        SysGet, Mon, MonitorWorkArea
+        WinGetPos,ix,iy,w,h, ahk_id %hwnd%
+        x := InStr(position,"l") ? MonLeft : InStr(position,"hc") ? (MonRight-w)/2 : InStr(position,"r") ? MonRight - w : ix
+        y := InStr(position,"t") ? MonTop : InStr(position,"vc") ? (MonBottom-h)/2 : InStr(position,"b") ? MonBottom - h : iy
+        WinMove, ahk_id %hwnd%,,x,y-offsetY
     }
 
     winfade(w:="",t:=128,i:=1,d:=10) {
@@ -2615,4 +2627,64 @@ Class StackingPleasantNotify {
         GuiControl, Notify: Text,pn_msg, % message
     }
     */
+}
+
+;ObjectSort() by bichlepa
+;https://www.autohotkey.com/boards/viewtopic.php?t=49297
+;Part of StackingPleasantNotify
+
+/* ObjectSort() by bichlepa
+* 
+* Description:
+*    Reads content of an object and returns a sorted array
+* 
+* Parameters:
+*    obj:              Object which will be sorted
+*    keyName:          [optional] 
+*                      Omit it if you want to sort a array of strings, numbers etc.
+*                      If you have an array of objects, specify here the key by which contents the object will be sorted.
+*    callBackFunction: [optional] Use it if you want to have custom sort rules.
+*                      The function will be called once for each value. It must return a number or string.
+*    reverse:          [optional] Pass true if the result array should be reversed
+*/
+ObjectSort(obj, keyName="", callbackFunc="", reverse=false)
+{
+    temp := Object()
+    sorted := Object() ;Return value
+
+    for oneKey, oneValue in obj
+    {
+        ;Get the value by which it will be sorted
+        if keyname
+            value := oneValue[keyName]
+        else
+            value := oneValue
+
+        ;If there is a callback function, call it. The value is the key of the temporary list.
+        if (callbackFunc)
+            tempKey := %callbackFunc%(value)
+        else
+            tempKey := value
+
+        ;Insert the value in the temporary object.
+        ;It may happen that some values are equal therefore we put the values in an array.
+        if not isObject(temp[tempKey])
+            temp[tempKey] := []
+        temp[tempKey].push(oneValue)
+    }
+
+    ;Now loop throuth the temporary list. AutoHotkey sorts them for us.
+    for oneTempKey, oneValueList in temp
+    {
+        for oneValueIndex, oneValue in oneValueList
+        {
+            ;And add the values to the result list
+            if (reverse)
+                sorted.insertAt(1,oneValue)
+            else
+                sorted.push(oneValue)
+        }
+    }
+
+    return sorted
 }
