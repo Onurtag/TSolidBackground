@@ -77,6 +77,10 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
+* **Version 2.9.15**  
+
+✅ Update notification popups library
+
 * **Version 2.9.14**  
 
 ✅ Switch notification popups with a better looking one  
