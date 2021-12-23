@@ -24,7 +24,7 @@ At first, I made TSolidBackground to prevent myself from getting distracted whil
 *Compiled using the latest Ahk2Exe. The file is not compressed so you can check the source code easily.  
 
 --------------------  
-## Things To Know  
+## 🌟 Things To Know  
 
 * If no hotkeys work on the active/selected window, run TSolidBackground as admin.  
 If they still don't work try enabling Keyboard Hook on the Advanced Options menu.  
@@ -332,7 +332,7 @@ Added Suspend hotkeys and Center window functions
 
 
 --------------------  
-**Included Functions**  
+## 📦 Included Functions/Libraries
 
 AddTooltip by Various authors  
 From https://autohotkey.com/boards/viewtopic.php?&t=30079  
@@ -340,5 +340,9 @@ From https://autohotkey.com/boards/viewtopic.php?&t=30079
 GetMonitorIndexFromWindow() by Shinywong.  
 From https://autohotkey.com/board/topic/69464-how-to-determine-a-window-is-in-which-monitor/?p=440355  
 
-GetWindowInfo by "just me"
-From https://autohotkey.com/board/topic/69254-func-api-getwindowinfo-ahk-l/
+GetWindowInfo by "just me"  
+From https://autohotkey.com/board/topic/69254-func-api-getwindowinfo-ahk-l/  
+
+StackingPleasantNotify by Onurtag  
+A mod of the original PleasantNotify by Soft which was later modded by evilC   
+From https://www.autohotkey.com/boards/viewtopic.php?f=6&t=6056#p35696  
