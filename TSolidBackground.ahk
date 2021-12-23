@@ -6,7 +6,7 @@ SetWinDelay, 0
 SetControlDelay, 0        ;Mostly useless.
 FileEncoding, UTF-16      ;Use UCS-2 Little Endian BOM for the ini, but not for the .bat file.
 
-Version := "v2.9.15"
+Version := "v2.9.16"
 IniVersion := "v1.0"
 
 ;#Warn, All, StdOut
@@ -37,6 +37,7 @@ TODO:
 -dont use hotkeys as a label, enable them manually. (like the MoveKey s)
 -loop while loading ini and check for errors maybe
 -add scale + button that enlarges/shrinks the window
+-add toggle clickthrough button to move/resize menu
 
 
 TEMP HACKS:   
@@ -52,7 +53,7 @@ OnTopKey := "!Y"
 CenterKey := "!G"
 TaskbarKey := "!F"
 OptionsKey := "!U"
-SuspendKey := "F8"
+SuspendKey := "!F8"
 Iniexists := "No"
 MoveKey1 := ""
 MoveKey2 := ""
@@ -78,8 +79,8 @@ CheckForUpdates := 0
 useKeyboardHook := 0
 Arrs := Object()
 ;These titles are excluded from move/resize menu
-;You don't have to edit this line. 
-;Just use the edit menu under advanced options to add more titles or remove these.
+;You don't have to edit these manually.
+;Use the edit menu under advanced options to add more titles or remove these.
 excludedTitles := Object("TSolidBackground Advanced Features", ""
                         ,"TSolidBackground Splash Text", ""
                         ,"Stacked Pleasant Notification", ""
@@ -87,9 +88,18 @@ excludedTitles := Object("TSolidBackground Advanced Features", ""
                         ,"Windows Shell Experience Host", ""
                         ,"Program Manager", "")
 
-;Window containing this string does not minimize the hooked window (only for the Window Hooker)
-;(similar to the main window or the alt+tab menu)
-excludedFromHooker := "Clipboard Inserter"
+;--------------------------------------------------------------------
+;----------- Advanced settings for Window Hooker (Alpha) ------------
+;--------------------------------------------------------------------
+;Window containing this string in its title does not minimize the hooked window (similar to the main window or the alt+tab menu)  
+hookerExcludeWindow := "Clipboard Inserter"
+;Window with a title that matches this regex string gets activated when the hooked window is restored (when you activate the main window). This one is a Regular Expression.
+hookerTopOfWindowTwoRegex := "Clipboard Inserter.*(Overlay Mode)"
+;The hooker KILLS window two instead of minimizing it.
+hookerKillWindowTwoInstead := 0
+;--------------------------------------------------------------------
+;--------------------------------------------------------------------
+;--------------------------------------------------------------------
 
 Menu, Tray, Icon,,, 0
 Menu, Tray, NoStandard
@@ -103,7 +113,7 @@ Menu, Tray, Add, Exit, Exited
 Menu, Tray, Default, Advanced Features
 Menu, Tray, Tip, TSolidBackground
 
-IfExist, TSolidBackground.ini
+IfExist, %A_ScriptDir%\TSolidBackground.ini
 {
     Iniexists := "Yes"
     Readini(WrittenIniVersion, "Settings", "Ini Version")
@@ -113,7 +123,7 @@ IfExist, TSolidBackground.ini
         } else if (WrittenIniVersion != IniVersion) {
             new StackingPleasantNotify("TSolidBackground", "Your TSolidBackground.ini needs to be updated.`nIt was automatically renamed and recreated.", "", 400, "auto", 15000, "0x292929", "0x836DFF", "0xF34242 wBold", "0xDCDCCC wBold")
         }
-        FileMove, TSolidBackground.ini, TSolidBackground_OLD_%A_DD%-%A_MM%-%A_YYYY%.ini
+        FileMove, %A_ScriptDir%\TSolidBackground.ini, TSolidBackground_OLD_%A_DD%-%A_MM%-%A_YYYY%.ini
         CreateSaveini(0)
         new StackingPleasantNotify("TSolidBackground", "Restarting TSolidBackground in 10 seconds...", "", 400, "auto", 15000, "0x292929", "0x836DFF", "0xb8b8ac wBold", "0xDCDCCC wBold")
         Sleep, 15000
@@ -174,11 +184,11 @@ IfExist, TSolidBackground.ini
         }
         Hotkey, !U, Off
     }
-    if (SuspendKey != "F8") {
+    if (SuspendKey != "!F8") {
         if (SuspendKey != "") {
-            Hotkey, %SuspendKey%, F8
+            Hotkey, %SuspendKey%, ~!F8
         }
-        Hotkey, F8, Off
+        Hotkey, !F8, Off
     }
 
 
@@ -352,7 +362,7 @@ ShowNewMenu(nmX, nmY) {
     SetTimer, KillCheat, 30
 }
 
-~F8::
+~!F8::
     Suspend
     if (A_IsSuspended) {
         new StackingPleasantNotify("TSolidBackground", "Suspended all other hotkeys.", "To enable hotkeys press " . SuspendKey . ".", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
@@ -701,7 +711,7 @@ SaveTitlesToIni() {
         }
         rowCounter--
     }
-    IfNotExist, TSolidBackground.ini 
+    IfNotExist, %A_ScriptDir%\TSolidBackground.ini 
     {
         CreateSaveini(1)
     }
@@ -834,7 +844,7 @@ Return
 
 SaveCustom(thenr) {
     Global
-    IfNotExist, TSolidBackground.ini 
+    IfNotExist, %A_ScriptDir%\TSolidBackground.ini 
     {
         CreateSaveini(1)
     }
@@ -868,7 +878,7 @@ LoadCustom(thenr) {
 }
 
 Editini:
-    IfExist, TSolidBackground.ini
+    IfExist, %A_ScriptDir%\TSolidBackground.ini
     {
         Run, %A_ScriptDir%\TSolidBackground.ini,,UseErrorLevel
         if ErrorLevel == ERROR
@@ -1464,7 +1474,7 @@ Loadpos(posnr) {
 
 Savepos(posnr) {
     Global
-    IfNotExist, TSolidBackground.ini 
+    IfNotExist, %A_ScriptDir%\TSolidBackground.ini
     {
         CreateSaveini(1)
     }
@@ -1503,7 +1513,7 @@ Return
 
 SaveHotkeypos(posnr) {
     Global
-    IfNotExist, TSolidBackground.ini 
+    IfNotExist, %A_ScriptDir%\TSolidBackground.ini 
     {
         CreateSaveini(1)
     }
@@ -1561,8 +1571,8 @@ ShowHooker() {
     Gui, hook: Add, Button, x254 y460 w130 h28 gRunCreateSaveini, Create/Save .ini
     Gui, hook: Add, Text, x112 y112, Main Window:  
     Gui, hook: Add, Text, x112 y152, Hooked Window:  
-    Gui, hook: Add, Text, x60 y47 , Window Hooker currently only works for minimizing/switching tabs on browsers.`nFor now it can't make them move together. The .ini file will save the window titles too.
-    Gui, hook: Add, Checkbox, x112 y280 Checked%hookPartialTitle% vhookPartialTitle gSetnow, `nHook anything that contains the Main Window Title `n(off: Hook only if titles are completely same)
+    Gui, hook: Add, Text, x60 y47 , Window Hooker currently only works for minimizing windows/switching tabs on browsers.`nFor now it can't make the windows move together. The .ini file will save the window titles too.
+    Gui, hook: Add, Checkbox, x112 y280 Checked%hookPartialTitle% vhookPartialTitle gSetnow, `nHook anything that contains the Main Window Title `n(off: Hooks only when the titles are identical)
     Gui, hook: Font, s10
     Gui, hook: Add, Text, x500 y355, Tip: You can `nalso stop the `nwindow hooker `nusing the `ntray menu.
     Gui, hook: Font, s10 cBlack norm
@@ -1631,40 +1641,80 @@ Return
 Hooker() {
     Global
     ;WinGet, OneisNotMin, MinMax, %TitleTwo%
-    WinGet, TwoisNotMin, MinMax, %TitleTwo%
-    WinGet, TwoWindowExStyle, ExStyle, %TitleTwo%
     ;CurrActiveID := WinExist("A")
     ;WinGetTitle, CurrActiveTitle, ahk_id %CurrActiveID%
-    WinGetTitle, CurrActiveTitle, A
+    oldMatchMode := A_TitleMatchMode
+    ;Set title mode and check for TitleOne
     if (hookPartialTitle) {
+        SetTitleMatchMode, 2
+        WinGetTitle, CurrActiveTitle, A
         checkTitleOne := InStr(CurrActiveTitle, TitleOne)
     } else {
+        SetTitleMatchMode, 1
+        WinGetTitle, CurrActiveTitle, A
         checkTitleOne := (CurrActiveTitle == TitleOne)
     }
+    WinGet, TwoisNotMin, MinMax, %TitleTwo%
+    WinGet, TwoWindowExStyle, ExStyle, %TitleTwo%
+    ;If TitleOne was found
     if (checkTitleOne > 0) {
+        ;if we are using kill mode, wait for window two to exist
+        if (hookerKillWindowTwoInstead) {
+            WinWait, %TitleTwo%,, 3
+        }
+        ;restore window two if it is minimized
         if (TwoisNotMin == -1) {
+            ;Restore WindowTwo
             WinRestore, %TitleTwo%
         }
-        if (TwoWindowExStyle & 0x8) {
 
+        if (TwoWindowExStyle & 0x8) {
+            ;do nothing if TitleTwo is always on top
         } else {
+            ;Enable always on top for TitleTwo
             WinSet, AlwaysOnTop, on, %TitleTwo%
         }
+        
+        ;Handle hookerTopOfWindowTwoRegex
+        ;Enable RegEx TitleMatchMode temprorarily
+        oldMatchModeRX := A_TitleMatchMode
+        SetTitleMatchMode, RegEx
+        ;restore TopOfWindowTwo and move it to the top 
+        WinRestore, % hookerTopOfWindowTwoRegex
+        WinSet, Top,, % hookerTopOfWindowTwoRegex
+        SetTitleMatchMode, %oldMatchModeRX%
+
     } else {
-        if ((TwoWindowExStyle & 0x8) && (CurrActiveTitle != TitleTwo)) {
+        ;check if active title is not equal to titletwo; if partial is disabled
+        ;OR check if active title does not include titletwo; if partial is enabled
+        if ((!hookPartialTitle && (CurrActiveTitle != TitleTwo)) || (hookPartialTitle && !InStr(CurrActiveTitle, TitleTwo))) {
                 ;Check if the title is empty
             if ((CurrActiveTitle != "")
-                ;Check for VNR
+                ;and Check for VNR
                 && (protectVNR && (CurrActiveTitle != "Kagami"))
-                ;Check for the four hidden TSolidBackground windows
+                ;and Check for the four hidden TSolidBackground windows
                 && (InStr(CurrActiveTitle, "TSolidBackground BG") == 0)
-                ;Check for the alt+tab menu
+                ;and Check for the alt+tab menu
                 && (InStr(CurrActiveTitle, "Task Switching") == 0)
-                ;Check for the custom title. (Can be improved if necessary)
-                && (InStr(CurrActiveTitle, excludedFromHooker) == 0))
+                ;and Check for the custom title. (Can be improved if necessary)
+                && (InStr(CurrActiveTitle, hookerExcludeWindow) == 0))
             {
-                WinSet, AlwaysOnTop, off, %TitleTwo%
-                WinMinimize, %TitleTwo%
+                ;check if title two is always on top
+                if (TwoWindowExStyle & 0x8) {
+                    WinSet, AlwaysOnTop, off, %TitleTwo%
+                } else {
+                    ;do nothing if TitleTwo is NOT always on top
+                }
+
+                ;if TitleTwo is not minimized, minimize it.
+                if (TwoisNotMin != -1) {
+                    ;kill it or minimize it
+                    if (hookerKillWindowTwoInstead) {
+                        WinClose, %TitleTwo%
+                    } else {
+                        WinMinimize, %TitleTwo%
+                    }
+                }
             }
         }
         /*
@@ -1677,12 +1727,15 @@ Hooker() {
         */
     }
     if (Hooking) {
-        SetTimer, Hooker, 150
+        SetTimer, Hooker, 200
     } else {
+        ;if disabled, turn always on top off for TitleTwo
         if (TwoWindowExStyle & 0x8) {
             WinSet, AlwaysOnTop, off, %TitleTwo%
         }
     }
+    ;Restore title match mode
+    SetTitleMatchMode, %oldMatchMode%
     Return
 }
 
@@ -1730,7 +1783,7 @@ StartDummyWindow:
     Gui, Dummy: Font, s10 cDCDCCC
     Gui, Dummy: Add, Text, x242 y90, Tip: You might not`nwant to use this`ntogether with the`nMove/Resize menu`nas they use the`nsame functions.
     SavedDummy := 0
-    IfExist, TSolidBackground.ini
+    IfExist, %A_ScriptDir%\TSolidBackground.ini
     {
         Readini(DummyX, "Dummy Window", "Dummy X")
         Readini(DummyY, "Dummy Window", "Dummy Y")
@@ -1758,7 +1811,7 @@ SaveDummy:
     SysGet, Caption_Size, 4
     DummyH := DummyH - 2*Border_SizeH - Caption_Size
     DummyW := DummyW - 2*Border_SizeW
-    IfNotExist, TSolidBackground.ini 
+    IfNotExist, %A_ScriptDir%\TSolidBackground.ini 
     {
         CreateSaveini(1)
     }
@@ -1951,20 +2004,20 @@ CreateSaveini(showit) {
         }
     }
     ;Try to keep the ini in order.
-    IfNotExist, TSolidBackground.ini
+    IfNotExist, %A_ScriptDir%\TSolidBackground.ini
     {
-        FileAppend, [Help]`n, TSolidBackground.ini
-        FileAppend, [Hotkeys]`n, TSolidBackground.ini
-        FileAppend, [Settings]`n, TSolidBackground.ini
-        FileAppend, [Dummy Window], TSolidBackground.ini
-        FileAppend, [Custom TSB Sizes 1]`n, TSolidBackground.ini
-        FileAppend, [Custom TSB Sizes 2]`n, TSolidBackground.ini
-        FileAppend, [Custom TSB Sizes 3]`n, TSolidBackground.ini
-        FileAppend, [Saved Position 1]`n, TSolidBackground.ini
-        FileAppend, [Saved Position 2]`n, TSolidBackground.ini
-        FileAppend, [Saved Position 3]`n, TSolidBackground.ini
-        FileAppend, [Saved Position 4]`n, TSolidBackground.ini
-        FileAppend, [Saved Position 5]`n, TSolidBackground.ini
+        FileAppend, [Help]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Hotkeys]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Settings]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Dummy Window], %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Custom TSB Sizes 1]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Custom TSB Sizes 2]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Custom TSB Sizes 3]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Saved Position 1]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Saved Position 2]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Saved Position 3]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Saved Position 4]`n, %A_ScriptDir%\TSolidBackground.ini
+        FileAppend, [Saved Position 5]`n, %A_ScriptDir%\TSolidBackground.ini
     }
     Writeini(" https://github.com/Onurtag/TSolidBackground/#tsolidbackground", "Help", "#For help, check out the readme")
     Writeini(TSolidBackgroundKey, "Hotkeys", "TSolidBackground Key")
@@ -1998,11 +2051,11 @@ CreateSaveini(showit) {
 }
 ;Use functions instead of the default syntax to save/load the ini values. Definitely useless.
 Writeini(value, section, key) {
-    IniWrite, %value%, TSolidBackground.ini, %section%, %key%
+    IniWrite, %value%, %A_ScriptDir%\TSolidBackground.ini, %section%, %key%
 }
 
 Readini(ByRef outvalue, section, key) {
-    IniRead, outvalue, TSolidBackground.ini, %section%, %key%
+    IniRead, outvalue, %A_ScriptDir%\TSolidBackground.ini, %section%, %key%
 }
 ;ini handling end
 

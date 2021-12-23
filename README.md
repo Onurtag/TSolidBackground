@@ -77,13 +77,20 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
+* **Version 2.9.16**  
+
+🔁 Change the default "Suspend All Hotkeys" key from F8 to Alt+F8 (!F8)  
+✅ Fix a bug where it was not possible to modify the "Suspend All Hotkeys" hotkey.  
+✅ Fix a bug where the location of TSolidBackground.ini was not consistent.  
+➕ Refactor Window Hooker (Alpha) logic and add some minor features (these do not show up on the GUI yet)  
+
 * **Version 2.9.15**  
 
 ✅ Update notification popups library
 
 * **Version 2.9.14**  
 
-✅ Switch notification popups with a better looking one  
+✅ Switch notification popups with a better looking library  
 
 * **Version 2.9.13**  
 
