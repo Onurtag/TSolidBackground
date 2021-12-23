@@ -13,7 +13,7 @@ At first, I made TSolidBackground to prevent myself from getting distracted whil
     Center window: !G
     Show/Hide taskbar: !F
     Advanced Options: !U
-    Suspend all other hotkeys: F8
+    Suspend all other hotkeys: !F8
     Default Color: 250000 (hex value without the #)
 
 **✅ If you are planning to use TSolidBackground, you should also read 'Things to Know' below.**  
