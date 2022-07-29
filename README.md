@@ -78,6 +78,7 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >❌ Removal  
 
 * **Version 2.9.17**  
+
 ➕ Add an AOT "Toggle Always on Top" button to the Move/Resize menu.  
 
 * **Version 2.9.16**  
