@@ -77,6 +77,9 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 >➕ Addition  
 >❌ Removal  
 
+* **Version 2.9.17**  
+➕ Add an AOT "Toggle Always on Top" button to the Move/Resize menu.  
+
 * **Version 2.9.16**  
 
 🔁 Change the default "Suspend All Hotkeys" key from F8 to Alt+F8 (!F8)  
@@ -270,7 +273,7 @@ Added U,D,L,R buttons to easily move windows.
 
 Removed old options, moved to (!U)  
 Added .ini option to disable startup window.  
-Seperated custom width and height, made new temprorary options in (!U).  
+Seperated custom width and height, made new temporary options in (!U).  
 
 * **Version 2.2.2:**  
 

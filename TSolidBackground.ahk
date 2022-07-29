@@ -6,7 +6,7 @@ SetWinDelay, 0
 SetControlDelay, 0        ;Mostly useless.
 FileEncoding, UTF-16      ;Use UCS-2 Little Endian BOM for the ini, but not for the .bat file.
 
-Version := "v2.9.16"
+Version := "v2.9.17"
 IniVersion := "v1.0"
 
 ;#Warn, All, StdOut
@@ -29,9 +29,10 @@ TODO:
 -Add named presets for move/resize menu. Maybe for the custom tsb sizes as well. Can save window title as well and show it as a tooltip maybe.
 -"Minimized" instead of -32000 x and y  
 -hotkeys should be manually added to start labels instead.
+-maybe use an ini handler library (example in "ini handler library.zip")
 -fix ini long variable names with or without spaces. Long variables might be fine but no spaces?
 -default autosave everything possible to ini option, disable "saved" popups except for the first time
--tooltips for permanent/temprorary positions
+-tooltips for permanent/temporary positions
 -ini autosave+autobackup(s)
 -seperate ini categories for hooker etc
 -dont use hotkeys as a label, enable them manually. (like the MoveKey s)
@@ -255,8 +256,17 @@ if (CheckForUpdates == 1) {
 Return
 
 !Y::
-    WinGet, currentWindow, ID, A
-    WinGetTitle, currentTitle, A
+    ToggleAlwaysOnTop()
+Return
+
+ToggleAlwaysOnTop(windowtoAOT := "") {
+    Global
+    if (windowtoAOT == "") {
+        WinGet, currentWindow, ID, A
+    } else {
+        currentWindow := windowtoAOT
+    }
+    WinGetTitle, currentTitle, ahk_id %currentWindow%
     if (currentTitle == "Kagami") {
         if (protectVNR) {
             new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "] is protected.", "Check advanced options to disable it.", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
@@ -265,14 +275,14 @@ Return
     }
     WinStack(currentWindow)
     WinGet, WindowExStyle, ExStyle, ahk_id %currentWindow%
-    if (WindowExStyle & 0x8) { 
+    if (WindowExStyle & 0x8) {
         WinSet, AlwaysOnTop, off, ahk_id %currentWindow%
         new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "]", "Always on top status: OFF", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
     } else {
         WinSet, AlwaysOnTop, on, ahk_id %currentWindow%
         new StackingPleasantNotify("TSolidBackground", "Window [" . currentTitle . "]", "Always on top status: ON", 400, "auto", 5000, "0x292929", "0x836DFF", "0xb8b8ac", "0xDCDCCC wBold")
     }
-Return
+}
 
 !T::
     RunTSB()
@@ -1090,8 +1100,10 @@ ShowResizer() {
         Gui, resizer: Font, s9.5
         Gui, resizer: Add, Button, x337 y96 w21 h19 hwndhCloseWin gCloseWin, ❌      ;Cross ❌
         AddTooltip(hCloseWin, "Close Window")
-        Gui, resizer: Add, Button, x285 y120 w33 h21 hwndhTSBWin gTSBWin, TSB
-        AddTooltip(hTSBWin, "Toggle TSolidBackground on This Window")
+        Gui, resizer: Add, Button, x285 y120 w34 h21 hwndhTSBWin gTSBWin, TSB
+        AddTooltip(hTSBWin, "Toggle 'TSolidBackground' on this window")
+        Gui, resizer: Add, Button, x324 y120 w34 h21 hwndhAOTWin gAOTWin, AOT
+        AddTooltip(hAOTWin, "Toggle 'Always on Top' status of this Window")
         Gui, resizer: Font, s9
         Gui, resizer: Add, Button, x350 y147 w15 h15 hwndhOrigxy gOrigxy, R
         AddTooltip(hOrigxy, "Reset Window Position")
@@ -1104,10 +1116,10 @@ ShowResizer() {
         Gui, resizer: Add, Button, x503 y207 w16 h16 gWleft, L
         Gui, resizer: Add, Button, x539 y207 w16 h16 gWright, R
         Gui, resizer: Add, Button, x153 y362 w27 h21 hwndhSavetemp1 gSavetemp1, T1
-        AddTooltip(hSavetemp1, "Temprorary values are lost when you quit TSolidBackground.")
+        AddTooltip(hSavetemp1, "Temporary values are lost when you quit TSolidBackground.")
         Gui, resizer: Add, Button, x153 y390 w27 h21 gLoadtemp1, T1
         Gui, resizer: Add, Button, x185 y362 w27 h21 hwndhSavetemp2 gSavetemp2, T2
-        AddTooltip(hSavetemp2, "Temprorary values are lost when you quit TSolidBackground.")
+        AddTooltip(hSavetemp2, "Temporary values are lost when you quit TSolidBackground.")
         Gui, resizer: Add, Button, x185 y390 w27 h21 gLoadtemp2, T2
         Gui, resizer: Add, Button, x220 y362 w27 h21 hwndhSave1 gSave1, P1
         AddTooltip(hSave1, "Permanently saves the window size/position to .ini")
@@ -1386,6 +1398,13 @@ TSBWin:
     Gui, Submit, NoHide
     if (TBResized) {
         RunTSB(TBResized)  
+    }
+Return
+
+AOTWin:
+    Gui, Submit, NoHide
+    if (TBResized) {
+        ToggleAlwaysOnTop(TBResized)
     }
 Return
 
@@ -1676,7 +1695,7 @@ Hooker() {
         }
         
         ;Handle hookerTopOfWindowTwoRegex
-        ;Enable RegEx TitleMatchMode temprorarily
+        ;Enable RegEx TitleMatchMode temporarily
         oldMatchModeRX := A_TitleMatchMode
         SetTitleMatchMode, RegEx
         ;restore TopOfWindowTwo and move it to the top 
@@ -2453,10 +2472,10 @@ API_GetWindowInfo(HWND) {
 
 Class StackingPleasantNotify {
 
-    __New(title, message, messageSecond, pnW=700, pnH=300, time=10, bgColor="0xF2F2F0", titleColor="0x07D82F", textColor="Black", textStyleLight="0x505050") {
+    __New(title, message, messageSecond, pnW=700, pnH=300, time=2000, bgColor="0xF2F2F0", titleColor="0x07D82F", textColor="Black", textStyleLight="0x505050") {
         Critical
         lastfound := WinExist()
-        
+
         SysGet, Mon, MonitorWorkArea
 
         ;Create global stack object if it doesn't exist
@@ -2606,7 +2625,7 @@ Class StackingPleasantNotify {
         if (this.destroyed) {
             return
         }
-        
+
         fadeSteps := 20
         if (instantly == 1) {
             fadeSteps := 255
@@ -2684,7 +2703,7 @@ Class StackingPleasantNotify {
 
 ;ObjectSort() by bichlepa
 ;https://www.autohotkey.com/boards/viewtopic.php?t=49297
-;Part of StackingPleasantNotify
+;Required by StackingPleasantNotify
 
 /* ObjectSort() by bichlepa
 * 
