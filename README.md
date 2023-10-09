@@ -70,7 +70,7 @@ If you have any other problems, [open an issue](https://github.com/Onurtag/TSoli
 
 ## Changelog
 
-***Moved to [Changelog.md](https://github.com/Onurtag/TSolidBackground/blob/master/README.md)***  
+***Moved to [Changelog.md](https://github.com/Onurtag/TSolidBackground/blob/master/Changelog.md)***  
 
 ## 📦 Included Functions/Libraries
 
