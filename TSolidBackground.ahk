@@ -1,4 +1,4 @@
-#SingleInstance Force
+﻿#SingleInstance Force
 #NoEnv
 SendMode Input
 SetBatchLines, 10000
@@ -6,7 +6,7 @@ SetWinDelay, 0
 SetControlDelay, 0        ;Mostly useless.
 FileEncoding, UTF-16      ;Use UCS-2 Little Endian BOM for the ini, but not for the .bat file.
 
-Version := "v2.9.17"
+Version := "v2.9.18"
 IniVersion := "v1.0"
 
 ;#Warn, All, StdOut
@@ -16,29 +16,31 @@ TSolidBackground
 An AIO Autohotkey script that can make any window pseudo-fullscreen using padding over window borders and background. It can also move/resize windows and make them always on top.
 https://github.com/Onurtag/TSolidBackground
 
-To anyone reading the code,
-This script contains many globals and hacks that are unoptimal which I can't really recommend.
-They all work well and it would be a waste of time (also I don't care enough too) so they will stay like this until they break or bother me.
+To anyone reading the code;
+This script has an old history and contains many globals which is not how a nice, clean and optimal script should look like.
 
 If you have any good suggestions, feel free to contact me or open an issue.
 
 TODO:
 -Fix GUI tab orderings or FULLY REMAKE the gui (Maybe with a tool or a template) https://www.autohotkey.com/boards/viewtopic.php?f=6&t=3851  https://github.com/G33kDude/Neutron.ahk/
--group parts of the ui to make them more clear, or use something like tabs tabs ^^^Related  
+^^^^^neutron examples https://github.com/samfisherirl/Geo3D_Manager https://github.com/samfisherirl/Artum-VR_Screen_Cap-Gui
+^^^^^related: group parts of the ui to make them more clear, or use something like tabs tabs  
 -Rename advanced options to settings  
--Add named presets for move/resize menu. Maybe for the custom tsb sizes as well. Can save window title as well and show it as a tooltip maybe.
--"Minimized" instead of -32000 x and y  
+-Add named presets for the move/resize menu. Maybe for custom tsb sizes as well. Can save window title as well and show it as a tooltip maybe.
 -hotkeys should be manually added to start labels instead.
 -maybe use an ini handler library (example in "ini handler library.zip")
 -fix ini long variable names with or without spaces. Long variables might be fine but no spaces?
 -default autosave everything possible to ini option, disable "saved" popups except for the first time
--tooltips for permanent/temporary positions
+-better tooltips for permanent/temporary positions
 -ini autosave+autobackup(s)
 -seperate ini categories for hooker etc
--dont use hotkeys as a label, enable them manually. (like the MoveKey s)
 -loop while loading ini and check for errors maybe
 -add scale + button that enlarges/shrinks the window
 -add toggle clickthrough button to move/resize menu
+-dont use hotkeys as a label, enable them manually. (like the MoveKey s)
+-switch to CoordMode "Client" and remove border/caption calculations https://www.autohotkey.com/docs/v1/lib/CoordMode.htm
+-update to AHK 2.0 (if ever needed)
+-rchk mouse mover
 
 
 TEMP HACKS:   
@@ -369,7 +371,7 @@ ShowNewMenu(nmX, nmY) {
     } else {
         Gui, newmenu: Show, w640 h560 x%nmX% y%nmY%, TSolidBackground Advanced Features
     }
-    SetTimer, KillCheat, 30
+    SetTimer, Killcht, 30
 }
 
 ~!F8::
@@ -576,18 +578,18 @@ DummyGuiEscape:
     Gui, Dummy: Destroy
 Return
 
-BackGui:          ;Not planning to make the gui tabbed etc yet.
+BackGui:   ;Not planning to make the gui tabbed yet.
     WinGetPos, aX, aY, aW, aH, A
-    Gui, cheat: Color, 292929
-    Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Advanced Features
+    Gui, cht: Color, 292929
+    Gui, cht: Show, w640 h560 x%aX% y%aY%, TSolidBackground Advanced Features
     Gui, Destroy
     ShowNewMenu(aX,aY)
-    ;SetTimer, KillCheat, 30
+    ;SetTimer, Killcht, 30
 Return
 
-KillCheat:
-    Gui, cheat: Destroy
-    SetTimer, KillCheat, Off
+Killcht:
+    Gui, cht: Destroy
+    SetTimer, Killcht, Off
 Return
 
 ;Advanced Options Start
@@ -1161,7 +1163,7 @@ ShowResizer() {
     } else {
         Gui, resizer: Show, w640 h560, TSolidBackground Move/Resize Window
     }
-    SetTimer, KillCheat, 30
+    SetTimer, Killcht, 30
     Gui, newmenu: Destroy
     Refresher()
     Return
@@ -1273,10 +1275,10 @@ DropDownSelected:
             WinGetPos, Xorig, Yorig, Worig, Horig, ahk_id %TBResized%
         }
         WinGetPos, aX, aY, aW, aH, A
-        Gui, cheat: Color, 292929
-        Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Move/Resize Window
+        Gui, cht: Color, 292929
+        Gui, cht: Show, w640 h560 x%aX% y%aY%, TSolidBackground Move/Resize Window
         ShowResizer()
-        ;SetTimer, KillCheat, 30
+        ;SetTimer, Killcht, 30
     }
 Return
 
@@ -1564,10 +1566,10 @@ LoadHotkeypos(posnr) {
 
 ReloadDropDown:
     WinGetPos, aX, aY, aW, aH, A
-    Gui, cheat: Color, 292929
-    Gui, cheat: Show, w640 h560 x%aX% y%aY%, TSolidBackground Move/Resize Window
+    Gui, cht: Color, 292929
+    Gui, cht: Show, w640 h560 x%aX% y%aY%, TSolidBackground Move/Resize Window
     ShowResizer()
-    ;SetTimer, KillCheat, 30
+    ;SetTimer, Killcht, 30
 Return
 
 CopyTitle:
