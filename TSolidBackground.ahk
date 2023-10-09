@@ -1,4 +1,4 @@
-﻿#SingleInstance Force
+#SingleInstance Force
 #NoEnv
 SendMode Input
 SetBatchLines, 10000
@@ -1867,7 +1867,7 @@ MouseMover() {
     Gui, mmover: Font, s13
     Gui, mmover: Add, Text, x220 y147, While this window is open,
     Gui, mmover: Add, Text, x132 y177,   Use arrow keys to move the mouse pixel by pixel.`nHold Shift to move at half speed, Hold Ctrl for triple speed.
-    Gui, mmover: Add, Text, x132 y227, Press [Numpad 1] or [Numpad End] for left click `nPress [Numpad 2] or [Numpad Down] for right click `nPress [Numpad 3] or [Numpad PgDn] for middle click.
+    Gui, mmover: Add, Text, x132 y227, Press [Numpad 1] or [Alt+Delete] for left click `nPress [Numpad 2] or [Alt+End] for right click `nPress [Numpad 3] or [Alt+Page Down] for middle click.
     Gui, mmover: Font, s10 c836DFF norm Underline
     Gui, mmover: Add, Text, x219 y435, Create .ini for permanent options
     Gui, mmover: Font, s10 cDCDCCC norm
@@ -1972,33 +1972,33 @@ Numpad3 Up::
     Click, Up, Middle
 Return
 
-NumpadEnd::
+!Delete::
     Click, Down
     if (!preventSend)
-        Send, {NumpadEnd}
+        Send, {Delete}
 Return
 
-NumpadEnd Up::
+!Delete Up::
     Click, Up
 Return
 
-NumpadDown::
+!End::
     Click, Down, Right
     if (!preventSend)
-        Send, {NumpadDown}
+        Send, {End}
 Return
 
-NumpadDown Up::
+!End Up::
     Click, Up, Right
 Return
 
-NumpadPgdn::
+!Pgdn::
     Click, Down, Middle
     if (!preventSend)
-        Send, {NumpadPgdn}
+        Send, {Pgdn}
 Return
 
-NumpadPgdn Up::
+!Pgdn Up::
     Click, Up, Middle
 Return
 #If
